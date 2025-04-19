@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 // Define the User schema
 const userSchema = new mongoose.Schema(
   {
-    // Unique identifier for the user (Mongoose adds _id automatically)
-
     // Username for login or display - must be unique
     username: {
       type: String,
@@ -40,27 +38,6 @@ const userSchema = new mongoose.Schema(
       required: false, // Name is optional
       trim: true,
     },
-
-    // Optional: Link to recipes created by this user (for easier querying)
-    // Although recipes reference the user via author_id, sometimes
-    // having a list of recipe IDs on the user can be useful.
-    // This would require updating the user document when a recipe is created.
-    // recipes: [{
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'Recipe'
-    // }],
-
-    // Optional: Link to reviews left by this user
-    // reviews: [{
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'Review' // Assuming you create a Review model
-    // }],
-
-    // Add other user-related fields here (e.g., profile picture URL, join date, etc.)
-    // profilePicture: {
-    //   type: String,
-    //   required: false
-    // }
   },
   {
     // Mongoose adds createdAt and updatedAt timestamps automatically
