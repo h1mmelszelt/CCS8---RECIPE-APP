@@ -1,0 +1,16 @@
+import express from "express";
+import {
+  createReview,
+  getReviewsByRecipeId,
+  updateReview,
+  deleteReview,
+} from "../controllers/review.controller.js";
+
+const router = express.Router();
+
+router.post("/:recipeId", createReview); // Create a review for a recipe
+router.get("/:recipeId", getReviewsByRecipeId); // Get all reviews for a recipe
+router.put("/:reviewId", updateReview); // Update a specific review
+router.delete("/:reviewId", deleteReview); // Delete a specific review
+
+export default router;

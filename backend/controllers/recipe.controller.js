@@ -13,6 +13,7 @@ export const createRecipe = async (req, res) => {
   const recipe = req.body; //user will send this data
 
   if (
+    //user_id still isnt required. populate db w API first
     !recipe.name ||
     !recipe.ingredients ||
     !recipe.instructions ||

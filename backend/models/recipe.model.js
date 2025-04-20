@@ -32,7 +32,7 @@ const recipeSchema = new mongoose.Schema(
       type: [String], // Array of tags like ['vegan', 'gluten-free']
       required: true, // Optional field
     },
-    author_id: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId, // Reference to the User collection
       ref: "User", // The name of the User model
       required: true, // Assumes every recipe must have an author
