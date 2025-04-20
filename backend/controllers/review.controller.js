@@ -1,5 +1,6 @@
 import Review from "../models/review.model.js";
 
+//get reviews by user id
 export const createReview = async (req, res) => {
   const { recipeId } = req.params;
   const { user_id, rating, text } = req.body;
