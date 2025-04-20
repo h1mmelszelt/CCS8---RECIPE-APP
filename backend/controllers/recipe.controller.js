@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Recipe from "../models/recipe.model.js";
+import Review from "../models/review.model.js";
+
 export const getRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find({});
@@ -67,5 +69,30 @@ export const deleteRecipe = async (req, res) => {
   } catch (error) {
     console.log("error in deleting recipe:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getPopularRecipes = async (req, res) => {
+  try {
+    const popular = await Review.aggregate([
+      {
+        $group: {
+          _id: "$recipe_id",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { averageRating: -1 },
+      },
+      { $limit: 5 },
+    ]);
+
+    const results = await Recipe.populate(popular, { path: "_id" });
+
+    res.status(200).json(results);
+  } catch (err) {
+    console.error("Error fetching popular recipes:", err);
+    res.status(500).json({ error: "Failed to get popular recipes" });
   }
 };

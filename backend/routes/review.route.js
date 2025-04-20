@@ -4,10 +4,12 @@ import {
   getReviewsByRecipeId,
   updateReview,
   deleteReview,
+  getAllReviews,
 } from "../controllers/review.controller.js";
 
 const router = express.Router();
 
+router.get("/", getAllReviews);
 router.post("/:recipeId", createReview); // Create a review for a recipe
 router.get("/:recipeId", getReviewsByRecipeId); // Get all reviews for a recipe
 router.put("/:reviewId", updateReview); // Update a specific review

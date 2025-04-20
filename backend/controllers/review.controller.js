@@ -9,6 +9,18 @@ export const createReview = async (req, res) => {
       return res.status(400).json({ error: "user_id and rating are required" });
     }
 
+    // Check if the user has already reviewed this recipe
+    const existingReview = await Review.findOne({
+      recipe_id: recipeId,
+      user_id: user_id,
+    });
+
+    if (existingReview) {
+      return res
+        .status(400)
+        .json({ error: "User has already reviewed this recipe" });
+    }
+
     const newReview = await Review.create({
       recipe_id: recipeId,
       user_id,
@@ -20,6 +32,20 @@ export const createReview = async (req, res) => {
   } catch (err) {
     console.error("Error creating review:", err);
     res.status(500).json({ error: "Failed to create review" });
+  }
+};
+
+export const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find()
+      .populate("user_id", "username name")
+      .populate("recipe_id", "name") // optional: include recipe title
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(reviews);
+  } catch (err) {
+    console.error("Error fetching all reviews:", err);
+    res.status(500).json({ error: "Failed to get all reviews" });
   }
 };
 

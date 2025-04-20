@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
     // Optional: User's display name
     name: {
       type: String,
-      required: false, // Name is optional
+      required: true, // Name is optional
       trim: true,
     },
   },

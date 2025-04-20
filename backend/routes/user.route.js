@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/", createUser);
 router.get("/", getAllUsers);
-router.get("/:id", getUserById);
+router.get("/:id", getUserById); //no postman req yet
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 
