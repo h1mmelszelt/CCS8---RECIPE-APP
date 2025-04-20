@@ -1,4 +1,4 @@
-import { BrowserRouter as Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
 import GetStartedPage from "./pages/GetStartedPage";
 
