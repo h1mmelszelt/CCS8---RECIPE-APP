@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <Box px={6} py={4} boxShadow="md" >
+    <Box px={6} py={4} position="relative" zIndex={1}>
       <Flex
         alignItems="center"
         justifyContent="space-between"
@@ -40,12 +40,12 @@ function Navbar() {
         <Link to="/home">
             <Button borderWidth="1px" borderColor="#CACACA" textColor="black">LOG IN</Button>
         </Link>
-            <Button borderWidth="1px" bg="#FD660B" textColor="white">SIGN IN</Button>
+            <Button borderWidth="1px" bg="#FD660B" borderColor="#FD660B" textColor="white">SIGN IN</Button>
         </Flex>
 
          <Menu>
           <MenuButton
-            mr = "15"
+            mr = "2"
             as={Button} 
             colorScheme="gray"
             position="absolute" right="15px"
