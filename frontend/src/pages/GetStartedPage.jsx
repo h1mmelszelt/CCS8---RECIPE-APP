@@ -1,8 +1,11 @@
 import { Button } from "@chakra-ui/react";
+import Navbar from "../components/Navbar"; 
 
 function GetStartedPage() {
     return (
       <>
+      <Navbar />
+
         <Button
         borderWidth="1px"
         bg="#FD660B"
