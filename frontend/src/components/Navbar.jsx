@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <Box px={6} py={4} position="relative" zIndex={1}>
+    <Box px={6} py={4} position="relative" zIndex={1} >
       <Flex
         alignItems="center"
         justifyContent="space-between"

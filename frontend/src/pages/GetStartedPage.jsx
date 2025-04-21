@@ -1,164 +1,204 @@
-import { Box, Button, Image, Text } from "@chakra-ui/react";
-import Navbar from "../components/Navbar"; 
-import bgImage2 from "/images/GreenSplash1.png";
-import FoodBowl from "/images/FoodBowl.png";
-import Leaf from "/images/Leaf.png";
+import { Box, Button, Image, Text, Flex, VStack } from "@chakra-ui/react";
+import Navbar from "../components/Navbar";
+import BowlLeaf from "/images/BowlLeaf.png";
 import { motion } from "framer-motion";
-
-
+import BG_Image from "/images/11.png";
+import BG_Image2 from "/images/15.png";
+import GreenRectangle from "/images/Rectangle2.png";
+import Phone from "/images/phone.png";
 
 const MotionText = motion(Text);
 
 function GetStartedPage() {
   return (
-    <Box position="relative" height="100vh" overflow="auto">
-      
+    <Box position="relative" minH="100vh" overflow="hidden" >
       {/* Navbar */}
       <Box position="relative" zIndex={2}>
         <Navbar />
       </Box>
 
-      {/* Background & Decorative Images */}
-      <Image 
-        src={bgImage2}
+      {/* Decorative Backgrounds */}
+      <Image
+        src={BG_Image}
         position="absolute"
-        top="-110%"
-        left="40%"
-        boxSize="1900"
+        top="0"
+        left="75%"
+        transform="translateX(-50%)"
+        width={{ base: "70vw", md: "60vw" }} // full viewport width
+        maxW="none"
+        zIndex={0}
+        opacity={1}
+      />
+
+      <Image
+        src={BG_Image2}
+        position="absolute"
+        top="30vh"
+        left="0vw" // replaced right: 81% for more consistency across screens
+        width={{ base: "50vw", md: "20vw" }}
+        maxW="none"
+        zIndex={0}
+      />
+      
+      <Image
+        src={BowlLeaf}
+        position="absolute"
+        top="20vh"
+        right="15vw" // replaced right: 81% for more consistency across screens
+        width={{ base: "0vw", md: "35vw" }}
+        maxW="none"
         zIndex={0}
       />
 
-      <Image 
-        src={bgImage2}
-        position="absolute"
-        top="35%"
-        left="-55%"
-        boxSize="1500"
-        transform="rotate(10deg)"
-        zIndex={0}
-      />
-
-      <Image 
-        src={FoodBowl}
-        position="absolute"
-        left="60%"
-        bottom="15%"
-        boxSize="650"
+      {/* Hero Section */}
+      <Flex
+        direction="column"
+        align="start"
+        px={{ base: 6, md: 20 }}
+        pt={{ base: 20, md: 40 }}
         zIndex={1}
-      />
-
-      <Image 
-        src={Leaf}
-        position="absolute"
-        left="55%"
-        bottom="54%"
-        transform="rotate(-5deg)"
-        height = "273"
-      />
-
-      <Image 
-        src={Leaf}
-        position="absolute"
-        left="79%"
-        bottom="35%"
-        transform="rotate(134deg)"
-        height = "273"
-      />
-
-      {/* Hero Text & Button */}
-      <Box position="absolute" top="30%" left="5%" zIndex={1} maxW="550px">
-        <Text 
-          fontSize={{ base: "30px", sm: "40px", md: "50px" }}
-          fontWeight="bold"
-          color="black"
-          textTransform="uppercase"
-        >
+        maxW={{ base: "100%", md: "640px" }}
+    
+      >
+        <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="bold" color="black" textTransform="uppercase">
           YOUR ALL-IN-ONE
         </Text>
-
-        <Text 
-          fontSize={{ base: "30px", sm: "40px", md: "50px" }}
-          fontWeight="bold"
-          color="#FD660B"
-          textTransform="uppercase"
-        >
+        <Text fontSize={{ base: "30px", md: "50px" }} fontWeight="bold" color="#FD660B" textTransform="uppercase">
           RECIPE HUB
         </Text>
 
-        <Text fontSize="22" fontWeight="lightbold" color="black" mt={4}>
-          Share your recipes, explore new ones, and connect with fellow food enthusiasts.
-          Access more than{" "}
+        <Text fontSize="18px" fontWeight="medium" color="black" mt={4}>
+          Share your recipes, explore new ones, and connect with fellow food enthusiasts. Access more than{" "}
           <Text as="span" color="#FD660B" fontWeight="bold">
             500 recipes
           </Text>{" "}
           from around the world — and counting!
         </Text>
 
-        <Button mt={6} bg="#FD660B" color="white" borderRadius="5">
+        <Button mt={6} bg="#FD660B" color="white" borderRadius="md">
           SIGN UP
         </Button>
 
-        <Box display="flex" alignItems="center" mt={4}>
-          <Text fontSize="17" fontWeight="light" color="black" mr={2}>
-                Already have an account?
+        <Flex align="center" mt={4} >
+          <Text fontSize="16px" color="black" mr={2} zIndex={1}>
+            Already have an account?
           </Text>
-              <MotionText
-                  fontSize="17"
-                  fontWeight="bold"
-                  color="#FD660B"
-                  textDecoration="underline"
-                  cursor="pointer"
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-              Log In
-              </MotionText>
-        </Box>
-      </Box>
+          <MotionText
+            fontSize="16px"
+            fontWeight="bold"
+            color="#FD660B"
+            textDecoration="underline"
+            cursor="pointer"
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            zIndex={2}
+          >
+            Log In
+          </MotionText>
+        </Flex>
+      </Flex>
 
-      <Box
-        position="absolute"
-        top="105%"
-        left="10%"
-        right="10%"
-        display="flex"
-        flexDirection={{ base: "column", md: "row" }}
-        alignItems="center"
-        justifyContent="space-between"
-        gap={6}
-        zIndex={1}
-        >
-  {/* Video */}
+     {/* Video + Cook.Share.Connect Text */}
+<Flex
+  direction={{ base: "column", md: "row" }}
+  align="center"
+  justify="space-between"
+  px={{ base: 6, md: 20 }}
+  mt={{ base: 120, md: 300 }}
+  gap={{ base: 10, md: 20 }}
+  zIndex={1.5}
+>
+  {/* Video Box */}
   <Box
-    border="12px solid #FD660B"
+    border="10px solid #FD660B"
     borderRadius="md"
-    maxW={{ base: "100%", md: "800px" }}
-    height={{ base: "auto", md: "370px" }}
-    flexShrink={0}
+    maxW="100%"
     overflow="hidden"
+    zIndex={1}
   >
-    <video width="100%" controls style={{ objectFit: "cover" }}>
+    <video width="100%" controls style={{ objectFit: "cover", maxHeight: "400px" }}>
       <source src="/videos/Gordon Ramsay Smashes Salmon _ comp _.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   </Box>
 
   {/* Text beside video */}
-  <Box maxW={{ base: "100%", md: "500px" }}>
-    <Text fontSize="42px" fontWeight="bold" mb={2} color="#FD660B">
-        Cook.
-        <Text as="span" color="#97C33A">
-        Share. 
-        </Text>
-        Connect.
+  <Box maxW={{ base: "100%", md: "500px" }} zIndex={2}>
+    <Text fontSize="36px" fontWeight="bold" mb={2} color="#FD660B">
+      Cook.<Text as="span" color="black"> Share. </Text>Connect.
     </Text>
-    <Text fontSize="20px" color="gray.900">
+    <Text fontSize="18px" color="gray.800">
       Unlock a world of culinary inspiration! Whether you're a seasoned chef or just starting out, find and share amazing recipes with ease.
     </Text>
   </Box>
+</Flex>
+
+{/* "Completely Free" Box */}
+<Box
+  //bg="#97C33A"
+  borderRadius="md"
+  p={4}
+  mt="10%"
+  maxW="100%"
+  color="white"
+  textAlign="center"
+  zIndex={1}
+  mx="auto"
+>
+  <Flex justify="space-between" mx="10%">
+    {/* Completely Free Section */}
+    <VStack align="center">
+      <Image src="/images/free.png" alt="Free Icon" boxSize="40px" mb={2} width={{ base: "10vw"}} height={{ md: "10vw"}}/>
+      <Text fontSize="25px" fontWeight="bold" color="#FD660B">
+        Completely Free
+      </Text>
+      <Text fontSize="14px" color="black" mt={2} width={{ base: "20vw", md: "20vw"}}>
+        Sign up for free and have access to all these recipes!
+      </Text>
+    </VStack>
+
+    {/* Safe Space Section */}
+    <VStack align="center">
+      <Image src="/images/child.png" alt="Safe Icon" boxSize="40px" mb={2} width={{ base: "10vw"}} height={{ md: "10vw"}}/>
+      <Text fontSize="25px" fontWeight="bold" color="#FD660B">
+        Safe Space
+      </Text>
+      <Text fontSize="14px" color="black" mt={2} width={{ base: "20vw", md: "20vw"}}>
+        Store and manage your favorite recipes without any worries!
+      </Text>
+    </VStack>
+
+    {/* Accessible Section */}
+    <VStack align="center">
+      <Image src="/images/tap.png" alt="Accessible Icon" boxSize="40px" mb={2} width={{ base: "10vw"}} height={{ md: "10vw"}}/>
+      <Text fontSize="25px" fontWeight="bold" color="#FD660B">
+        Accessible
+      </Text>
+      <Text fontSize="14px" color="black" mt={2} width={{ base: "20vw", md: "20vw"}}>
+        Accommodates all kinds of users!
+      </Text>
+    </VStack>
+  </Flex>
 </Box>
+    
+<Box
+  mt={40}
+  //bgColor="gray.300"
+  position="relative"
+  width={{ base: "100vw", md: "100vw" }}
+  zIndex={2}
+  px={10}
+  py={10}
+>
+  <Text fontSize="36" fontWeight="bold" ml="10%" color="black" width={{ base: "60vw"}}>
+    Put us in your{" "}
+    <Text as="span" color="#97C33A" display="inline">Pocket!</Text>
+  </Text>
 
+  <Image src={GreenRectangle} mt={5} mx="auto" zIndex={1}/>
+  <Image src={Phone} position="absolute" width={{ base: "0vw", md: "35vw" }} maxW="none" top="-10" ml="48%" zIndex={2}/>
 
+</Box>
 
     </Box>
   );
