@@ -2,7 +2,7 @@ import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
-
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<GetStartedPage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </Box>
     </>
