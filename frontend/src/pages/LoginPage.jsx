@@ -6,10 +6,11 @@ function LoginPage() {
     return (
       <>
         <Navbar />
-        <Flex minH="100vh" align="center" justify="center" bg="gray.100" backgroundImage={{ base: `url(${cooking})`, md: "none" }}
+        <Flex minH="100vh" align="flex-start" justify="center" bg="gray.100" backgroundImage={{ base: `url(${cooking})`, md: "none" }}
         backgroundSize="cover"
         backgroundPosition="center"
-        backgroundRepeat="no-repeat">
+        backgroundRepeat="no-repeat"
+        pt={20}>
           <Box
             borderRadius="lg"
             boxShadow="lg"
@@ -25,7 +26,7 @@ function LoginPage() {
                 <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold" color="black" textAlign={{ base: "center", md: "left" }} w="100%">
                   Welcome back
                 </Text>
-                <Text fontSize={{ base: "md", md: "lg" }} color="black" mb={10} textAlign={{ base: "center", md: "left" }} w="100%">
+                <Text fontSize={{ base: "md", md: "lg" }} color="black" mb={20} textAlign={{ base: "center", md: "left" }} w="100%">
                   Please enter your details
                 </Text>
   
@@ -52,7 +53,7 @@ function LoginPage() {
                     mb={2}
                   />
   
-                  <Flex justify="space-between" align="center" mb={10}>
+                  <Flex justify="space-between" align="center" mb={20}>
                     <Checkbox
                       colorScheme="white"
                       iconColor="orange"
@@ -85,7 +86,7 @@ function LoginPage() {
                   </Link>
                 </Box>
   
-                <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4}>
+                <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4} mb={20}>
                   Don’t have an account?{" "}
                   <Link color="#FD660B" fontWeight="bold">
                     Sign up
