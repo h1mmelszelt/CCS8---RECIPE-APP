@@ -18,34 +18,57 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <Box px={6} py={4} boxShadow="md">
-      <Flex alignItems="center" justifyContent="space-between" wrap="wrap" gap={4}>
+    <Box
+      px={{ base: 4, md: 6 }}
+      py={4}
+      boxShadow="md"
+      position="sticky"
+      top="0"
+      zIndex="999"
+      bg="white"
+    >
+      {/* Top row: logo, search (desktop), icons */}
+      <Flex
+        alignItems="center"
+        justifyContent="space-between"
+        wrap="wrap"
+        gap={4}
+        direction={{ base: "column", md: "row" }}
+      >
         {/* Logo */}
         <Link to="/">
           <Text fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
-            <Text as="span" color="black">Insane</Text>
-            <Text as="span" color="#FD660B">Recipe</Text>
+            <Text as="span" color="black">
+              Insane
+            </Text>
+            <Text as="span" color="#FD660B">
+              Recipe
+            </Text>
           </Text>
         </Link>
 
-        {/* Search Bar */}
-        <InputGroup ml="800px" maxW="500px" position="absolute" right="300px">
-          <InputRightElement pointerEvents="none">
-            <SearchIcon 
-                color="#FD660B" 
-                boxSize={6}
+        {/* Search bar for desktop only */}
+        <Box display={{ base: "none", md: "block" }} w={{ md: "400px" }}>
+          <InputGroup>
+            <InputRightElement pointerEvents="none">
+              <SearchIcon color="#FD660B" boxSize={5} />
+            </InputRightElement>
+            <Input
+              type="text"
+              placeholder="Search recipes..."
+              borderRadius="15px"
+              bg="#E6E6E6"
+              w="100%"
             />
-          </InputRightElement>
-          <Input 
-                type="text" 
-                placeholder="Search recipes..." 
-                borderRadius="15px"
-                bg="#E6E6E6"
-          />
-        </InputGroup>
+          </InputGroup>
+        </Box>
 
         {/* Action Icons */}
-        <Flex gap={2} alignItems="center">
+        <Flex
+          gap={2}
+          alignItems="center"
+          justify={{ base: "center", md: "flex-end" }}
+        >
           <IconButton
             icon={<AddIcon boxSize={4} />}
             aria-label="Create"
@@ -78,10 +101,9 @@ function Navbar() {
             borderColor="black"
           />
 
-          {/* Hamburger Menu */}
           <Menu>
-            <MenuButton mr = "15" as={Button} variant="ghost" p={0}>
-              <HamburgerIcon boxSize={9} color="#FD660B" />
+            <MenuButton as={Button} variant="ghost" p={0}>
+              <HamburgerIcon boxSize={8} color="#FD660B" />
             </MenuButton>
             <MenuList>
               <MenuItem>Profile</MenuItem>
@@ -91,6 +113,22 @@ function Navbar() {
           </Menu>
         </Flex>
       </Flex>
+
+      {/* Mobile search bar - visible only on small screens */}
+      <Box mt={3} display={{ base: "block", md: "none" }} w="100%">
+        <InputGroup>
+          <InputRightElement pointerEvents="none">
+            <SearchIcon color="#FD660B" boxSize={5} />
+          </InputRightElement>
+          <Input
+            type="text"
+            placeholder="Search recipes..."
+            borderRadius="15px"
+            bg="#E6E6E6"
+            w="100%"
+          />
+        </InputGroup>
+      </Box>
     </Box>
   );
 }

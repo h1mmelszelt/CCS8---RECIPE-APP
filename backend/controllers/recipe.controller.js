@@ -96,3 +96,19 @@ export const getPopularRecipes = async (req, res) => {
     res.status(500).json({ error: "Failed to get popular recipes" });
   }
 };
+
+export const getUserRecipes = async (req, res) => {
+  const userId = req.params.userId;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ success: false, message: "Invalid User ID" });
+  }
+
+  try {
+    const recipes = await Recipe.find({ user_id: userId });
+    res.status(200).json({ success: true, data: recipes });
+  } catch (error) {
+    console.error("Error fetching user's recipes:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
