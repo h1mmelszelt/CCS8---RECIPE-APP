@@ -4,6 +4,9 @@ import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
+import SettingsPage from "./pages/ProfileSettingsPage";
+import NotificationPage from "./pages/NotificationSettingsPage";
+import AdvancedSettingsPage from "./pages/AdvancedSettingsPage";
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/notification-settings" element={<NotificationPage />} />
+          <Route path="/advanced-settings" element={<AdvancedSettingsPage />} />
         </Routes>
       </Box>
     </>

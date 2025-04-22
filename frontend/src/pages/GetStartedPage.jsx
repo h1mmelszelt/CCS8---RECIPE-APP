@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import BG_Image from "/images/11.png";
 import BG_Image2 from "/images/15.png";
 import Phone from "/images/phone.png";
+import Fabio from "/images/fabio.png";
 
 const MotionText = motion(Text);
 
@@ -45,6 +46,17 @@ function GetStartedPage() {
         top="20vh"
         right="15vw"
         width={{ base: "0vw", md: "0vw", lg: "30vw" }}
+        maxW="none"
+        zIndex={0}
+        display={{ base: "none", md: "block" }}
+      />
+
+      <Image
+        src={Fabio}
+        position="absolute"
+        top="45vh"
+        right="33vw"
+        width={{ base: "0vw", md: "0vw", lg: "15vw" }}
         maxW="none"
         zIndex={0}
         display={{ base: "none", md: "block" }}
@@ -163,6 +175,7 @@ function GetStartedPage() {
         </Box>
       </Flex>
 
+
       {/* "Completely Free" Box */}
       <Box
         borderRadius="md"
@@ -176,7 +189,7 @@ function GetStartedPage() {
       >
         <Flex
           justify="space-between"
-          mx="10%"
+          mx="5%"
           direction={{ base: "column", md: "row" }}
           gap={{ base: 6, md: 0 }}
         >
@@ -229,6 +242,25 @@ function GetStartedPage() {
           </VStack>
         </Flex>
       </Box>
+
+{/* Phone Image Section */}
+<Box textAlign="center" mt={20} display="flex" flexDirection="column" alignItems="center">
+  <Text
+    fontSize={{ base: "20px", md: "28px" }}
+    fontWeight="bold"
+    mb={-5}
+    position="relative"
+    left="-20%" // Move text slightly to the left
+  >
+    Put us in your <Text as="span" color="#97C33A">Pocket!</Text>
+  </Text>
+  <Image
+    src={Phone}
+    alt="Phone"
+    width={{ base: "70%", md: "50%" }} // Adjust width for responsiveness
+    mx="auto" // Center the image horizontally
+  />
+</Box>
 
       {/* Explore Recipes Section */}
       <Box py={6}>
