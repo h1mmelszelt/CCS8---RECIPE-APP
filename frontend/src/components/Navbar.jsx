@@ -40,7 +40,7 @@ function Navbar() {
         <Link to="/login">
             <Button borderWidth="1px" borderColor="#CACACA" textColor="black">LOG IN</Button>
         </Link>
-            <Button borderWidth="1px" bg="#FD660B" borderColor="#FD660B" textColor="white">SIGN IN</Button>
+            <Button borderWidth="1px" bg="#FD660B" borderColor="#FD660B" textColor="white">SIGN UP</Button>
         </Flex>
 
          <Menu>
