@@ -54,8 +54,8 @@ function LoginPage() {
   
                   <Flex justify="space-between" align="center" mb={10}>
                     <Checkbox
-                      colorScheme="orange"
-                      iconColor="white"
+                      colorScheme="white"
+                      iconColor="orange"
                       sx={{
                         "& .chakra-checkbox__control": {
                           bg: "white",
