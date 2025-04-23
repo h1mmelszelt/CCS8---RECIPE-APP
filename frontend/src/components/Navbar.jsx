@@ -67,6 +67,7 @@ function Navbar({ transparent }) {
         <InputGroup
           mt={{ base: 4, md: 0 }} // Add margin on smaller screens
           maxW={{ base: "100%", md: "500px" }} // Full width on smaller screens
+          display={{ base: "none", md: "flex" }} // Hide on smaller screens
           position={{ base: "static", md: "absolute" }} // Adjust position for smaller screens
           right={{ md: "300px" }}
         >
@@ -113,7 +114,7 @@ function Navbar({ transparent }) {
           </Button>
         </Flex>
 
-        {/* Hamburger Menu for All Screens */}
+        {/* Hamburger Menu*/}
         <Menu>
           <MenuButton
             ml="5"
@@ -121,6 +122,7 @@ function Navbar({ transparent }) {
             _active={{ bg: "white" }}
             bg="transparent"
             colorScheme="gray"
+            display={{ base: "none", md: "flex" }} // Show only on smaller screens
           >
             <HamburgerIcon boxSize={9} color="#FD660B" />
           </MenuButton>
