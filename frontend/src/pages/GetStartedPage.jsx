@@ -13,7 +13,7 @@ function GetStartedPage() {
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
       {/* Navbar */}
-      <Box position="relative" zIndex={2}>
+      <Box position="relative" zIndex={999}>
         <Navbar boxShadow={false} transparent={true} />
       </Box>
 
@@ -76,6 +76,7 @@ function GetStartedPage() {
           fontWeight="bold"
           color="black"
           textTransform="uppercase"
+          zIndex={1}
         >
           YOUR ALL-IN-ONE
         </Text>
@@ -140,7 +141,7 @@ function GetStartedPage() {
         px={{ base: 6, md: 20 }}
         mt={{ base: 10, md: 300 }}
         gap={{ base: 10, md: 20 }}
-        zIndex={1.5}
+        zIndex={1}
       >
         {/* Video Box */}
         <Box
@@ -251,7 +252,7 @@ function GetStartedPage() {
       <Box
         textAlign="center"
         mt={20}
-        display="flex"
+        display={{ base: "none", md: "flex" }} // Hide on small screens, show on medium and larger screens
         flexDirection="column"
         alignItems="center"
       >

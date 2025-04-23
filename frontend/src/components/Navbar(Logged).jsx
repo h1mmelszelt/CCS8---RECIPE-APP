@@ -172,7 +172,7 @@ function Navbar() {
         <Link to="/home">
           <Flex direction="column" align="center">
             <IconButton
-              icon={<FiHome size={20} />}
+              icon={<FiHome size={30} />}
               aria-label="Home"
               variant="ghost"
               color={location.pathname === "/home" ? "#FD660B" : "black"} // Highlight if on /home
@@ -193,7 +193,7 @@ function Navbar() {
         <Link to="/explore">
           <Flex direction="column" align="center">
             <IconButton
-              icon={<SearchIcon boxSize={5} />}
+              icon={<SearchIcon boxSize={6} />}
               aria-label="Search"
               variant="ghost"
               color={location.pathname === "/explore" ? "#FD660B" : "black"} // Highlight if on /explore
@@ -239,7 +239,7 @@ function Navbar() {
         <Link to="/notifications">
           <Flex direction="column" align="center">
             <IconButton
-              icon={<BellIcon boxSize={6} />}
+              icon={<BellIcon boxSize={8} />}
               aria-label="Notifications"
               variant="ghost"
               color={
