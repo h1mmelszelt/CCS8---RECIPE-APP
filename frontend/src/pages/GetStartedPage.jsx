@@ -6,6 +6,7 @@ import BG_Image from "/images/11.png";
 import BG_Image2 from "/images/15.png";
 import Phone from "/images/phone.png";
 import Fabio from "/images/fabio.png";
+import { Link } from "react-router-dom";
 
 const MotionText = motion(Text);
 
@@ -128,7 +129,9 @@ function GetStartedPage() {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
             zIndex={2}
           >
+            <Link to="/login">
             Log In
+            </Link>
           </MotionText>
         </Flex>
       </Flex>

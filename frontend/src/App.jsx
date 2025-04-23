@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import SettingsPage from "./pages/ProfileSettingsPage";
 import NotificationPage from "./pages/NotificationSettingsPage";
 import AdvancedSettingsPage from "./pages/AdvancedSettingsPage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/notification-settings" element={<NotificationPage />} />
           <Route path="/advanced-settings" element={<AdvancedSettingsPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </Box>
     </>
