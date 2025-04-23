@@ -53,7 +53,6 @@ function Navbar() {
           </Link>
 
           {/* Action Icons */}
-          {/* Action Icons */}
           <Flex gap={4} alignItems="center" justify="flex-end" flex="1">
             {/* Search Bar */}
             <InputGroup maxW="400px" display={{ base: "none", md: "flex" }}>
@@ -261,27 +260,43 @@ function Navbar() {
         </Link>
 
         {/* User Icon */}
-        <Link to="/profile">
+        <Link to="/me">
           <Flex direction="column" align="center">
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
               variant="ghost"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"} // Highlight if on /profile
+              color={
+                location.pathname === "/me" ||
+                location.pathname === "/profile" ||
+                location.pathname === "/settings"
+                  ? "#FD660B"
+                  : "black"
+              } // Highlight if on /me or /profile
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
               borderRadius="full"
               border="2px solid"
               borderColor={
-                location.pathname === "/profile" ? "#FD660B" : "black"
+                location.pathname === "/me" ||
+                location.pathname === "/profile" ||
+                location.pathname === "/settings"
+                  ? "#FD660B"
+                  : "black"
               }
             />
             <Box
               fontSize="sm"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"}
+              color={
+                location.pathname === "/me" ||
+                location.pathname === "/profile" ||
+                location.pathname === "/settings"
+                  ? "#FD660B"
+                  : "black"
+              }
               mt={1}
             >
-              Profile
+              Me
             </Box>
           </Flex>
         </Link>

@@ -292,7 +292,7 @@ function Navbar({ transparent }) {
         </Link>
 
         {/* User Icon */}
-        <Link to="/profile">
+        <Link to="/me">
           <Flex direction="column" align="center">
             <IconButton
               icon={<FiUser size={20} />}
@@ -312,7 +312,7 @@ function Navbar({ transparent }) {
               color={location.pathname === "/profile" ? "#FD660B" : "black"}
               mt={1}
             >
-              Profile
+              Me
             </Box>
           </Flex>
         </Link>
