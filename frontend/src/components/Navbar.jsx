@@ -298,7 +298,7 @@ function Navbar({ transparent }) {
               icon={<FiUser size={20} />}
               aria-label="User Profile"
               variant="ghost"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"} // Highlight if on /profile
+              color={location.pathname === "/me" ? "#FD660B" : "black"} // Highlight if on /profile
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
               borderRadius="full"
