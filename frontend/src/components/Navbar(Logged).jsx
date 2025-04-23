@@ -1,135 +1,235 @@
 import {
   Box,
   Flex,
-  Text,
+  IconButton,
   Input,
   InputGroup,
   InputRightElement,
-  Button,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
 } from "@chakra-ui/react";
-import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
-import { FiUser } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { SearchIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
+import { FiUser, FiHome } from "react-icons/fi";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 
 function Navbar() {
+  const location = useLocation(); // Get the current route
+
   return (
-    <Box
-      px={{ base: 4, md: 6 }}
-      py={4}
-      boxShadow="md"
-      position="sticky"
-      top="0"
-      zIndex="999"
-      bg="white"
-    >
-      {/* Top row: logo, search (desktop), icons */}
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        wrap="wrap"
-        gap={4}
-        direction={{ base: "column", md: "row" }}
+    <>
+      {/* Navbar for larger screens */}
+      <Box
+        display={{ base: "none", md: "block" }}
+        px={{ base: 4, md: 6 }}
+        py={4}
+        boxShadow="md"
+        position="sticky"
+        top="0"
+        zIndex="999"
+        bg="white"
       >
-        {/* Logo */}
-        <Link to="/">
-          <Text fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
-            <Text as="span" color="black">
-              Insane
-            </Text>
-            <Text as="span" color="#FD660B">
-              Recipe
-            </Text>
-          </Text>
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          wrap="wrap"
+          gap={4}
+          direction={{ base: "column", md: "row" }}
+        >
+          {/* Logo */}
+          <Link to="/">
+            <Flex alignItems="center">
+              <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
+                <Box as="span" color="black">
+                  Insane
+                </Box>
+                <Box as="span" color="#FD660B">
+                  Recipe
+                </Box>
+              </Box>
+            </Flex>
+          </Link>
+
+          {/* Action Icons */}
+          <Flex gap={4} alignItems="center" justify="flex-end" flex="1">
+            {/* Search Bar */}
+            <InputGroup maxW="400px" display={{ base: "none", md: "flex" }}>
+              <InputRightElement pointerEvents="none">
+                <SearchIcon color="#FD660B" boxSize={5} />
+              </InputRightElement>
+              <Input
+                type="text"
+                placeholder="Search recipes..."
+                borderRadius="15px"
+                bg="#E6E6E6"
+              />
+            </InputGroup>
+            <IconButton
+              icon={<AddIcon boxSize={4} />}
+              aria-label="Create"
+              bg="white"
+              color="#FD660B"
+              border="2px solid"
+              borderColor="#FD660B"
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+            />
+
+            <IconButton
+              icon={<BellIcon boxSize={6} />}
+              aria-label="Notifications"
+              variant="ghost"
+              color="#FD660B"
+              _hover={{ bg: "#FFF1E8" }}
+              size="md"
+            />
+
+            <IconButton
+              icon={<FiUser size={20} />}
+              aria-label="User Profile"
+              variant="ghost"
+              color="black"
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+              borderRadius="full"
+              border="2px solid"
+              borderColor="black"
+            />
+          </Flex>
+        </Flex>
+      </Box>
+
+      {/* Navbar for smaller screens */}
+      <Box
+        display={{ base: "flex", md: "none" }}
+        position="fixed"
+        bottom="0"
+        left="0"
+        right="0"
+        bg="white"
+        boxShadow="md"
+        zIndex="999"
+        justifyContent="space-around"
+        alignItems="center"
+        borderTop="2px solid #caced4"
+        py={2}
+      >
+        {/* Home Icon */}
+        <Link to="/home">
+          <Flex direction="column" align="center">
+            <IconButton
+              icon={<FiHome size={20} />}
+              aria-label="Home"
+              variant="ghost"
+              color={location.pathname === "/home" ? "#FD660B" : "black"} // Highlight if on /home
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+            />
+            <Box
+              fontSize="sm"
+              color={location.pathname === "/home" ? "#FD660B" : "black"}
+              mt={1}
+            >
+              Home
+            </Box>
+          </Flex>
         </Link>
 
-        {/* Search bar for desktop only */}
-        <Box display={{ base: "none", md: "block" }} w={{ md: "400px" }}>
-          <InputGroup>
-            <InputRightElement pointerEvents="none">
-              <SearchIcon color="#FD660B" boxSize={5} />
-            </InputRightElement>
-            <Input
-              type="text"
-              placeholder="Search recipes..."
-              borderRadius="15px"
-              bg="#E6E6E6"
-              w="100%"
+        {/* Search Icon */}
+        <Link to="/explore">
+          <Flex direction="column" align="center">
+            <IconButton
+              icon={<SearchIcon boxSize={5} />}
+              aria-label="Search"
+              variant="ghost"
+              color={location.pathname === "/explore" ? "#FD660B" : "black"} // Highlight if on /explore
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
             />
-          </InputGroup>
-        </Box>
+            <Box
+              fontSize="sm"
+              color={location.pathname === "/explore" ? "#FD660B" : "black"}
+              mt={1}
+            >
+              Search
+            </Box>
+          </Flex>
+        </Link>
 
-        {/* Action Icons */}
-        <Flex
-          gap={2}
-          alignItems="center"
-          justify={{ base: "center", md: "flex-end" }}
-        >
-          <IconButton
-            icon={<AddIcon boxSize={4} />}
-            aria-label="Create"
-            bg="white"
-            color="#FD660B"
-            border="2px solid"
-            borderColor="#FD660B"
-            _hover={{ bg: "#FFF1E8" }}
-            size="sm"
-          />
+        {/* Create Icon */}
+        <Link to="/create">
+          <Flex direction="column" align="center">
+            <IconButton
+              icon={<AddIcon boxSize={4} />}
+              aria-label="Create"
+              bg="white"
+              color={location.pathname === "/create" ? "#FD660B" : "black"} // Highlight if on /create
+              border="2px solid"
+              borderColor={
+                location.pathname === "/create" ? "#FD660B" : "black"
+              }
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+            />
+            <Box
+              fontSize="sm"
+              color={location.pathname === "/create" ? "#FD660B" : "black"}
+              mt={1}
+            >
+              Create
+            </Box>
+          </Flex>
+        </Link>
 
-          <IconButton
-            icon={<BellIcon boxSize={6} />}
-            aria-label="Notifications"
-            variant="ghost"
-            color="#FD660B"
-            _hover={{ bg: "#FFF1E8" }}
-            size="md"
-          />
+        {/* Notification Icon */}
+        <Link to="/notifications">
+          <Flex direction="column" align="center">
+            <IconButton
+              icon={<BellIcon boxSize={6} />}
+              aria-label="Notifications"
+              variant="ghost"
+              color={
+                location.pathname === "/notifications" ? "#FD660B" : "black"
+              } // Highlight if on /notifications
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+            />
+            <Box
+              fontSize="sm"
+              color={
+                location.pathname === "/notifications" ? "#FD660B" : "black"
+              }
+              mt={1}
+            >
+              Inbox
+            </Box>
+          </Flex>
+        </Link>
 
-          <IconButton
-            icon={<FiUser size={20} />}
-            aria-label="User Profile"
-            variant="ghost"
-            color="black"
-            _hover={{ bg: "#FFF1E8" }}
-            size="sm"
-            borderRadius="full"
-            border="2px solid"
-            borderColor="black"
-          />
-
-          <Menu>
-            <MenuButton as={Button} variant="ghost" p={0}>
-              <HamburgerIcon boxSize={8} color="#FD660B" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </Flex>
-
-      {/* Mobile search bar - visible only on small screens */}
-      <Box mt={3} display={{ base: "block", md: "none" }} w="100%">
-        <InputGroup>
-          <InputRightElement pointerEvents="none">
-            <SearchIcon color="#FD660B" boxSize={5} />
-          </InputRightElement>
-          <Input
-            type="text"
-            placeholder="Search recipes..."
-            borderRadius="15px"
-            bg="#E6E6E6"
-            w="100%"
-          />
-        </InputGroup>
+        {/* User Icon */}
+        <Link to="/profile">
+          <Flex direction="column" align="center">
+            <IconButton
+              icon={<FiUser size={20} />}
+              aria-label="User Profile"
+              variant="ghost"
+              color={location.pathname === "/profile" ? "#FD660B" : "black"} // Highlight if on /profile
+              _hover={{ bg: "#FFF1E8" }}
+              size="sm"
+              borderRadius="full"
+              border="2px solid"
+              borderColor={
+                location.pathname === "/profile" ? "#FD660B" : "black"
+              }
+            />
+            <Box
+              fontSize="sm"
+              color={location.pathname === "/profile" ? "#FD660B" : "black"}
+              mt={1}
+            >
+              Profile
+            </Box>
+          </Flex>
+        </Link>
       </Box>
-    </Box>
+    </>
   );
 }
 

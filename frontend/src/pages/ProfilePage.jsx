@@ -107,6 +107,94 @@ const exampleReviews = [
   },
 ];
 
+const renderRecipeCards = () => (
+  <Box>
+    {/* Title for Created Recipes Section */}
+    <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+      My Created Recipes
+    </Text>
+
+    {/* Recipe Cards */}
+    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+      {exampleRecipes.map((recipe) => (
+        <Box
+          key={recipe._id}
+          borderWidth="1px"
+          borderRadius="lg"
+          overflow="hidden"
+          bg="white"
+          boxShadow="sm"
+          transition="0.3s ease"
+          _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
+        >
+          {/* Recipe Image */}
+          <Box position="relative">
+            <Image
+              src={recipe.image}
+              alt={recipe.title}
+              height="200px"
+              width="100%"
+              objectFit="cover"
+            />
+            <Box position="absolute" top="8px" right="8px">
+              <Text fontSize="lg" color="gray.500" cursor="pointer">
+                ...
+              </Text>
+            </Box>
+          </Box>
+
+          {/* Recipe Details */}
+          <VStack align="start" spacing={2} p={4}>
+            <Text
+              fontSize="lg"
+              fontWeight="bold"
+              color="gray.800"
+              noOfLines={1}
+            >
+              {recipe.title}
+            </Text>
+            <Text fontSize="sm" color="gray.600" noOfLines={2}>
+              {recipe.description}
+            </Text>
+
+            {/* Placeholder for User Info */}
+            <HStack spacing={2} mt={2}>
+              <Avatar
+                size="sm"
+                src="/images/default-avatar.jpg" // Replace with actual user avatar if available
+                name="Your Name"
+              />
+              <VStack align="start" spacing={0}>
+                <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                  Your Name
+                </Text>
+                <Text fontSize="xs" color="gray.500">
+                  @your_username
+                </Text>
+              </VStack>
+            </HStack>
+
+            {/* Placeholder for Rating */}
+            <HStack spacing={1} mt={2}>
+              {[...Array(5)].map((_, i) => (
+                <Icon
+                  as={FaStar}
+                  key={i}
+                  color={i < 4 ? "orange.400" : "gray.300"} // Example rating of 4
+                  fontSize="sm"
+                />
+              ))}
+              <Text fontSize="sm" color="gray.600">
+                (4.0)
+              </Text>
+            </HStack>
+          </VStack>
+        </Box>
+      ))}
+    </SimpleGrid>
+  </Box>
+);
+
 // Render review cards dynamically
 const renderReviewCards = () => (
   <Box>
@@ -225,21 +313,6 @@ const ProfilePage = () => {
         ))}
       </SimpleGrid>
     </Box>
-  );
-
-  // Render recipe cards dynamically
-  const renderRecipeCards = () => (
-    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-      {exampleRecipes.map((recipe) => (
-        <RecipeCard
-          key={recipe._id}
-          _id={recipe._id}
-          title={recipe.title}
-          image={recipe.image}
-          description={recipe.description}
-        />
-      ))}
-    </SimpleGrid>
   );
 
   const tabContent = {

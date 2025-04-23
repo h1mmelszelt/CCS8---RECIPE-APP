@@ -46,7 +46,7 @@ function Navbar({ transparent }) {
 
         <InputGroup ml="800px" maxW="500px" position="absolute" right="300px">
           <InputRightElement pointerEvents="none">
-            <SearchIcon color="#FD660B" boxSize={6} />
+            <SearchIcon color="#FD660B" boxSize={5} />
           </InputRightElement>
           <Input
             type="text"
