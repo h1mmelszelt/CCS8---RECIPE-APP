@@ -10,6 +10,7 @@ import {
   HStack,
   Image,
   Icon,
+  Divider,
 } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import { FaStar } from "react-icons/fa"; // Add this import
@@ -113,7 +114,7 @@ const renderRecipeCards = () => (
     <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
       My Created Recipes
     </Text>
-
+    <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
     {/* Recipe Cards */}
     <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
       {exampleRecipes.map((recipe) => (
@@ -123,7 +124,7 @@ const renderRecipeCards = () => (
           borderRadius="lg"
           overflow="hidden"
           bg="white"
-          boxShadow="sm"
+          boxShadow="md"
           transition="0.3s ease"
           _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
         >
@@ -342,15 +343,20 @@ const ProfilePage = () => {
             position="relative" // Make the parent container relative
           >
             <Flex
-              direction={{ base: "column", md: "row" }}
+              direction={{ base: "column", md: "row" }} // Stack vertically on small screens
               align="center"
               justify="space-between"
               gap={6}
             >
               {/* Avatar and User Info */}
-              <Flex align="center" gap={4}>
+              <Flex
+                direction={{ base: "column", md: "row" }} // Stack avatar and text vertically on small screens
+                align="center"
+                gap={4}
+                textAlign={{ base: "center", md: "left" }} // Center text on small screens
+              >
                 <Avatar size="xl" name="FoodLover" bg="blue.300" />
-                <VStack align="start" spacing={1}>
+                <VStack align={{ base: "center", md: "start" }} spacing={1}>
                   <Text fontSize="2xl" fontWeight="bold" color="gray.800">
                     FoodLover
                   </Text>
@@ -376,17 +382,16 @@ const ProfilePage = () => {
             </Box>
           </Box>
 
-          {/* Tabs */}
           <Box
             bg="white"
             border="1px solid #c5c5c5"
-            borderBottom="1px solid #c5c5c5"
+            borderBottom="none" // Remove bottom border to align with the active tab's border
           >
             <Flex
               direction="row"
               justify="flex-start"
               px={4}
-              py={3}
+              py={0}
               position="relative"
             >
               {tabs.map((tab) => {
@@ -395,10 +400,11 @@ const ProfilePage = () => {
                   <Box
                     key={tab.key}
                     textAlign="center"
-                    py={3}
+                    py={1}
                     px={4} // Add padding for spacing
                     cursor="pointer"
                     color={isActive ? "orange.500" : "gray.700"}
+                    bg={isActive ? "#FFF0E1" : "white"} // Add background color for active tab
                     position="relative" // Position relative for active tab styling
                     fontWeight="medium"
                     _hover={{ bg: "#FFF0E1" }}
@@ -408,7 +414,7 @@ const ProfilePage = () => {
                     {isActive && (
                       <Box
                         position="absolute"
-                        bottom="-1px" // Align with the gray border
+                        bottom="0" // Align with the container's bottom
                         left="0"
                         right="0"
                         height="3px"
@@ -420,7 +426,6 @@ const ProfilePage = () => {
               })}
             </Flex>
           </Box>
-
           {/* Divider Line */}
           <Box borderBottom="1px solid #c5c5c5" />
 

@@ -1,4 +1,15 @@
-import { Box, Image, Text, Flex, Button, Divider, Switch, Select, VStack, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Flex,
+  Button,
+  Divider,
+  Switch,
+  Select,
+  VStack,
+  Icon,
+} from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
@@ -9,36 +20,41 @@ const AdvancedSettingsPage = () => {
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
 
   return (
-    <Box position="relative" minH="100vh" overflow="hidden">
+    <Box
+      position="relative"
+      minH="100vh"
+      overflow="hidden"
+      pb={{ base: "60px", md: "0" }}
+    >
       {/* Navbar */}
       <Box position="relative" zIndex={2}>
         <Navbar />
       </Box>
 
-         {/* Background Images */}
-              <Image
-                src={BG_Image}
-                position="absolute"
-                top="0"
-                left="90%"
-                transform="translateX(-50%)"
-                width={{ base: "90vw", md: "60vw" }}
-                maxW="none"
-                zIndex={0}
-                opacity={1}
-                display={{ base: "none", lg: "block" }}
-              />
-              <Image
-                src={BG_Image}
-                position="absolute"
-                top="70vh"
-                left="0vw"
-                width={{ base: "70vw", md: "20vw" }}
-                maxW="none"
-                zIndex={0}
-                transform="rotate(180deg)"
-                display={{ base: "none", lg: "block" }}
-              />
+      {/* Background Images */}
+      <Image
+        src={BG_Image}
+        position="absolute"
+        top="0"
+        left="90%"
+        transform="translateX(-50%)"
+        width={{ base: "90vw", md: "60vw" }}
+        maxW="none"
+        zIndex={0}
+        opacity={1}
+        display={{ base: "none", lg: "block" }}
+      />
+      <Image
+        src={BG_Image}
+        position="absolute"
+        top="70vh"
+        left="0vw"
+        width={{ base: "70vw", md: "20vw" }}
+        maxW="none"
+        zIndex={0}
+        transform="rotate(180deg)"
+        display={{ base: "none", lg: "block" }}
+      />
 
       {/* Account Settings Section */}
       <Flex
@@ -57,14 +73,27 @@ const AdvancedSettingsPage = () => {
           p={6}
           width={{ base: "100%", md: "300px" }}
         >
-          <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" color="#FD660B" mb={4}>
+          <Text
+            fontSize={{ base: "20px", md: "24px" }}
+            fontWeight="bold"
+            color="#FD660B"
+            mb={4}
+          >
             Settings
           </Text>
           <VStack align="start" spacing={4}>
             {[
               { label: "Profile Settings", icon: FaUser, link: "/settings" },
-              { label: "Notifications", icon: FaBell, link: "/notification-settings" },
-              { label: "Advanced Settings", icon: FaSlidersH, link: "/advanced-settings" },
+              {
+                label: "Notifications",
+                icon: FaBell,
+                link: "/notification-settings",
+              },
+              {
+                label: "Advanced Settings",
+                icon: FaSlidersH,
+                link: "/advanced-settings",
+              },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
                 <Flex
@@ -72,7 +101,9 @@ const AdvancedSettingsPage = () => {
                   width="100%"
                   bg={activeSetting === item.label ? "#dfedc3" : "transparent"}
                   borderLeftWidth={activeSetting === item.label ? "4px" : "0"}
-                  borderLeftColor={activeSetting === item.label ? "green.600" : "transparent"}
+                  borderLeftColor={
+                    activeSetting === item.label ? "green.600" : "transparent"
+                  }
                   p={2}
                   cursor="pointer"
                   onClick={() => setActiveSetting(item.label)}
@@ -81,7 +112,9 @@ const AdvancedSettingsPage = () => {
                   <Text
                     fontSize={{ base: "14px", md: "16px" }}
                     fontWeight="medium"
-                    color={activeSetting === item.label ? "green.600" : "#97C33A"}
+                    color={
+                      activeSetting === item.label ? "green.600" : "#97C33A"
+                    }
                     _hover={{ textDecoration: "none" }}
                   >
                     {item.label}
@@ -102,7 +135,12 @@ const AdvancedSettingsPage = () => {
           width="100%"
           zIndex={1}
         >
-          <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" color="#FD660B" mb={4}>
+          <Text
+            fontSize={{ base: "20px", md: "24px" }}
+            fontWeight="bold"
+            color="#FD660B"
+            mb={4}
+          >
             Advanced Settings
           </Text>
 
@@ -135,7 +173,7 @@ const AdvancedSettingsPage = () => {
             </Flex>
             <Flex justify="space-between" align="center">
               <Text
-                fontSize={{ base: "20px", md: "16px"}} // Smaller font size for mobile, larger for desktop
+                fontSize={{ base: "20px", md: "16px" }} // Smaller font size for mobile, larger for desktop
                 fontWeight="medium"
                 color="black"
               >
@@ -183,7 +221,11 @@ const AdvancedSettingsPage = () => {
             <Text fontSize="18px" fontWeight="bold" color="#FD660B" mb={4}>
               Color Blind Mode
             </Text>
-            <Select placeholder="Off (default)" bg="orange.100" borderColor="orange.300">
+            <Select
+              placeholder="Off (default)"
+              bg="orange.100"
+              borderColor="orange.300"
+            >
               <option value="deuteranopia">Deuteranopia (Red-Green)</option>
               <option value="protanopia">Protanopia (Red-Green)</option>
               <option value="tritanopia">Tritanopia (Yellow-Blue)</option>
@@ -196,7 +238,7 @@ const AdvancedSettingsPage = () => {
             color="white"
             _hover={{ bg: "green.500" }}
             width={{ base: "80%", md: "200px" }}
-            ml={{base: "10%", md: "40%"}}
+            ml={{ base: "10%", md: "40%" }}
           >
             Save Changes
           </Button>
