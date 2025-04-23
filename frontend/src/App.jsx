@@ -9,6 +9,8 @@ import NotificationPage from "./pages/NotificationSettingsPage";
 import AdvancedSettingsPage from "./pages/AdvancedSettingsPage";
 import MePage from "./pages/MePage";
 import ContactUsPage from "./pages/ContactUsPage"
+import CreatePage from "./pages/CreatePage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/notification-settings" element={<NotificationPage />} />
           <Route path="/advanced-settings" element={<AdvancedSettingsPage />} />
+          <Route path="/create" element={<CreatePage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/contact-us" element={<ContactUsPage />} />
         </Routes>
       </Box>

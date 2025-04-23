@@ -22,16 +22,17 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Navbar({ transparent }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      console.log("Searching for:", searchQuery); // Replace with actual search logic
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`); // Navigate to SearchPage with query
     }
   };
 
