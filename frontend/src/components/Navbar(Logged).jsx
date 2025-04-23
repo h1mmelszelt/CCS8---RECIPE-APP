@@ -269,7 +269,9 @@ function Navbar() {
               color={
                 location.pathname === "/me" ||
                 location.pathname === "/profile" ||
-                location.pathname === "/settings"
+                location.pathname === "/settings" ||
+                location.pathname === "/notification-settings" ||
+                location.pathname === "/advanced-settings"
                   ? "#FD660B"
                   : "black"
               } // Highlight if on /me or /profile
@@ -280,7 +282,9 @@ function Navbar() {
               borderColor={
                 location.pathname === "/me" ||
                 location.pathname === "/profile" ||
-                location.pathname === "/settings"
+                location.pathname === "/settings" ||
+                location.pathname === "/notification-settings" ||
+                location.pathname === "/advanced-settings"
                   ? "#FD660B"
                   : "black"
               }
@@ -290,7 +294,9 @@ function Navbar() {
               color={
                 location.pathname === "/me" ||
                 location.pathname === "/profile" ||
-                location.pathname === "/settings"
+                location.pathname === "/settings" ||
+                location.pathname === "/notification-settings" ||
+                location.pathname === "/advanced-settings"
                   ? "#FD660B"
                   : "black"
               }
