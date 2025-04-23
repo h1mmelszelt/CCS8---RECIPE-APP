@@ -1,3 +1,4 @@
+import React, { useRef, useState } from "react";
 import {
   Box,
   Flex,
@@ -10,250 +11,109 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  IconButton,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
 } from "@chakra-ui/react";
 import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
 import { FiHome, FiUser } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom"; // Import useLocation
 
 function Navbar({ transparent }) {
-  const location = useLocation(); // Get the current route
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      console.log("Searching for:", searchQuery); // Replace with actual search logic
+    }
+  };
 
   return (
-    <>
-      <Box
-        display={{ base: "none", md: "block" }}
-        px={{ base: 4, md: 6 }}
-        py={4}
-        boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
-        position="sticky"
-        top="0"
-        zIndex="999"
-        bg={transparent ? "transparent" : "white"} // Conditional background
-      >
-        <Flex alignItems="center" justifyContent="space-between" width="100%">
-          <Link to="/">
-            <Text fontSize={{ base: "22", sm: "28" }} fontWeight="bold">
-              <Text as="span" color="black">
-                Insane
-              </Text>
-              <Text as="span" color="#FD660B">
-                Recipe
-              </Text>
-            </Text>
-          </Link>
-
-          <InputGroup ml="800px" maxW="500px" position="absolute" right="300px">
-            <InputRightElement pointerEvents="none">
-              <SearchIcon color="#FD660B" boxSize={5} />
-            </InputRightElement>
-            <Input
-              type="text"
-              placeholder="Search recipes..."
-              borderRadius="15px"
-              bg="#E6E6E6"
-            />
-          </InputGroup>
-
-          <Flex gap={1.5} position="absolute" right="100px">
-            <Link to="/login">
-              <Button borderWidth="1px" borderColor="#CACACA" textColor="black">
-                LOG IN
-              </Button>
-            </Link>
-            <Button
-              borderWidth="1px"
-              bg="#FD660B"
-              borderColor="#FD660B"
-              textColor="white"
-            >
-              SIGN UP
-            </Button>
-          </Flex>
-
-          <Menu>
-            <MenuButton
-              mr="2"
-              as={Button}
-              _active={{ bg: "white" }}
-              bg="transparent"
-              colorScheme="gray"
-              position="absolute"
-              right="15px"
-            >
-              <HamburgerIcon boxSize={9} color="#FD660B" />
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Button
-                  as={Link}
-                  to="/"
-                  color="black"
-                  _hover={{ bg: "#EAEAEA" }}
-                  width="100%"
-                >
-                  Profile
-                </Button>
-              </MenuItem>
-              <Button
-                as={Link}
-                to="/settings"
-                color="black"
-                _hover={{ bg: "#EAEAEA" }}
-                width="100%"
-              >
-                Settings
-              </Button>
-              <MenuItem>
-                <Button
-                  as={Link}
-                  to="/"
-                  color="black"
-                  _hover={{ bg: "#EAEAEA" }}
-                  width="100%"
-                >
-                  Logout
-                </Button>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </Box>
-
-      {/* Navbar for smaller screens */}
-      <Box
-        display={{ base: "flex", md: "none" }}
-        position="fixed"
-        bottom="0"
-        left="0"
-        right="0"
-        bg="white"
-        boxShadow="md"
-        zIndex="999"
-        justifyContent="space-around"
+    <Box
+      px={{ base: 4, md: 6 }}
+      py={4}
+      boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
+      position="sticky"
+      top="0"
+      zIndex="999"
+      bg={transparent ? "transparent" : "white"} // Conditional background
+      display={{ base: "none", md: "block" }} // Hide on small screens, show on medium and larger screens
+    >
+      <Flex
         alignItems="center"
-        borderTop="2px solid #caced4"
-        py={2}
+        justifyContent="space-between"
+        width="100%"
+        flexDirection={{ base: "column", md: "row" }} // Stack items on smaller screens
       >
-        {/* Home Icon */}
-        <Link to="/home">
-          <Flex direction="column" align="center">
-            <IconButton
-              icon={<FiHome size={30} />}
-              aria-label="Home"
-              variant="ghost"
-              color={location.pathname === "/home" ? "#FD660B" : "black"} // Highlight if on /home
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname === "/home" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Home
-            </Box>
-          </Flex>
+        {/* Logo */}
+        <Link to="/">
+          <Text fontSize={{ base: "22", sm: "28" }} fontWeight="bold">
+            <Text as="span" color="black">
+              Insane
+            </Text>
+            <Text as="span" color="#FD660B">
+              Recipe
+            </Text>
+          </Text>
         </Link>
 
-        {/* Search Icon */}
-        <Link to="/explore">
-          <Flex direction="column" align="center">
-            <IconButton
-              icon={<SearchIcon boxSize={6} />}
-              aria-label="Search"
-              variant="ghost"
-              color={location.pathname === "/explore" ? "#FD660B" : "black"} // Highlight if on /explore
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname === "/explore" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Search
-            </Box>
-          </Flex>
-        </Link>
+        {/* Search Bar */}
+        <InputGroup
+          mt={{ base: 4, md: 0 }} // Add margin on smaller screens
+          maxW={{ base: "100%", md: "500px" }} // Full width on smaller screens
+          position={{ base: "static", md: "absolute" }} // Adjust position for smaller screens
+          right={{ md: "300px" }}
+        >
+          <InputRightElement
+            pointerEvents="auto" // Make the icon clickable
+            onClick={handleSearch} // Trigger search on click
+            cursor="pointer"
+          >
+            <SearchIcon color="#FD660B" boxSize={6} />
+          </InputRightElement>
+          <Input
+            type="text"
+            placeholder="Search recipes..."
+            borderRadius="15px"
+            bg="#E6E6E6"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearch(); // Trigger search on Enter key
+            }}
+          />
+        </InputGroup>
 
-        {/* Create Icon */}
-        <Link to="/create">
-          <Flex direction="column" align="center">
-            <IconButton
-              icon={<AddIcon boxSize={4} />}
-              aria-label="Create"
-              bg="white"
-              color={location.pathname === "/create" ? "#FD660B" : "black"} // Highlight if on /create
-              border="2px solid"
-              borderColor={
-                location.pathname === "/create" ? "#FD660B" : "black"
-              }
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname === "/create" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Create
-            </Box>
-          </Flex>
-        </Link>
-
-        {/* Notification Icon */}
-        <Link to="/notifications">
-          <Flex direction="column" align="center">
-            <IconButton
-              icon={<BellIcon boxSize={8} />}
-              aria-label="Notifications"
-              variant="ghost"
-              color={
-                location.pathname === "/notifications" ? "#FD660B" : "black"
-              } // Highlight if on /notifications
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={
-                location.pathname === "/notifications" ? "#FD660B" : "black"
-              }
-              mt={1}
-            >
-              Inbox
-            </Box>
-          </Flex>
-        </Link>
-
-        {/* User Icon */}
-        <Link to="/profile">
-          <Flex direction="column" align="center">
-            <IconButton
-              icon={<FiUser size={20} />}
-              aria-label="User Profile"
-              variant="ghost"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"} // Highlight if on /profile
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-              borderRadius="full"
-              border="2px solid"
-              borderColor={
-                location.pathname === "/profile" ? "#FD660B" : "black"
-              }
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Profile
-            </Box>
-          </Flex>
-        </Link>
-      </Box>
-    </>
+        {/* Buttons */}
+        <Flex
+          gap={1.5}
+          mt={{ base: 4, md: 0 }} // Add margin on smaller screens
+          display={{ base: "none", md: "flex" }} // Hide on smaller screens
+          position="absolute"
+          right="100px"
+        >
+          <Link to="/login">
+            <Button borderWidth="1px" borderColor="#CACACA" textColor="black">
+              LOG IN
+            </Button>
+          </Link>
+          <Button
+            borderWidth="1px"
+            bg="#FD660B"
+            borderColor="#FD660B"
+            textColor="white"
+          >
+            SIGN UP
+          </Button>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
 
