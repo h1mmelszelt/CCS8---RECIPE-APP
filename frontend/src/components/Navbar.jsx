@@ -21,15 +21,26 @@ import {
 import { SearchIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
-function Navbar() {
-
+function Navbar({ transparent }) {
   return (
-    <Box px={6} py={4} position="relative" zIndex={1}>
+    <Box
+      px={{ base: 4, md: 6 }}
+      py={4}
+      boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
+      position="sticky"
+      top="0"
+      zIndex="999"
+      bg={transparent ? "transparent" : "white"} // Conditional background
+    >
       <Flex alignItems="center" justifyContent="space-between" width="100%">
         <Link to="/">
           <Text fontSize={{ base: "22", sm: "28" }} fontWeight="bold">
-            <Text as="span" color="black">Insane</Text>
-            <Text as="span" color="#FD660B">Recipe</Text>
+            <Text as="span" color="black">
+              Insane
+            </Text>
+            <Text as="span" color="#FD660B">
+              Recipe
+            </Text>
           </Text>
         </Link>
 
@@ -47,16 +58,25 @@ function Navbar() {
 
         <Flex gap={1.5} position="absolute" right="100px">
           <Link to="/login">
-            <Button borderWidth="1px" borderColor="#CACACA" textColor="black">LOG IN</Button>
+            <Button borderWidth="1px" borderColor="#CACACA" textColor="black">
+              LOG IN
+            </Button>
           </Link>
-          <Button borderWidth="1px" bg="#FD660B" borderColor="#FD660B" textColor="white">SIGN UP</Button>
+          <Button
+            borderWidth="1px"
+            bg="#FD660B"
+            borderColor="#FD660B"
+            textColor="white"
+          >
+            SIGN UP
+          </Button>
         </Flex>
 
         <Menu>
           <MenuButton
             mr="2"
             as={Button}
-            _active={{ bg: "white"}}
+            _active={{ bg: "white" }}
             bg="transparent"
             colorScheme="gray"
             position="absolute"
@@ -66,40 +86,39 @@ function Navbar() {
           </MenuButton>
           <MenuList>
             <MenuItem>
-            <Button
-                  as={Link}
-                  to="/"
-                  color="black"
-                  _hover={{ bg: "#EAEAEA"}}
-                  width="100%"
-                >
-                Profile
-                </Button>
-            </MenuItem>
               <Button
-                  as={Link}
-                  to="/settings"
-                  color="black"
-                  _hover={{ bg: "#EAEAEA"}}
-                  width="100%"
-                >
-                Settings
-                </Button>
-            <MenuItem>
+                as={Link}
+                to="/"
+                color="black"
+                _hover={{ bg: "#EAEAEA" }}
+                width="100%"
+              >
+                Profile
+              </Button>
+            </MenuItem>
             <Button
-                  as={Link}
-                  to="/"
-                  color="black"
-                  _hover={{ bg: "#EAEAEA"}}
-                  width="100%"
-                >
+              as={Link}
+              to="/settings"
+              color="black"
+              _hover={{ bg: "#EAEAEA" }}
+              width="100%"
+            >
+              Settings
+            </Button>
+            <MenuItem>
+              <Button
+                as={Link}
+                to="/"
+                color="black"
+                _hover={{ bg: "#EAEAEA" }}
+                width="100%"
+              >
                 Logout
-                </Button>
+              </Button>
             </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
-
     </Box>
   );
 }

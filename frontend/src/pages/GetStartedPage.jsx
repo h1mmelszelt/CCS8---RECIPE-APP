@@ -14,7 +14,7 @@ function GetStartedPage() {
     <Box position="relative" minH="100vh" overflow="hidden">
       {/* Navbar */}
       <Box position="relative" zIndex={2}>
-        <Navbar />
+        <Navbar boxShadow={false} transparent={true} />
       </Box>
 
       {/* Decorative Backgrounds */}
@@ -166,7 +166,12 @@ function GetStartedPage() {
         {/* Text beside video */}
         <Box maxW={{ base: "100%", md: "500px" }} zIndex={2}>
           <Text fontSize="28px" fontWeight="bold" mb={2} color="#FD660B">
-            Cook.<Text as="span" color="black"> Share. </Text>Connect.
+            Cook.
+            <Text as="span" color="black">
+              {" "}
+              Share.{" "}
+            </Text>
+            Connect.
           </Text>
           <Text fontSize="16px" color="gray.800">
             Unlock a world of culinary inspiration! Whether you're a seasoned
@@ -174,7 +179,6 @@ function GetStartedPage() {
           </Text>
         </Box>
       </Flex>
-
 
       {/* "Completely Free" Box */}
       <Box
@@ -198,7 +202,7 @@ function GetStartedPage() {
             <Image
               src="/images/free.png"
               alt="Free Icon"
-              boxSize={{ base: "60px", md: "80px", lg: "100px" }} 
+              boxSize={{ base: "60px", md: "80px", lg: "100px" }}
               mb={2}
             />
             <Text fontSize="20px" fontWeight="bold" color="#FD660B" zIndex={1}>
@@ -214,7 +218,7 @@ function GetStartedPage() {
             <Image
               src="/images/child.png"
               alt="Safe Icon"
-              boxSize={{ base: "60px", md: "80px", lg: "100px" }} 
+              boxSize={{ base: "60px", md: "80px", lg: "100px" }}
               mb={2}
             />
             <Text fontSize="20px" fontWeight="bold" color="#FD660B" zIndex={1}>
@@ -233,7 +237,7 @@ function GetStartedPage() {
               boxSize={{ base: "60px", md: "80px", lg: "100px" }}
               mb={2}
             />
-            <Text fontSize="20px" fontWeight="bold" color="#FD660B" >
+            <Text fontSize="20px" fontWeight="bold" color="#FD660B">
               Accessible
             </Text>
             <Text fontSize="16px" color="black" mt={2}>
@@ -243,24 +247,33 @@ function GetStartedPage() {
         </Flex>
       </Box>
 
-{/* Phone Image Section */}
-<Box textAlign="center" mt={20} display="flex" flexDirection="column" alignItems="center">
-  <Text
-    fontSize={{ base: "20px", md: "28px" }}
-    fontWeight="bold"
-    mb={-5}
-    position="relative"
-    left="-20%" // Move text slightly to the left
-  >
-    Put us in your <Text as="span" color="#97C33A">Pocket!</Text>
-  </Text>
-  <Image
-    src={Phone}
-    alt="Phone"
-    width={{ base: "70%", md: "50%" }} // Adjust width for responsiveness
-    mx="auto" // Center the image horizontally
-  />
-</Box>
+      {/* Phone Image Section */}
+      <Box
+        textAlign="center"
+        mt={20}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+      >
+        <Text
+          fontSize={{ base: "20px", md: "28px" }}
+          fontWeight="bold"
+          mb={-5}
+          position="relative"
+          left="-20%" // Move text slightly to the left
+        >
+          Put us in your{" "}
+          <Text as="span" color="#97C33A">
+            Pocket!
+          </Text>
+        </Text>
+        <Image
+          src={Phone}
+          alt="Phone"
+          width={{ base: "70%", md: "50%" }} // Adjust width for responsiveness
+          mx="auto" // Center the image horizontally
+        />
+      </Box>
 
       {/* Explore Recipes Section */}
       <Box py={6}>
@@ -282,82 +295,83 @@ function GetStartedPage() {
           </MotionText>
         </Flex>
         <Box px="10%" py={6}>
-        <Grid
-  templateColumns={{
-    base: "repeat(2, 1fr)", // 2 columns for mobile
-    md: "repeat(4, 1fr)",  // 4 columns for medium and larger screens
-  }}
-  gap={6}
->
-  {Array.from({ length: 12 }).map((_, index) => (
-    <Box
-      key={index}
-      bg="white"
-      borderRadius="md"
-      boxShadow="md"
-      overflow="hidden"
-      zIndex={2}
-      position="relative" // Enable positioning for hover effect
-    >
-      {/* Image Box */}
-      <Box height={{ base: "200px", md: "250px" }} overflow="hidden">
-        <Image
-          src={`/images/recipe-${index + 1}.jpg`} // Replace with actual image paths
-          alt={`Recipe ${index + 1}`}
-          objectFit="cover"
-          width="100%"
-          height="100%"
-        />
-      </Box>
+          <Grid
+            templateColumns={{
+              base: "repeat(2, 1fr)", // 2 columns for mobile
+              md: "repeat(4, 1fr)", // 4 columns for medium and larger screens
+            }}
+            gap={6}
+          >
+            {Array.from({ length: 12 }).map((_, index) => (
+              <Box
+                key={index}
+                bg="white"
+                borderRadius="md"
+                boxShadow="md"
+                overflow="hidden"
+                zIndex={2}
+                position="relative" // Enable positioning for hover effect
+              >
+                {/* Image Box */}
+                <Box height={{ base: "200px", md: "250px" }} overflow="hidden">
+                  <Image
+                    src={`/images/recipe-${index + 1}.jpg`} // Replace with actual image paths
+                    alt={`Recipe ${index + 1}`}
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
 
-      {/* Hover Description */}
-      <Box
-        position="absolute"
-        top="0"
-        left="0"
-        width="100%"
-        height="100%"
-        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-        color="white"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        opacity="0" // Initially hidden
-        transition="opacity 0.3s ease-in-out"
-        _hover={{ opacity: 1 }} // Show on hover
-      >
-        <Text fontSize="16px" fontWeight="bold" textAlign="center">
-          Recipe Description {index + 1} {/* Replace with actual descriptions */}
-        </Text>
-        <Text fontSize="14px" textAlign="center" mt={2}>
-          A brief description of the recipe goes here.
-        </Text>
-      </Box>
+                {/* Hover Description */}
+                <Box
+                  position="absolute"
+                  top="0"
+                  left="0"
+                  width="100%"
+                  height="100%"
+                  bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+                  color="white"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  opacity="0" // Initially hidden
+                  transition="opacity 0.3s ease-in-out"
+                  _hover={{ opacity: 1 }} // Show on hover
+                >
+                  <Text fontSize="16px" fontWeight="bold" textAlign="center">
+                    Recipe Description {index + 1}{" "}
+                    {/* Replace with actual descriptions */}
+                  </Text>
+                  <Text fontSize="14px" textAlign="center" mt={2}>
+                    A brief description of the recipe goes here.
+                  </Text>
+                </Box>
 
-      {/* Food Name */}
-      <Text
-        textAlign="center"
-        fontSize={{ base: "16px", md: "18px" }}
-        fontWeight="bold"
-        color="black"
-        mt={2}
-        mb={4}
-      >
-        Recipe Name {index + 1} {/* Replace with actual recipe names */}
-      </Text>
-    </Box>
-  ))}
-</Grid>
+                {/* Food Name */}
+                <Text
+                  textAlign="center"
+                  fontSize={{ base: "16px", md: "18px" }}
+                  fontWeight="bold"
+                  color="black"
+                  mt={2}
+                  mb={4}
+                >
+                  Recipe Name {index + 1}{" "}
+                  {/* Replace with actual recipe names */}
+                </Text>
+              </Box>
+            ))}
+          </Grid>
         </Box>
       </Box>
 
       <Box py={6} bg="gray.100" textAlign="center" mt={10}>
         <Text fontSize="14px" color="gray.600">
           @ 2025 InsaneRecipe. All Rights Reserved
-      </Text>
-    </Box>
-
+        </Text>
+      </Box>
     </Box>
   );
 }
