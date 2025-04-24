@@ -154,6 +154,13 @@ const AdvancedSettingsPage = () => {
             <Text fontSize="18px" fontWeight="bold" color="#FD660B" mb={4}>
               Security & Privacy
             </Text>
+            <Flex justify="space-between" align="center" mb={1}>
+              <Text
+                fontSize={{ base: "20x", md: "16px" }} // Smaller font size for mobile, larger for desktop
+                fontWeight="medium"
+                color="black"
+              ></Text>
+            </Flex>
             <Flex justify="space-between" align="center">
               <Text
                 fontSize={{ base: "20px", md: "16px" }} // Smaller font size for mobile, larger for desktop
