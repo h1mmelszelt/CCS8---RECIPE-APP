@@ -154,23 +154,6 @@ const AdvancedSettingsPage = () => {
             <Text fontSize="18px" fontWeight="bold" color="#FD660B" mb={4}>
               Security & Privacy
             </Text>
-            <Flex justify="space-between" align="center" mb={4}>
-              <Text
-                fontSize={{ base: "20x", md: "16px" }} // Smaller font size for mobile, larger for desktop
-                fontWeight="medium"
-                color="black"
-              >
-                Deactivate My Account
-              </Text>
-              <Button
-                bg="#58653C"
-                color="white"
-                _hover={{ bg: "green.500" }}
-                width={{ base: "150px", md: "155px" }} // Smaller width for mobile, larger for desktop
-              >
-                Deactivate Account
-              </Button>
-            </Flex>
             <Flex justify="space-between" align="center">
               <Text
                 fontSize={{ base: "20px", md: "16px" }} // Smaller font size for mobile, larger for desktop

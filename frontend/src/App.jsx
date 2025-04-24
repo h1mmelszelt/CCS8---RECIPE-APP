@@ -15,7 +15,7 @@ import SearchPage from "./pages/SearchPage";
 function App() {
   return (
     <>
-      <Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")}>
+      <Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")} fontFamily="'Poppins', sans-serif">
         <Routes>
           <Route path="/" element={<GetStartedPage />} />
           <Route path="/home" element={<HomePage />} />
