@@ -12,6 +12,7 @@ import MePage from "./pages/MePage";
 import ContactUsPage from "./pages/ContactUsPage";
 import CreatePage from "./pages/CreatePage";
 import SearchPage from "./pages/SearchPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/create" element={<CreatePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/contact-us" element={<ContactUsPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
         <Sitemap />
       </Box>
