@@ -13,10 +13,12 @@ import ContactUsPage from "./pages/ContactUsPage";
 import CreatePage from "./pages/CreatePage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
+import { CustomThemeProvider } from "./components/ThemeProvider"; 
 
 function App() {
   return (
     <>
+    <CustomThemeProvider>
       <Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")} fontFamily="'Poppins', sans-serif">
         <Routes>
           <Route path="/" element={<GetStartedPage />} />
@@ -34,6 +36,7 @@ function App() {
         </Routes>
         <Sitemap />
       </Box>
+    </CustomThemeProvider>
     </>
   );
 }

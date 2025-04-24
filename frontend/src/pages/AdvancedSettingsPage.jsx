@@ -15,10 +15,12 @@ import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import BG_Image from "/images/11.png";
+import { useThemeToggle } from "../components/ThemeProvider"; // Import the theme toggle hook
 
 const AdvancedSettingsPage = () => {
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
-
+  const toggleTheme = useThemeToggle(); 
+  
   return (
     <Box
       position="relative"
@@ -202,7 +204,7 @@ const AdvancedSettingsPage = () => {
               <Text fontSize="16px" fontWeight="medium" color="black">
                 Dark Mode
               </Text>
-              <Switch colorScheme="green" size="lg" />
+              <Switch colorScheme="green" size="lg" onChange={toggleTheme}/>
             </Flex>
           </Box>
 
