@@ -189,19 +189,19 @@ function Navbar() {
         </Link>
 
         {/* Search Icon */}
-        <Link to="/explore">
+        <Link to="/search">
           <Flex direction="column" align="center">
             <IconButton
               icon={<SearchIcon boxSize={6} />}
               aria-label="Search"
               variant="ghost"
-              color={location.pathname === "/explore" ? "#FD660B" : "black"} // Highlight if on /explore
+              color={location.pathname === "/search" ? "#FD660B" : "black"} // Highlight if on /explore
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
             <Box
               fontSize="sm"
-              color={location.pathname === "/explore" ? "#FD660B" : "black"}
+              color={location.pathname === "/search" ? "#FD660B" : "black"}
               mt={1}
             >
               Search
