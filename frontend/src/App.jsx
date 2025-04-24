@@ -1,5 +1,6 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
+import Sitemap from "./components/Sitemap";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
@@ -8,7 +9,7 @@ import SettingsPage from "./pages/ProfileSettingsPage";
 import NotificationPage from "./pages/NotificationSettingsPage";
 import AdvancedSettingsPage from "./pages/AdvancedSettingsPage";
 import MePage from "./pages/MePage";
-import ContactUsPage from "./pages/ContactUsPage"
+import ContactUsPage from "./pages/ContactUsPage";
 import CreatePage from "./pages/CreatePage";
 import SearchPage from "./pages/SearchPage";
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/contact-us" element={<ContactUsPage />} />
         </Routes>
+        <Sitemap />
       </Box>
     </>
   );

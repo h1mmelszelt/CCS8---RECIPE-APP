@@ -443,11 +443,6 @@ const ProfilePage = () => {
           </Box>
         </Box>
       </Flex>
-
-      {/* Site Map / Footer */}
-      <Box textAlign="center" py={10} px={4} color="gray.500">
-        Site map goes here
-      </Box>
     </>
   );
 };
