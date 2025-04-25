@@ -12,10 +12,10 @@ export const getRecipes = async (req, res) => {
 };
 
 export const createRecipe = async (req, res) => {
-  const recipe = req.body; //user will send this data
+  const recipe = req.body;
 
+  // Validate required fields
   if (
-    //user_id still isnt required. populate db w API first
     !recipe.name ||
     !recipe.ingredients ||
     !recipe.instructions ||
@@ -27,13 +27,18 @@ export const createRecipe = async (req, res) => {
       .json({ success: false, message: "Please provide all fields" });
   }
 
-  const newRecipe = new Recipe(recipe);
-
   try {
+    const newRecipe = new Recipe(recipe);
     await newRecipe.save();
     res.status(201).json({ success: true, data: newRecipe });
   } catch (error) {
     console.error("Error in Create recipe:", error.message);
+
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
@@ -109,6 +114,28 @@ export const getUserRecipes = async (req, res) => {
     res.status(200).json({ success: true, data: recipes });
   } catch (error) {
     console.error("Error fetching user's recipes:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getRecipeById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ success: false, message: "Invalid Recipe" });
+  }
+
+  try {
+    const recipe = await Recipe.findById(id);
+
+    if (!recipe) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
+    }
+    res.status(200).json({ success: true, data: recipe });
+  } catch (error) {
+    console.error("Error fetching recipe by ID:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };

@@ -13,40 +13,78 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import RecipeCard from "../components/RecipeCard"; // Use the existing RecipeCard component
+//import RecipeCard from "../components/RecipeCard"; // Use the existing RecipeCard component
 
 const RecipePage = () => {
   const { recipeId } = useParams(); // Recipe ID from the URL
   const [recipe, setRecipe] = useState(null);
-  const [relatedRecipes, setRelatedRecipes] = useState([]);
-  const [trendingRecipes, setTrendingRecipes] = useState([]);
+  //const [relatedRecipes, setRelatedRecipes] = useState([]);
+  //const [trendingRecipes, setTrendingRecipes] = useState([]);
 
   useEffect(() => {
     // Fetch recipe details
     const fetchRecipe = async () => {
       try {
-        const { data } = await axios.get(`/api/recipes/${recipeId}`); // Existing route
+        const { data } = await axios.get(
+          `http://localhost:5000/api/recipes/${recipeId}`
+        ); // Fetch recipe by ID
+        console.log("Recipe ID:", recipeId);
+        console.log("API Response:", data);
         setRecipe(data.data); // Assuming the response structure is { success: true, data: recipe }
       } catch (error) {
         console.error("Error fetching recipe:", error);
       }
     };
-
+    /*--------------------- hidden for now
     // Fetch related and trending recipes
     const fetchRelatedAndTrending = async () => {
       try {
-        const { data: trending } = await axios.get(`/api/recipes/popular`); // Existing route for trending recipes
-        setTrendingRecipes(trending);
+        const { data: trending } = await axios.get(`/api/recipes/popular`); // Fetch trending recipes
+        setTrendingRecipes(trending.data); // Assuming the response structure is { success: true, data: [recipes] }
 
-        const { data: related } = await axios.get(`/api/reviews/${recipeId}`); // Use reviews to fetch related recipes
-        setRelatedRecipes(related);
+        const { data: related } = await axios.get(`/api/reviews/${recipeId}`); // Fetch related recipes
+        setRelatedRecipes(related.data); // Assuming the response structure is { success: true, data: [recipes] }
       } catch (error) {
         console.error("Error fetching related/trending recipes:", error);
       }
     };
+    
+    fetchRelatedAndTrending();
+
+     {/* Related Recipes */ /*}
+     <Heading as="h2" size="lg" mb={4}>
+     Related Recipes
+   </Heading>
+   <HStack spacing={4} overflowX="auto" mb={6}>
+     {relatedRecipes.map((related) => (
+       <RecipeCard
+         key={related._id}
+         _id={related._id}
+         title={related.name}
+         image={related.image}
+         description={related.description}
+       />
+     ))}
+   </HStack>
+
+   {/* Trending Recipes }
+   <Heading as="h2" size="lg" mb={4}>
+     Trending Recipes
+   </Heading>
+   <HStack spacing={4} overflowX="auto" mb={6}>
+     {trendingRecipes.map((trending) => (
+       <RecipeCard
+         key={trending._id}
+         _id={trending._id}
+         title={trending.name}
+         image={trending.image}
+         description={trending.description}
+       />
+     ))}
+   </HStack>
+    ---------------------*/
 
     fetchRecipe();
-    fetchRelatedAndTrending();
   }, [recipeId]);
 
   if (!recipe) return <Text>Loading...</Text>;
@@ -63,12 +101,12 @@ const RecipePage = () => {
         {recipe.name}
       </Heading>
       <HStack spacing={4} align="center" mb={6}>
-        <Avatar src={recipe.user_id.avatar} name={recipe.user_id.name} />
+        <Avatar src={recipe.user_id?.avatar} name={recipe.user_id?.name} />
         <Text fontSize="md" color="gray.600">
-          {recipe.user_id.name}
+          {recipe.user_id?.name || "Unknown Author"}
         </Text>
         <Text fontSize="md" color="orange.500">
-          {recipe.rating} ★
+          {recipe.rating || "N/A"} ★
         </Text>
       </HStack>
 
@@ -101,10 +139,10 @@ const RecipePage = () => {
         </HStack>
         <HStack spacing={8}>
           <Text fontSize="md" color="gray.600">
-            Prep Time: {recipe.prepTime} mins
+            Prep Time: {recipe.prepTime || "N/A"} mins
           </Text>
           <Text fontSize="md" color="gray.600">
-            Serving Size: {recipe.servingSize}
+            Serving Size: {recipe.servingSize || "N/A"}
           </Text>
         </HStack>
       </VStack>
@@ -141,38 +179,6 @@ const RecipePage = () => {
       </VStack>
 
       <Divider mb={6} />
-
-      {/* Related Recipes */}
-      <Heading as="h2" size="lg" mb={4}>
-        Related Recipes
-      </Heading>
-      <HStack spacing={4} overflowX="auto" mb={6}>
-        {relatedRecipes.map((related) => (
-          <RecipeCard
-            key={related._id}
-            _id={related._id}
-            title={related.name}
-            image={related.image}
-            description={related.description}
-          />
-        ))}
-      </HStack>
-
-      {/* Trending Recipes */}
-      <Heading as="h2" size="lg" mb={4}>
-        Trending Recipes
-      </Heading>
-      <HStack spacing={4} overflowX="auto" mb={6}>
-        {trendingRecipes.map((trending) => (
-          <RecipeCard
-            key={trending._id}
-            _id={trending._id}
-            title={trending.name}
-            image={trending.image}
-            description={trending.description}
-          />
-        ))}
-      </HStack>
 
       {/* Tags */}
       <Heading as="h2" size="lg" mb={4}>

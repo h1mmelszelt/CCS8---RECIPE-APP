@@ -8,6 +8,7 @@ import { connectDB } from "./config/db.js";
 import recipeRoutes from "./routes/recipe.route.js";
 import userRoutes from "./routes/user.route.js";
 import reviewRoutes from "./routes/review.route.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);

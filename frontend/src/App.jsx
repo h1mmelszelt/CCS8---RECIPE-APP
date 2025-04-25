@@ -14,32 +14,41 @@ import CreatePage from "./pages/CreatePage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
 import RecipePage from "./pages/RecipePage";
-import { CustomThemeProvider } from "./components/ThemeProvider"; 
-
+import { CustomThemeProvider } from "./components/ThemeProvider";
 
 function App() {
   return (
     <>
-    <CustomThemeProvider>
-      <Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")} fontFamily="'Poppins', sans-serif">
-        <Routes>
-          <Route path="/" element={<GetStartedPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/me" element={<MePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/notification-settings" element={<NotificationPage />} />
-          <Route path="/advanced-settings" element={<AdvancedSettingsPage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/contact-us" element={<ContactUsPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/recipe/:id" element={<RecipePage />} />
-        </Routes>
-        <Sitemap />
-      </Box>
-    </CustomThemeProvider>
+      <CustomThemeProvider>
+        <Box
+          minH={"100vh"}
+          bg={useColorModeValue("gray.100", "gray.900")}
+          fontFamily="'Poppins', sans-serif"
+        >
+          <Routes>
+            <Route path="/" element={<GetStartedPage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/me" element={<MePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route
+              path="/notification-settings"
+              element={<NotificationPage />}
+            />
+            <Route
+              path="/advanced-settings"
+              element={<AdvancedSettingsPage />}
+            />
+            <Route path="/create" element={<CreatePage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/contact-us" element={<ContactUsPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/recipes/:recipeId" element={<RecipePage />} />
+          </Routes>
+          <Sitemap />
+        </Box>
+      </CustomThemeProvider>
     </>
   );
 }
