@@ -39,7 +39,7 @@ function Navbar() {
           direction={{ base: "column", md: "row" }}
         >
           {/* Logo */}
-          <Link to="/">
+          <Link to="/home">
             <Flex alignItems="center">
               <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
                 <Box as="span" color="black">
