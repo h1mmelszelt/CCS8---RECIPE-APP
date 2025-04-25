@@ -13,7 +13,9 @@ import ContactUsPage from "./pages/ContactUsPage";
 import CreatePage from "./pages/CreatePage";
 import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
+import RecipePage from "./pages/RecipePage";
 import { CustomThemeProvider } from "./components/ThemeProvider"; 
+
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/contact-us" element={<ContactUsPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/recipe/:id" element={<RecipePage />} />
         </Routes>
         <Sitemap />
       </Box>
