@@ -111,7 +111,7 @@ function Navbar({ transparent }) {
             borderColor="#FD660B"
             textColor="white"
           >
-            SIGN UP
+            <Link to="/register">SIGN UP</Link>
           </Button>
         </Flex>
 

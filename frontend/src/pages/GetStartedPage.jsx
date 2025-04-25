@@ -112,7 +112,7 @@ function GetStartedPage() {
           borderRadius="md"
           width={{ base: "100%", md: "auto" }}
         >
-          SIGN UP
+          <Link to="/register">SIGN UP</Link>
         </Button>
 
         <Flex align="center" mt={4}>
