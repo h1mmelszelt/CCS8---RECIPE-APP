@@ -6,7 +6,6 @@ import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import SettingsPage from "./pages/ProfileSettingsPage";
-import NotificationPage from "./pages/NotificationSettingsPage";
 import AdvancedSettingsPage from "./pages/AdvancedSettingsPage";
 import MePage from "./pages/MePage";
 import ContactUsPage from "./pages/ContactUsPage";
@@ -15,8 +14,30 @@ import SearchPage from "./pages/SearchPage";
 import RegisterPage from "./pages/RegisterPage";
 import RecipePage from "./pages/RecipePage";
 import { CustomThemeProvider } from "./components/ThemeProvider";
+import NotificationsPage from "./pages/NotificationsPage";
+//                   {notification.type}
 
 function App() {
+  const notifications = [
+    {
+      id: 1,
+      name: "John Doe",
+      message: "liked your recipe",
+      time: "2 hours ago",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      message: "commented on your recipe",
+      time: "Yesterday",
+    },
+    {
+      id: 3,
+      name: "Alice Johnson",
+      message: "shared your recipe",
+      time: "Tuesday",
+    },
+  ];
   return (
     <>
       <CustomThemeProvider>
@@ -33,8 +54,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route
-              path="/notification-settings"
-              element={<NotificationPage />}
+              path="/notifications"
+              element={<NotificationsPage notifications={notifications} />}
             />
             <Route
               path="/advanced-settings"

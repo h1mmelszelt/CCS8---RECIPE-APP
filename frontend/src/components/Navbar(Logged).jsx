@@ -10,13 +10,70 @@ import {
   MenuList,
   MenuItem,
   Button,
+  VStack,
+  Text,
+  HStack,
+  Avatar,
+  Divider,
+  Link as ChakraLink,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { SearchIcon, BellIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import NotificationsPage from "../pages/NotificationsPage";
+import { useEffect } from "react";
 
 function Navbar() {
-  const location = useLocation(); // Get the current route
+  const location = useLocation();
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  // State for notifications
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      name: "Brigid Dawson",
+      message: "liked your recipe",
+      avatar: "/images/avatar1.jpg",
+      time: "4 hours ago",
+    },
+    {
+      id: 2,
+      name: "John Dwyer",
+      message: "liked your recipe",
+      avatar: "/images/avatar2.jpg",
+      time: "Yesterday",
+    },
+    {
+      id: 3,
+      name: "Tim Hellman",
+      message: "liked your recipe",
+      avatar: "/images/avatar3.jpg",
+      time: "Tuesday",
+    },
+    {
+      id: 4,
+      name: "Running low on storage space",
+      message: "",
+      avatar: "/images/storage-icon.png",
+      time: "Monday",
+    },
+    {
+      id: 5,
+      name: "Shannon Shaw",
+      message: "commented on your recipe",
+      avatar: "/images/avatar4.jpg",
+      time: "4 days ago",
+    },
+  ]);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
+  // Toggle notification popup
+  const togglePopup = () => {
+    setIsPopupVisible(!isPopupVisible);
+  };
 
   return (
     <>
@@ -80,14 +137,81 @@ function Navbar() {
             />
 
             {/* Notifications Icon */}
-            <IconButton
-              icon={<BellIcon boxSize={6} />}
-              aria-label="Notifications"
-              variant="ghost"
-              color="#FD660B"
-              _hover={{ bg: "#FFF1E8" }}
-              size="md"
-            />
+            <Box position="relative">
+              <IconButton
+                icon={<BellIcon boxSize={6} />}
+                aria-label="Notifications"
+                variant="ghost"
+                color="#FD660B"
+                _hover={{ bg: "#FFF1E8" }}
+                size="md"
+                onClick={togglePopup}
+              />
+              {isPopupVisible && (
+                <Box
+                  position="absolute"
+                  top="40px"
+                  right="0"
+                  bg="white"
+                  boxShadow="md"
+                  borderRadius="md"
+                  p={4}
+                  zIndex="1000"
+                  width="300px"
+                >
+                  <Text fontWeight="bold" mb={2}>
+                    Notifications
+                  </Text>
+                  <Divider mb={4} />
+                  <VStack align="start" spacing={4}>
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <HStack
+                          key={notification.id}
+                          align="start"
+                          spacing={3}
+                          width="100%"
+                        >
+                          <Avatar
+                            size="md"
+                            src={notification.avatar}
+                            name={notification.name}
+                          />
+                          <Box>
+                            <Text fontWeight="bold" fontSize="sm" color="black">
+                              {notification.name}{" "}
+                              <Text
+                                as="span"
+                                fontWeight="normal"
+                                color="gray.600"
+                              >
+                                {notification.message}
+                              </Text>
+                            </Text>
+                            <Text fontSize="xs" color="gray.500">
+                              {notification.time}
+                            </Text>
+                          </Box>
+                        </HStack>
+                      ))
+                    ) : (
+                      <Text>No new notifications</Text>
+                    )}
+                  </VStack>
+                  <Divider my={4} />
+                  <ChakraLink
+                    href="#"
+                    fontSize="sm"
+                    color="#FD660B"
+                    fontWeight="bold"
+                    textAlign="center"
+                    display="block"
+                  >
+                    See all recent activity
+                  </ChakraLink>
+                </Box>
+              )}
+            </Box>
 
             {/* User Profile Icon */}
             <IconButton
@@ -152,7 +276,7 @@ function Navbar() {
         </Flex>
       </Box>
 
-      {/* Navbar for smaller screens */}
+      {/* Navbar for smaller screens ------------------------------------------------*/}
       <Box
         display={{ base: "flex", md: "none" }}
         position="fixed"
@@ -169,12 +293,12 @@ function Navbar() {
       >
         {/* Home Icon */}
         <Link to="/home">
-          <Flex direction="column" align="center">
+          <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<FiHome size={30} />}
               aria-label="Home"
               variant="ghost"
-              color={location.pathname === "/home" ? "#FD660B" : "black"} // Highlight if on /home
+              color={location.pathname === "/home" ? "#FD660B" : "black"}
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
@@ -190,12 +314,12 @@ function Navbar() {
 
         {/* Search Icon */}
         <Link to="/search">
-          <Flex direction="column" align="center">
+          <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<SearchIcon boxSize={6} />}
               aria-label="Search"
               variant="ghost"
-              color={location.pathname === "/search" ? "#FD660B" : "black"} // Highlight if on /explore
+              color={location.pathname === "/search" ? "#FD660B" : "black"}
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
@@ -211,12 +335,12 @@ function Navbar() {
 
         {/* Create Icon */}
         <Link to="/create">
-          <Flex direction="column" align="center">
+          <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<AddIcon boxSize={4} />}
               aria-label="Create"
               bg="white"
-              color={location.pathname === "/create" ? "#FD660B" : "black"} // Highlight if on /create
+              color={location.pathname === "/create" ? "#FD660B" : "black"}
               border="2px solid"
               borderColor={
                 location.pathname === "/create" ? "#FD660B" : "black"
@@ -235,15 +359,16 @@ function Navbar() {
         </Link>
 
         {/* Notification Icon */}
+        {/* Notification Icon */}
         <Link to="/notifications">
-          <Flex direction="column" align="center">
+          <Flex direction="column" align="center" justify="center">
             <IconButton
-              icon={<BellIcon boxSize={8} />}
+              icon={<BellIcon boxSize={7} />}
               aria-label="Notifications"
               variant="ghost"
               color={
                 location.pathname === "/notifications" ? "#FD660B" : "black"
-              } // Highlight if on /notifications
+              }
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
@@ -254,14 +379,14 @@ function Navbar() {
               }
               mt={1}
             >
-              Inbox
+              Notifications
             </Box>
           </Flex>
         </Link>
 
         {/* User Icon */}
         <Link to="/me">
-          <Flex direction="column" align="center">
+          <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
@@ -274,7 +399,7 @@ function Navbar() {
                 location.pathname === "/advanced-settings"
                   ? "#FD660B"
                   : "black"
-              } // Highlight if on /me or /profile
+              }
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
               borderRadius="full"
@@ -307,6 +432,13 @@ function Navbar() {
           </Flex>
         </Link>
       </Box>
+      {/* Notifications Page */}
+      {isSmallScreen && isNotificationsOpen && (
+        <NotificationsPage
+          notifications={notifications}
+          onClose={() => setIsNotificationsOpen(false)}
+        />
+      )}
     </>
   );
 }
