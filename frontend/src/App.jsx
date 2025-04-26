@@ -15,6 +15,7 @@ import RegisterPage from "./pages/RegisterPage";
 import RecipePage from "./pages/RecipePage";
 import { CustomThemeProvider } from "./components/ThemeProvider";
 import NotificationsPage from "./pages/NotificationsPage";
+import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Import NotificationSettingsPage
 //                   {notification.type}
 
 function App() {
@@ -60,6 +61,10 @@ function App() {
             <Route
               path="/advanced-settings"
               element={<AdvancedSettingsPage />}
+            />
+            <Route
+              path="/notification-settings"
+              element={<NotificationSettingsPage />}
             />
             <Route path="/create" element={<CreatePage />} />
             <Route path="/search" element={<SearchPage />} />
