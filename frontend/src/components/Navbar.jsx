@@ -289,7 +289,7 @@ function Navbar({ transparent }) {
               }
               mt={1}
             >
-              Inbox
+              Updates
             </Box>
           </Flex>
         </Link>

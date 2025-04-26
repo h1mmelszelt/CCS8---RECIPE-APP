@@ -110,11 +110,14 @@ function Navbar() {
           </Link>
 
           {/* Action Icons */}
+
           <Flex gap={4} alignItems="center" justify="flex-end" flex="1">
             {/* Search Bar */}
             <InputGroup maxW="400px" display={{ base: "none", md: "flex" }}>
-              <InputRightElement pointerEvents="none">
-                <SearchIcon color="#FD660B" boxSize={5} />
+              <InputRightElement cursor="pointer">
+                <Link to="/search">
+                  <SearchIcon color="#FD660B" boxSize={5} />
+                </Link>
               </InputRightElement>
               <Input
                 type="text"
@@ -125,21 +128,23 @@ function Navbar() {
             </InputGroup>
 
             {/* Create Icon */}
-            <IconButton
-              icon={<AddIcon boxSize={4} />}
-              aria-label="Create"
-              bg="white"
-              color="#FD660B"
-              border="2px solid"
-              borderColor="#FD660B"
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
+            <Link to="/create">
+              <IconButton
+                icon={<AddIcon boxSize={4} />}
+                aria-label="Create"
+                bg="white"
+                color="#FD660B"
+                border="2px solid"
+                borderColor="#FD660B"
+                _hover={{ bg: "#FFF1E8" }}
+                size="sm"
+              />
+            </Link>
 
             {/* Notifications Icon */}
             <Box position="relative">
               <IconButton
-                icon={<BellIcon boxSize={6} />}
+                icon={<BellIcon boxSize={6} color={"black"} />}
                 aria-label="Notifications"
                 variant="ghost"
                 color="#FD660B"
@@ -155,6 +160,7 @@ function Navbar() {
                   bg="white"
                   boxShadow="md"
                   borderRadius="md"
+                  borderColor={"gray.400"}
                   p={4}
                   zIndex="1000"
                   width="300px"
@@ -214,17 +220,19 @@ function Navbar() {
             </Box>
 
             {/* User Profile Icon */}
-            <IconButton
-              icon={<FiUser size={20} />}
-              aria-label="User Profile"
-              variant="ghost"
-              color="black"
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-              borderRadius="full"
-              border="2px solid"
-              borderColor="black"
-            />
+            <Link to="/profile">
+              <IconButton
+                icon={<FiUser size={20} />}
+                aria-label="User Profile"
+                variant="ghost"
+                color="black"
+                _hover={{ bg: "#FFF1E8" }}
+                size="sm"
+                borderRadius="full"
+                border="2px solid"
+                borderColor="black"
+              />
+            </Link>
 
             {/* Menu */}
             <Menu>
@@ -237,17 +245,6 @@ function Navbar() {
                 <HamburgerIcon boxSize={9} color="#FD660B" />
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <Button
-                    as={Link}
-                    to="/"
-                    color="black"
-                    _hover={{ bg: "#EAEAEA" }}
-                    width="100%"
-                  >
-                    Profile
-                  </Button>
-                </MenuItem>
                 <MenuItem>
                   <Button
                     as={Link}
@@ -363,7 +360,7 @@ function Navbar() {
         <Link to="/notifications">
           <Flex direction="column" align="center" justify="center">
             <IconButton
-              icon={<BellIcon boxSize={7} />}
+              icon={<BellIcon boxSize={8} />}
               aria-label="Notifications"
               variant="ghost"
               color={
@@ -379,7 +376,7 @@ function Navbar() {
               }
               mt={1}
             >
-              Notifications
+              Updates
             </Box>
           </Flex>
         </Link>

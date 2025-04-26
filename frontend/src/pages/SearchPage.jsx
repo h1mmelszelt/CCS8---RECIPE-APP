@@ -14,21 +14,26 @@ function SearchPage() {
   };
 
   return (
-    <Box bg="white" minH="100vh" width="100%"> 
+    <Box
+      bg="white"
+      minH="100vh"
+      width="100%"
+      color="black"
+      pb={{ base: "60px", md: "0" }}
+    >
       <Navbar />
 
-           <Image
-              src={BG_Image}
-              position="absolute"
-              top="0"
-              left="75%"
-              transform="translateX(-50%)"
-              width={{ base: "90vw", md: "60vw" }}
-              maxW="none"
-              zIndex={0}
-              opacity={1}
-            />
-
+      <Image
+        src={BG_Image}
+        position="absolute"
+        top="0"
+        left="75%"
+        transform="translateX(-50%)"
+        width={{ base: "90vw", md: "60vw" }}
+        maxW="none"
+        zIndex={0}
+        opacity={1}
+      />
 
       <Flex mt={4} px={6}>
         {/* Filters on the top-left */}
@@ -63,7 +68,8 @@ function SearchPage() {
             Don’t lose that perfect recipe!
           </Box>
           <Box fontSize="sm" mb={4} mt="20%" mx="10px">
-            Found something delicious? Sign up for free to save it before you scroll away!
+            Found something delicious? Sign up for free to save it before you
+            scroll away!
           </Box>
           <Input
             placeholder="Email"
@@ -153,10 +159,18 @@ function SearchPage() {
                   transition="opacity 0.3s ease-in-out"
                   _hover={{ opacity: 1 }}
                 >
-                  <Text fontSize={{ base: "12px", md: "14px" }} fontWeight="bold" textAlign="center">
+                  <Text
+                    fontSize={{ base: "12px", md: "14px" }}
+                    fontWeight="bold"
+                    textAlign="center"
+                  >
                     Recipe Description {index + 1}
                   </Text>
-                  <Text fontSize={{ base: "10px", md: "12px" }} textAlign="center" mt={2}>
+                  <Text
+                    fontSize={{ base: "10px", md: "12px" }}
+                    textAlign="center"
+                    mt={2}
+                  >
                     A brief description of the recipe goes here.
                   </Text>
                 </Box>
