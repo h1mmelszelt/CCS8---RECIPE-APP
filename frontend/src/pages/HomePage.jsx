@@ -4,9 +4,26 @@ import BG_Home from "/images/homebg.jpg";
 
 function HomePage() {
   return (
-    <Box position="relative" minH="100vh">
+    <Box
+      bg="gray.100"
+      minH="100vh"
+      color="black"
+      pb={{ base: "60px", md: "0" }} // Adjust padding for mobile view
+      overflowY="scroll" // Allow vertical scrolling
+      overflowX="hidden" // Disable horizontal movement
+    >
       {/* Navbar */}
-      <Navbar />
+      <Box
+        position="fixed"
+        top="0"
+        left="0"
+        width="100%"
+        zIndex="1000"
+        bg="white"
+        boxShadow="md"
+      >
+        <Navbar />
+      </Box>
 
       {/* Header Image */}
       <Box
@@ -63,10 +80,10 @@ function HomePage() {
           lineHeight="1.5"
           mt="-5%"
         >
-          Can't find the perfect recipe? Share yours! Click the ‘create recipe’ button
-          to easily add your own culinary magic to our collection.
+          Can't find the perfect recipe? Share yours! Click the ‘create recipe’
+          button to easily add your own culinary magic to our collection.
         </Text>
-        
+
         {/* Create Recipe Button */}
         <Button
           mb={{ base: 12, md: 10 }}
@@ -82,12 +99,17 @@ function HomePage() {
         </Button>
 
         {/* Divider Between Button and Grid */}
-        <Divider borderColor="gray.300" my={8} />
+        <Divider borderColor="gray.400" />
 
         {/* Scrollable Recipes Grid */}
         <Box mt={4} px={{ base: 4, md: 10 }}>
           {/* Popular Recipes Section */}
-          <Text fontSize={{ base: "18px", md: "24px" }} fontWeight="bold" mb={4} textAlign="left"> 
+          <Text
+            fontSize={{ base: "18px", md: "24px" }}
+            fontWeight="bold"
+            mb={4}
+            textAlign="left"
+          >
             POPULAR RECIPES
           </Text>
           <Grid
@@ -105,20 +127,16 @@ function HomePage() {
                 boxShadow="md"
                 overflow="hidden"
                 zIndex={2}
-                position="relative"
               >
-                {/* Image Box */}
                 <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
                   <Image
-                    src={`/images/recipe-${index + 1}.jpg`} // Replace with actual image paths
+                    src={`/images/recipe-${index + 1}.jpg`}
                     alt={`Recipe ${index + 1}`}
                     objectFit="cover"
                     width="100%"
                     height="100%"
                   />
                 </Box>
-
-                {/* Food Name */}
                 <Text
                   textAlign="center"
                   fontSize={{ base: "14px", md: "16px" }}
@@ -129,14 +147,11 @@ function HomePage() {
                 >
                   Recipe Name {index + 1}
                 </Text>
-
-                {/* Rating */}
                 <Text textAlign="center" fontSize="14px" color="orange.500">
                   ★★★★☆
                 </Text>
               </Box>
             ))}
-
             {/* Show More Card */}
             <Box
               bg="gray.100"
@@ -149,20 +164,32 @@ function HomePage() {
               cursor="pointer"
               _hover={{ bg: "gray.200" }}
             >
-              <Text fontSize={{ base: "14px", md: "16px" }} fontWeight="bold" color="gray.600">
+              <Text
+                fontSize={{ base: "14px", md: "16px" }}
+                fontWeight="bold"
+                color="gray.600"
+              >
                 Show More
               </Text>
             </Box>
           </Grid>
 
+          <Divider borderColor="gray.400" my={8} />
+
           {/* Snack Recipes Section */}
-          <Text fontSize={{ base: "18px", md: "24px" }} fontWeight="bold" mt={10} mb={4} textAlign="left">
+          <Text
+            fontSize={{ base: "18px", md: "24px" }}
+            fontWeight="bold"
+            mt={5}
+            mb={4}
+            textAlign="left"
+          >
             SNACK RECIPES
           </Text>
           <Grid
             templateColumns={{
-              base: "repeat(2, 1fr)", // 2 columns for mobile
-              md: "repeat(5, 1fr)", // 5 columns for desktop
+              base: "repeat(2, 1fr)",
+              md: "repeat(5, 1fr)",
             }}
             gap={{ base: 2, md: 6 }}
           >
@@ -174,20 +201,16 @@ function HomePage() {
                 boxShadow="md"
                 overflow="hidden"
                 zIndex={2}
-                position="relative"
               >
-                {/* Image Box */}
                 <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
                   <Image
-                    src={`/images/snack-${index + 1}.jpg`} // Replace with actual image paths
+                    src={`/images/snack-${index + 1}.jpg`}
                     alt={`Snack ${index + 1}`}
                     objectFit="cover"
                     width="100%"
                     height="100%"
                   />
                 </Box>
-
-                {/* Food Name */}
                 <Text
                   textAlign="center"
                   fontSize={{ base: "14px", md: "16px" }}
@@ -198,83 +221,11 @@ function HomePage() {
                 >
                   Snack Name {index + 1}
                 </Text>
-
-                {/* Rating */}
                 <Text textAlign="center" fontSize="14px" color="orange.500">
                   ★★★★☆
                 </Text>
               </Box>
             ))}
-
-            {/* Show More Card */}
-            <Box
-              bg="gray.100"
-              borderRadius="md"
-              boxShadow="md"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height={{ base: "120px", md: "220px" }}
-              cursor="pointer"
-              _hover={{ bg: "gray.200" }}
-            >
-              <Text fontSize={{ base: "14px", md: "16px" }} fontWeight="bold" color="gray.600">
-                Show More
-              </Text>
-            </Box>
-          </Grid>
-
-          {/* Italian Recipes Section */}
-          <Text fontSize={{ base: "18px", md: "24px" }} fontWeight="bold" mt={10} mb={4} textAlign="left">
-            ITALIAN RECIPES
-          </Text>
-          <Grid
-            templateColumns={{
-              base: "repeat(2, 1fr)", // 2 columns for mobile
-              md: "repeat(5, 1fr)", // 5 columns for desktop
-            }}
-            gap={{ base: 2, md: 6 }}
-          >
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Box
-                key={index}
-                bg="white"
-                borderRadius="md"
-                boxShadow="md"
-                overflow="hidden"
-                zIndex={2}
-                position="relative"
-              >
-                {/* Image Box */}
-                <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
-                  <Image
-                    src={`/images/italian-${index + 1}.jpg`} // Replace with actual image paths
-                    alt={`Italian Recipe ${index + 1}`}
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
-
-                {/* Food Name */}
-                <Text
-                  textAlign="center"
-                  fontSize={{ base: "14px", md: "16px" }}
-                  fontWeight="bold"
-                  color="black"
-                  mt={2}
-                  mb={2}
-                >
-                  Italian Recipe {index + 1}
-                </Text>
-
-                {/* Rating */}
-                <Text textAlign="center" fontSize="14px" color="orange.500">
-                  ★★★★☆
-                </Text>
-              </Box>
-            ))}
-
             {/* Show More Card */}
             <Box
               bg="gray.100"
@@ -287,7 +238,85 @@ function HomePage() {
               cursor="pointer"
               _hover={{ bg: "gray.200" }}
             >
-              <Text fontSize={{ base: "14px", md: "16px" }} fontWeight="bold" color="gray.600">
+              <Text
+                fontSize={{ base: "14px", md: "16px" }}
+                fontWeight="bold"
+                color="gray.600"
+              >
+                Show More
+              </Text>
+            </Box>
+          </Grid>
+
+          <Divider borderColor="gray.400" my={8} />
+
+          {/* Italian Recipes Section */}
+          <Text
+            fontSize={{ base: "18px", md: "24px" }}
+            fontWeight="bold"
+            mt={5}
+            mb={4}
+            textAlign="left"
+          >
+            ITALIAN RECIPES
+          </Text>
+          <Grid
+            templateColumns={{
+              base: "repeat(2, 1fr)",
+              md: "repeat(5, 1fr)",
+            }}
+            gap={{ base: 2, md: 6 }}
+          >
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Box
+                key={index}
+                bg="white"
+                borderRadius="md"
+                boxShadow="md"
+                overflow="hidden"
+                zIndex={2}
+              >
+                <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
+                  <Image
+                    src={`/images/italian-${index + 1}.jpg`}
+                    alt={`Italian Recipe ${index + 1}`}
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
+                <Text
+                  textAlign="center"
+                  fontSize={{ base: "14px", md: "16px" }}
+                  fontWeight="bold"
+                  color="black"
+                  mt={2}
+                  mb={2}
+                >
+                  Italian Recipe {index + 1}
+                </Text>
+                <Text textAlign="center" fontSize="14px" color="orange.500">
+                  ★★★★☆
+                </Text>
+              </Box>
+            ))}
+            {/* Show More Card */}
+            <Box
+              bg="gray.100"
+              borderRadius="md"
+              boxShadow="md"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height={{ base: "120px", md: "200px" }}
+              cursor="pointer"
+              _hover={{ bg: "gray.200" }}
+            >
+              <Text
+                fontSize={{ base: "14px", md: "16px" }}
+                fontWeight="bold"
+                color="gray.600"
+              >
                 Show More
               </Text>
             </Box>
