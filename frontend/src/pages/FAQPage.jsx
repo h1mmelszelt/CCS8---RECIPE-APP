@@ -5,16 +5,14 @@ import {
   Flex,
   Text,
   VStack,
-  HStack,
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Button,
   Image,
 } from "@chakra-ui/react";
-//import faqImage from "/images/faq-header-image.jpg"; // Replace with your image path
+import faqImage from "/images/chef asking VideoHive.jpg"; // Replace with your image path
 
 const FAQPage = () => {
   const faqs = [
@@ -56,9 +54,9 @@ const FAQPage = () => {
 
       {/* Header Section */}
       <Box px={{ base: 4, md: 20 }} py={10}>
-        <Flex direction={{ base: "column", md: "row" }}>
+        <Flex direction={{ base: "column", md: "row" }} align="center" gap={10}>
           {/* Left Section */}
-          <VStack align="start" spacing={0} flex="1">
+          <VStack align="start" spacing={4} flex="1">
             <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="light">
               FREQUENTLY ASKED QUESTIONS
             </Text>
@@ -67,7 +65,6 @@ const FAQPage = () => {
               fontSize={{ base: "3xl", md: "4xl" }}
               fontWeight="bold"
               color="gray.600"
-              py={0}
             >
               Got a{" "}
               <Text as="span" color="#97C33A">
@@ -89,20 +86,35 @@ const FAQPage = () => {
               .
             </Text>
           </VStack>
+
+          {/* Right Section - Image */}
+          <Box 
+            flex="1"
+            ml={{ base: 0, md: 10 } }
+            display={{ base: "block", md: "block" }} >
+            <Image
+              src={faqImage}
+              alt="FAQ"
+              boxSize={{ base: "500px", md: "700px" }}
+              objectFit="cover"
+              objectPosition="80% center"
+              clipPath="polygon(2% 22%, 0 38%, 0 61%, 4% 75%, 9% 86%, 17% 90%, 26% 93%, 35% 94%, 46% 93%, 56% 92%, 69% 89%, 79% 85%, 85% 80%, 90% 73%, 95% 62%, 95% 47%, 94% 33%, 90% 24%, 85% 17%, 74% 12%, 67% 9%, 53% 5%, 38% 2%, 25% 0, 15% 1%, 8% 7%, 5% 15%)"
+            />
+          </Box>
         </Flex>
 
         {/* FAQ Section */}
-        <Box mt={{ base: 2, md: 0 }}>
+        <Box mt={{ base: 8, md: 12 }}>
           <Accordion allowToggle>
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}
-                borderBottom="1px solid" // Add a border between questions
-                borderColor="gray.300" // Set the border color
+                borderBottom="1px solid"
+                borderColor="gray.300"
               >
                 <h2>
                   <AccordionButton
-                    _expanded={{ bg: "orange.100", color: "orange.600" }} // Changed to orange
+                    _expanded={{ bg: "orange.100", color: "orange.600" }}
                     py={3}
                   >
                     <Box flex="1" textAlign="left" fontWeight="semibold">
