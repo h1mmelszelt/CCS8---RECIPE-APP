@@ -16,7 +16,7 @@ import RecipePage from "./pages/RecipePage";
 import { CustomThemeProvider } from "./components/ThemeProvider";
 import NotificationsPage from "./pages/NotificationsPage";
 import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Import NotificationSettingsPage
-//                   {notification.type}
+import FAQPage from "./pages/FAQPage";
 
 function App() {
   const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
@@ -78,6 +78,7 @@ function App() {
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/recipes/:recipeId" element={<RecipePage />} />
+            <Route path="/faq" element={<FAQPage />} />
           </Routes>
           <Sitemap />
         </Box>
