@@ -128,78 +128,84 @@ function Navbar({ transparent }) {
             <HamburgerIcon boxSize={9} color="#FD660B" />
           </MenuButton>
           <MenuList bg="white" border="1px solid #E2E8F0" p={0}>
-            {/* White background and no padding */}
+            {/* Home Menu Item */}
             <MenuItem
               as={Link}
-              to="/about-us"
+              to="/home"
               color="black"
               _hover={{ bg: "#F9F9F9" }} // Slight hover effect
               fontWeight="semibold" // Semi-bold text
               fontSize="sm"
               py={3} // Consistent padding
             >
-              About Us
+              Home
             </MenuItem>
             <Box borderBottom="1px solid #E2E8F0" /> {/* Gray line separator */}
+            {/* About Us Menu Item */}
+            <MenuItem
+              as={Link}
+              to="/about-us"
+              color="black"
+              _hover={{ bg: "#F9F9F9" }}
+              fontWeight="semibold"
+              fontSize="sm"
+              py={3}
+            >
+              About Us
+            </MenuItem>
+            <Box borderBottom="1px solid #E2E8F0" />
+            {/* Contact Us Menu Item */}
             <MenuItem
               as={Link}
               to="/contact-us"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold" // Semi-bold text
+              fontWeight="semibold"
               fontSize="sm"
               py={3}
             >
               Contact Us
             </MenuItem>
             <Box borderBottom="1px solid #E2E8F0" />
+            {/* Site Map Menu Item */}
             <MenuItem
               as={Link}
               to="/sitemap"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold" // Semi-bold text
+              fontWeight="semibold"
               fontSize="sm"
               py={3}
             >
               Site Map
             </MenuItem>
             <Box borderBottom="1px solid #E2E8F0" />
+            {/* FAQ Menu Item */}
             <MenuItem
               as={Link}
               to="/faq"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold" // Semi-bold text
+              fontWeight="semibold"
               fontSize="sm"
               py={3}
             >
               FAQ
             </MenuItem>
             <Box borderBottom="1px solid #E2E8F0" />
+            {/* Settings Menu Item */}
             <MenuItem
               as={Link}
               to="/settings"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold" // Semi-bold text
+              fontWeight="semibold"
               fontSize="sm"
               py={3}
             >
               Settings
             </MenuItem>
             <Box borderBottom="1px solid #E2E8F0" />
-            <MenuItem
-              as={Link}
-              to="/"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold" // Semi-bold text
-              fontSize="sm"
-              py={3}
-            >
-              Logout
-            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>
