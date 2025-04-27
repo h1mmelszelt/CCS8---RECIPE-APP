@@ -18,11 +18,13 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
       p={4}
       borderRadius="lg"
       boxShadow="sm"
+      borderColor={"gray.200"}
+      borderWidth={"1px"}
       borderLeft="4px solid #A3E635" // Lime green border
       position="relative"
       transition="0.3s ease" // Smooth transition for hover effect
       _hover={{
-        boxShadow: "0 0 15px 4px #A3E635", // Green glow effect
+        boxShadow: "0 0 1px 2px #A3E635", // Green glow effect
       }}
     >
       <HStack align="start">

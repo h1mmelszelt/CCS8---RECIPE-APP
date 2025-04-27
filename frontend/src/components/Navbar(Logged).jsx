@@ -220,7 +220,7 @@ function Navbar() {
             </Box>
 
             {/* User Profile Icon */}
-            <Link to="/profile">
+            <Link to="/profile/:id">
               <IconButton
                 icon={<FiUser size={20} />}
                 aria-label="User Profile"
@@ -390,7 +390,7 @@ function Navbar() {
               variant="ghost"
               color={
                 location.pathname === "/me" ||
-                location.pathname === "/profile" ||
+                location.pathname === "/profile/:id" ||
                 location.pathname === "/settings" ||
                 location.pathname === "/notification-settings" ||
                 location.pathname === "/advanced-settings"
@@ -403,7 +403,7 @@ function Navbar() {
               border="2px solid"
               borderColor={
                 location.pathname === "/me" ||
-                location.pathname === "/profile" ||
+                location.pathname === "/profile/:id" ||
                 location.pathname === "/settings" ||
                 location.pathname === "/notification-settings" ||
                 location.pathname === "/advanced-settings"
@@ -415,7 +415,7 @@ function Navbar() {
               fontSize="sm"
               color={
                 location.pathname === "/me" ||
-                location.pathname === "/profile" ||
+                location.pathname === "/profile/:id" ||
                 location.pathname === "/settings" ||
                 location.pathname === "/notification-settings" ||
                 location.pathname === "/advanced-settings"

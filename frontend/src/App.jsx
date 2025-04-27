@@ -19,6 +19,8 @@ import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Impo
 //                   {notification.type}
 
 function App() {
+  const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
+  const profileOwnerId = "6803723a7cf02156db240351"; // Replace with the profile owner's ID (dynamic)
   const notifications = [
     {
       id: 1,
@@ -50,7 +52,12 @@ function App() {
           <Routes>
             <Route path="/" element={<GetStartedPage />} />
             <Route path="/home" element={<HomePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="/profile/:id"
+              element={
+                <ProfilePage isOwner={loggedInUserId === profileOwnerId} />
+              }
+            />
             <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/settings" element={<SettingsPage />} />

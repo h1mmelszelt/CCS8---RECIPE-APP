@@ -11,11 +11,14 @@ import {
   Image,
   Icon,
   Divider,
+  IconButton,
 } from "@chakra-ui/react";
+import { FiMoreHorizontal } from "react-icons/fi";
 import Navbar from "../components/Navbar(Logged)";
-import { FaStar } from "react-icons/fa"; // Add this import
+import { FaStar, FaEdit } from "react-icons/fa"; // Add this import
 import RecipeCard from "../components/RecipeCard"; // Import RecipeCard
 import ReviewCard from "../components/ReviewCard"; // Import ReviewCard
+import { Link } from "react-router-dom";
 
 const tabs = [
   { key: "created", label: "Recipes Created" },
@@ -124,9 +127,13 @@ const renderRecipeCards = () => (
           borderRadius="lg"
           overflow="hidden"
           bg="white"
-          boxShadow="md"
-          transition="0.3s ease"
-          _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
+          boxShadow="sm"
+          cursor={"pointer"}
+          transition="0.3s ease" // Smooth transition for hover effects
+          _hover={{
+            borderColor: "orange.200", // Add orange border on hover
+            boxShadow: "0 0 3px 1px orange", // Slight orange glow effect
+          }}
         >
           {/* Recipe Image */}
           <Box position="relative">
@@ -138,9 +145,12 @@ const renderRecipeCards = () => (
               objectFit="cover"
             />
             <Box position="absolute" top="8px" right="8px">
-              <Text fontSize="lg" color="gray.500" cursor="pointer">
-                ...
-              </Text>
+              <IconButton
+                icon={<FiMoreHorizontal />} // Three-dot menu icon
+                size="sm"
+                variant="ghost" // Transparent background
+                aria-label="More options"
+              />
             </Box>
           </Box>
 
@@ -203,7 +213,7 @@ const renderReviewCards = () => (
     <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
       FoodLover’s Reviews & Comments
     </Text>
-
+    <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
     {/* Review Cards */}
     <VStack spacing={4} align="stretch">
       {exampleReviews.map((review, index) => (
@@ -219,7 +229,7 @@ const renderReviewCards = () => (
   </Box>
 );
 
-const ProfilePage = () => {
+const ProfilePage = ({ isOwner }) => {
   const [activeTab, setActiveTab] = useState("created");
   const avatarSize = useBreakpointValue({ base: "lg", md: "xl" });
 
@@ -230,7 +240,7 @@ const ProfilePage = () => {
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
         My Bookmarks
       </Text>
-
+      <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
       {/* Bookmark Cards */}
       <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
         {exampleBookmarks.map((bookmark) => (
@@ -241,8 +251,12 @@ const ProfilePage = () => {
             overflow="hidden"
             bg="white"
             boxShadow="sm"
-            transition="0.3s ease"
-            _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
+            cursor={"pointer"}
+            transition="0.3s ease" // Smooth transition for hover effects
+            _hover={{
+              borderColor: "orange.200", // Add orange border on hover
+              boxShadow: "0 0 3px 1px orange", // Slight orange glow effect
+            }}
           >
             {/* Recipe Image */}
             <Box position="relative">
@@ -254,9 +268,12 @@ const ProfilePage = () => {
                 objectFit="cover"
               />
               <Box position="absolute" top="8px" right="8px">
-                <Text fontSize="lg" color="gray.500" cursor="pointer">
-                  ...
-                </Text>
+                <IconButton
+                  icon={<FiMoreHorizontal />}
+                  size="sm"
+                  variant="ghost"
+                  aria-label="More options"
+                />
               </Box>
             </Box>
 
@@ -318,7 +335,7 @@ const ProfilePage = () => {
 
   const tabContent = {
     created: renderRecipeCards(),
-    bookmarks: renderBookmarkCards(),
+    bookmarks: isOwner ? renderBookmarkCards() : null,
     reviews: renderReviewCards(),
   };
 
@@ -356,7 +373,11 @@ const ProfilePage = () => {
                 textAlign={{ base: "center", md: "left" }} // Center text on small screens
               >
                 <Avatar size="xl" name="FoodLover" bg="blue.300" />
-                <VStack align={{ base: "center", md: "start" }} spacing={1}>
+                <VStack
+                  align={{ base: "center", md: "start" }}
+                  spacing={1}
+                  w="100%"
+                >
                   <Text fontSize="2xl" fontWeight="bold" color="gray.800">
                     FoodLover
                   </Text>
@@ -370,60 +391,94 @@ const ProfilePage = () => {
                   <Text fontSize="sm" color="gray.500">
                     Joined: April 2025
                   </Text>
+
+                  {/* Edit Profile Button */}
+                  {isOwner && (
+                    <Box
+                      position={useBreakpointValue({
+                        base: "static",
+                        md: "absolute",
+                      })} // Static for small screens, absolute for larger screens
+                      top={{ md: "16px" }} // Only apply top positioning for larger screens
+                      right={{ md: "16px" }} // Only apply right positioning for larger screens
+                      mt={{ base: 4, md: 0 }} // Add margin-top for spacing on small screens
+                      textAlign="center" // Center the button text
+                      w={{ base: "100%", md: "auto" }} // Full width on small screens, auto on larger screens
+                      display="flex" // Ensure the button is centered
+                      justifyContent="center" // Center the button horizontally
+                    >
+                      <Link to="/settings">
+                        <Box
+                          as="button"
+                          bg="#94C03B"
+                          color="white"
+                          px={4}
+                          py={2}
+                          borderRadius="full"
+                          fontSize="sm"
+                          fontWeight="bold"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          gap={2}
+                          _hover={{ bg: "#7A973F" }}
+                          _active={{ bg: "green.700" }}
+                        >
+                          <Icon as={FaEdit} boxSize={4} />
+                          Edit Profile
+                        </Box>
+                      </Link>
+                    </Box>
+                  )}
                 </VStack>
               </Flex>
             </Flex>
-
-            {/* Three-dot Menu */}
-            <Box position="absolute" top="0px" right="16px">
-              <Text fontSize="30" color="black" cursor="pointer">
-                ...
-              </Text>
-            </Box>
           </Box>
 
-          <Box
-            bg="white"
-            border="1px solid #c5c5c5"
-            borderBottom="none" // Remove bottom border to align with the active tab's border
-          >
+          {/* Tabs */}
+          <Box bg="white" border="1px solid #c5c5c5" borderBottom="none">
             <Flex
               direction="row"
-              justify="flex-start"
+              justify={useBreakpointValue({
+                base: "center", // Center tabs on smaller screens
+                md: "flex-start", // Align tabs to the left on medium and larger screens
+              })}
               px={4}
               py={0}
               position="relative"
             >
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.key;
-                return (
-                  <Box
-                    key={tab.key}
-                    textAlign="center"
-                    py={1}
-                    px={4} // Add padding for spacing
-                    cursor="pointer"
-                    color={isActive ? "orange.500" : "gray.700"}
-                    bg={isActive ? "#FFF0E1" : "white"} // Add background color for active tab
-                    position="relative" // Position relative for active tab styling
-                    fontWeight="medium"
-                    _hover={{ bg: "#FFF0E1" }}
-                    onClick={() => setActiveTab(tab.key)}
-                  >
-                    {tab.label}
-                    {isActive && (
-                      <Box
-                        position="absolute"
-                        bottom="0" // Align with the container's bottom
-                        left="0"
-                        right="0"
-                        height="3px"
-                        bg="orange.500"
-                      />
-                    )}
-                  </Box>
-                );
-              })}
+              {tabs
+                .filter((tab) => isOwner || tab.key !== "bookmarks") // Hide bookmarks tab for non-owners
+                .map((tab) => {
+                  const isActive = activeTab === tab.key;
+                  return (
+                    <Box
+                      key={tab.key}
+                      textAlign="center"
+                      py={1}
+                      px={4}
+                      cursor="pointer"
+                      color={isActive ? "orange.500" : "gray.700"}
+                      bg={isActive ? "#FFF0E1" : "white"}
+                      position="relative"
+                      fontWeight="medium"
+                      _hover={{ bg: "#FFF0E1" }}
+                      onClick={() => setActiveTab(tab.key)}
+                    >
+                      {tab.label}
+                      {isActive && (
+                        <Box
+                          position="absolute"
+                          bottom="0"
+                          left="0"
+                          right="0"
+                          height="3px"
+                          bg="orange.500"
+                        />
+                      )}
+                    </Box>
+                  );
+                })}
             </Flex>
           </Box>
           {/* Divider Line */}
