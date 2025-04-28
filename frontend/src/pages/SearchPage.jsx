@@ -28,21 +28,22 @@ function SearchPage() {
     fetchRecipes();
   }, []);
 
+  // Handle applying filters
   const handleApplyFilters = (filters) => {
-    setFiltersApplied(true); // Set filters applied state to true
+    console.log("Filters applied:", filters); // Debug log
     if (filters.length === 0) {
       setFilteredRecipes(recipes); // Show all recipes if no filters are applied
     } else {
       const filtered = recipes.filter((recipe) =>
-        filters.some((filter) =>
-          recipe.tags && recipe.tags.some((tag) =>
-            tag.toLowerCase().includes(filter.toLowerCase())
-          )
+        filters.every((filter) =>
+          recipe.tags && recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
         )
       );
+      console.log("Filtered recipes:", filtered); // Debug log
       setFilteredRecipes(filtered);
     }
   };
+  
   return (
     <Box
       bg="white"

@@ -21,8 +21,9 @@ function Filters({ onApplyFilters }) {
   };
 
   const handleApplyFilters = () => {
+    console.log("Filters to apply:", filters); // Debug log
     if (onApplyFilters) {
-      onApplyFilters(filters);
+      onApplyFilters(filters); // Pass the current filters to the parent
     }
   };
 
