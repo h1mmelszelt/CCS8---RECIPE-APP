@@ -32,14 +32,14 @@ function SearchPage() {
         opacity={1}
       />
 
-      <Flex mt={4} px={6} flexDirection={{ base: "column", md: "row" }}>
+      <Flex mt={4} px={4} flexDirection={{ base: "column", md: "row" }}>
         {/* Filters and Sign-Up Box Container */}
         <Box
           display="flex"
           flexDirection="column"
-          width={{ base: "100%", md: "400px" }} // Increased width for desktop
-          gap={4} // Add spacing between the Filter Box and Sign-Up Box
-          ml={{ base: 0, md: 4 }} // Move the container slightly to the right on desktop
+          width={{ base: "100%", md: "350px" }} // Increased width for desktop
+          gap={3} // Add spacing between the Filter Box and Sign-Up Box
+          ml={{ base: 0, md: 2 }} // Move the container slightly to the right on desktop
         >
           {/* Filters on the top-left */}
           <Box
@@ -93,7 +93,7 @@ function SearchPage() {
           width={{ base: "100%", md: "calc(100% - 300px)" }} // Adjust width to account for the wider sidebar
           px={4}
           mx="auto"
-          ml={{ md: "300px" }} // Push content to the right of the sidebar on desktop
+          ml={{ md: "100px" }} // Push content to the right of the sidebar on desktop
         >
           {/* Sticky Header */}
           <Box
@@ -119,7 +119,7 @@ function SearchPage() {
             <Grid
               templateColumns={{
                 base: "repeat(2, 1fr)", // 2 columns for mobile
-                md: "repeat(5, 1fr)", // 5 columns for desktop
+                md: "repeat(4, 1fr)", // 5 columns for desktop
               }}
               gap={{ base: 3, md: 6 }}
             >
