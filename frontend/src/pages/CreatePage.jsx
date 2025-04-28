@@ -82,29 +82,13 @@ function CreatePage() {
             {/* Recipe Image */}
             <Box>
               <Text fontWeight="medium" mb={2}>
-                Recipe Image:
+                Recipe Image URL:
               </Text>
-              <Box
+              <Input
+                placeholder="Enter the URL of your recipe image"
                 border="1px solid"
-                borderColor="gray.300"
-                borderRadius="md"
-                p={4}
-              >
-                <Image
-                  src="/images/default-recipe.jpg"
-                  alt="Recipe"
-                  borderRadius="md"
-                  mb={4}
-                />
-                <HStack spacing={4}>
-                  <Button size="sm" colorScheme="orange">
-                    Upload Photo
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    Set as Cover
-                  </Button>
-                </HStack>
-              </Box>
+                borderColor="gray.300" // Uniform gray border
+              />
             </Box>
 
             {/* Description */}

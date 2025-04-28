@@ -29,10 +29,19 @@ function Navbar({ transparent }) {
   const cancelRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate
+  const isAuthenticated = false;
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`); // Navigate to SearchPage with query
+    }
+  };
+
+  const handleProtectedRoute = (path) => {
+    if (!isAuthenticated) {
+      navigate("/sign-in-required"); // Redirect to the SignInRequired page
+    } else {
+      navigate(path); // Navigate to the intended path
     }
   };
 
@@ -292,7 +301,11 @@ function Navbar({ transparent }) {
 
         {/* Create Icon */}
         <Link to="/create">
-          <Flex direction="column" align="center">
+          <Flex
+            direction="column"
+            align="center"
+            onClick={() => handleProtectedRoute("/create")}
+          >
             <IconButton
               icon={<AddIcon boxSize={4} />}
               aria-label="Create"
@@ -317,7 +330,11 @@ function Navbar({ transparent }) {
 
         {/* Notification Icon */}
         <Link to="/notifications">
-          <Flex direction="column" align="center">
+          <Flex
+            direction="column"
+            align="center"
+            onClick={() => handleProtectedRoute("/notifications")}
+          >
             <IconButton
               icon={<BellIcon boxSize={8} />}
               aria-label="Notifications"
@@ -342,7 +359,11 @@ function Navbar({ transparent }) {
 
         {/* User Icon */}
         <Link to="/me">
-          <Flex direction="column" align="center">
+          <Flex
+            direction="column"
+            align="center"
+            onClick={() => handleProtectedRoute("/me")}
+          >
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
