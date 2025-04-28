@@ -324,7 +324,7 @@ const RecipePage = () => {
                   bg="white"
                   borderRadius="md"
                 />
-                <Button bg="#97C33A" size="sm">
+                <Button bg="#97C33A" size="sm" width="150px">
                   Subscribe
                 </Button>
               </HStack>

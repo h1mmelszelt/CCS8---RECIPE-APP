@@ -139,3 +139,19 @@ export const getRecipeById = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+/*export const getRelatedRecipes = async (req, res) => {
+  const { tags } = req.body;
+
+  if (!tags || !Array.isArray(tags)) {
+    return res.status(400).json({ success: false, message: "Tags are required" });
+  }
+
+  try {
+    const relatedRecipes = await Recipe.find({ tags: { $in: tags } }).limit(5);
+    res.status(200).json({ success: true, data: relatedRecipes });
+  } catch (error) {
+    console.error("Error fetching related recipes:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};*/

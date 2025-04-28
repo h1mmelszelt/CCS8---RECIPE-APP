@@ -1,6 +1,7 @@
 import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import BG_Home from "/images/homebg.jpg";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
@@ -85,6 +86,7 @@ function HomePage() {
         </Text>
 
         {/* Create Recipe Button */}
+        <Link to="/create" style={{ textDecoration: "none" }}>
         <Button
           mb={{ base: 12, md: 10 }}
           colorScheme="orange"
@@ -97,6 +99,7 @@ function HomePage() {
         >
           CREATE RECIPE
         </Button>
+        </Link>
 
         {/* Divider Between Button and Grid */}
         <Divider borderColor="gray.400" />
