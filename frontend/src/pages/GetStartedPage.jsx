@@ -7,10 +7,34 @@ import BG_Image2 from "/images/15.png";
 import Phone from "/images/phone.png";
 import Fabio from "/images/fabio.png";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 
 const MotionText = motion(Text);
 
+
 function GetStartedPage() {
+
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const fetchRecipes = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/recipes");
+      console.log("Fetched recipes from API:", response.data); // Debug log
+      setRecipes(response.data.data);
+    } catch (error) {
+      console.error("Error fetching recipes:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchRecipes();
+}, []);
+
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
       {/* Navbar */}
@@ -295,86 +319,63 @@ function GetStartedPage() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
-            View More
+            <Link to="/search">View More</Link>
           </MotionText>
         </Flex>
         <Box px="10%" py={6}>
-          <Grid
-            templateColumns={{
-              base: "repeat(2, 1fr)", // 2 columns for mobile
-              md: "repeat(4, 1fr)", // 4 columns for medium and larger screens
-            }}
-            gap={6}
-          >
-            {Array.from({ length: 12 }).map((_, index) => (
-              <Box
-                key={index}
-                bg="white"
-                borderRadius="md"
-                boxShadow="md"
-                overflow="hidden"
-                zIndex={2}
-                position="relative" // Enable positioning for hover effect
-              >
-                {/* Image Box */}
-                <Box height={{ base: "200px", md: "250px" }} overflow="hidden">
-                  <Image
-                    src={`/images/recipe-${index + 1}.jpg`} // Replace with actual image paths
-                    alt={`Recipe ${index + 1}`}
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
-
-                {/* Hover Description */}
-                <Box
-                  position="absolute"
-                  top="0"
-                  left="0"
-                  width="100%"
-                  height="100%"
-                  bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-                  color="white"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  opacity="0" // Initially hidden
-                  transition="opacity 0.3s ease-in-out"
-                  _hover={{ opacity: 1 }} // Show on hover
-                >
-                  <Text fontSize="16px" fontWeight="bold" textAlign="center">
-                    Recipe Description {index + 1}{" "}
-                    {/* Replace with actual descriptions */}
-                  </Text>
-                  <Text fontSize="14px" textAlign="center" mt={2}>
-                    A brief description of the recipe goes here.
-                  </Text>
-                </Box>
-
-                {/* Food Name */}
-                <Text
-                  textAlign="center"
-                  fontSize={{ base: "16px", md: "18px" }}
-                  fontWeight="bold"
-                  color="black"
-                  mt={2}
-                  mb={4}
-                >
-                  Recipe Name {index + 1}{" "}
-                  {/* Replace with actual recipe names */}
-                </Text>
-              </Box>
-            ))}
-          </Grid>
+          {loading ? (
+  <Text textAlign="center" fontSize="18px" color="gray.500">
+    Loading recipes...
+  </Text>
+) : recipes.length === 0 ? (
+  <Text textAlign="center" fontSize="18px" color="gray.500">
+    No recipes available at the moment. Please check back later!
+  </Text>
+) : (
+  <Grid
+    templateColumns={{
+      base: "repeat(2, 1fr)",
+      md: "repeat(4, 1fr)",
+    }}
+    gap={6}
+  >
+    {recipes.slice(0,12).map((recipe) => (
+      <Box 
+        key={recipe._id}
+        bg="white"
+        borderRadius="md"
+        boxShadow="md"
+        overflow="hidden"
+        zIndex={2}
+        position="relative"
+      >
+        {/* Recipe Image */}
+        <Box height={{ base: "200px", md: "250px" }} overflow="hidden">
+          <Image
+            src={recipe.image} // Use the recipe's image URL
+            alt={recipe.name}
+            objectFit="cover"
+            width="100%"
+            height="100%"
+          />
         </Box>
-      </Box>
 
-      <Box py={6} bg="gray.100" textAlign="center" mt={10}>
-        <Text fontSize="14px" color="gray.600">
-          @ 2025 InsaneRecipe. All Rights Reserved
+        {/* Recipe Name */}
+        <Text
+          textAlign="center"
+          fontSize={{ base: "16px", md: "18px" }}
+          fontWeight="bold"
+          color="black"
+          mt={2}
+          mb={4}
+        >
+          {recipe.name}
         </Text>
+      </Box>
+    ))}
+  </Grid>
+)}
+        </Box>
       </Box>
     </Box>
   );

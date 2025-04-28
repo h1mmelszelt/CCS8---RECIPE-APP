@@ -5,8 +5,10 @@ import Review from "../models/review.model.js";
 export const getRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find({});
+    console.log("Fetched recipes from DB:", recipes); // Debug log
     res.status(200).json({ success: true, data: recipes });
   } catch (error) {
+    console.error("Error fetching recipes:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
