@@ -20,7 +20,7 @@ import {
 
 function Sitemap() {
   return (
-    <Box bg="gray.300" py={10} px={{ base: 6, md: 20 }} color="black">
+    <Box bg="gray.200" py={10} px={{ base: 6, md: 20 }} color="black">
       <Flex
         direction={{ base: "column", md: "row" }}
         justify="space-between"
@@ -36,20 +36,19 @@ function Sitemap() {
             </Text>
           </Text>
           <Text fontSize="sm" color="black.400">
-            The purpose of lorem ipsum is to create a natural looking block of
-            text (sentence, paragraph, page, etc.) that doesn’t distract from
-            the layout.
+          Discover thousands of delicious recipes, share your own creations, and
+          explore a world of culinary inspiration. Join our community today!
           </Text>
         </VStack>
 
         {/* Quick Links */}
-        <Flex direction="row" gap={10}>
+        <Flex direction="row" gap={20} mx="auto">
           <VStack align="start" spacing={2}>
             <Text fontSize="lg" fontWeight="bold">
-              Quick links
+              Explore
             </Text>
             <Link
-              href="#"
+              href="/home"
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}
@@ -57,7 +56,7 @@ function Sitemap() {
               Home
             </Link>
             <Link
-              href="#"
+              href="/search"
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}
@@ -65,29 +64,29 @@ function Sitemap() {
               Recipes
             </Link>
             <Link
-              href="#"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Blog
-            </Link>
-          </VStack>
-
-          <VStack align="start" spacing={2}>
-            <Text fontSize="lg" fontWeight="bold">
-              Quick links
-            </Text>
-            <Link
-              href="#"
+              href="/create"
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}
             >
               Share Recipe
             </Link>
+          </VStack>
+
+          <VStack align="start" spacing={2}>
+            <Text fontSize="lg" fontWeight="bold">
+              Helpful links
+            </Text>
             <Link
-              href="#"
+              href="/faq"
+              fontSize="sm"
+              color="black.400"
+              _hover={{ color: "white" }}
+            >
+              FAQ
+            </Link>
+            <Link
+              href="/about-us"
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}
@@ -95,34 +94,12 @@ function Sitemap() {
               About Us
             </Link>
             <Link
-              href="#"
+              href="/contact-us"
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}
             >
               Contact
-            </Link>
-          </VStack>
-
-          <VStack align="start" spacing={2}>
-            <Text fontSize="lg" fontWeight="bold">
-              Legal
-            </Text>
-            <Link
-              href="#"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Terms Of Use
-            </Link>
-            <Link
-              href="#"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Privacy & Cookies
             </Link>
           </VStack>
         </Flex>
