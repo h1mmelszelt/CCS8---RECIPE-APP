@@ -496,6 +496,7 @@ const ProfilePage = ({ isOwner }) => {
           >
             {tabContent[activeTab]}
           </Box>
+          <Box mb={20} />
         </Box>
       </Flex>
     </>

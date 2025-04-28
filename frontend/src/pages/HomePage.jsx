@@ -93,9 +93,10 @@ function HomePage() {
           bg="#FD660B"
           color="white"
           _hover={{ bg: "#e55a0a" }}
-          size={{ base: "sm", md: "sm" }}
-          mx={{ base: "34%", md: "47%" }} // Center on mobile, left-aligned on larger screens
-          mt={{ base: 5, md: 5 }} // Add margin-top for mobile
+          size={{ base: "lg", md: "lg" }} // Increased size
+          mx="auto" // Center horizontally
+          display="block" // Ensure centering works
+          mt={{ base: 5, md: 5 }} // Add margin-top for spacing
         >
           CREATE RECIPE
         </Button>
