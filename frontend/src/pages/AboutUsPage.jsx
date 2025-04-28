@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import aboutUsImage from "/images/cooking by AdobeStock.jpg"
+import { Link, useNavigate } from "react-router-dom";
 
 const AboutUsPage = () => {
   return (
@@ -36,9 +37,11 @@ const AboutUsPage = () => {
             Whether you're sharing a family recipe or discovering new cuisines,
             we're here to help you thrive—one recipe at a time.
           </Text>
-          <Button bg="#97C33A" color="white" _hover={{ bg: "green.600" }}>
-            Sign Up for Free
-          </Button>
+          <Link to="/register" style={{ textDecoration: "none" }}>
+            <Button bg="#AAD05E" color="white" _hover={{ bg: "#99BD50" }}>
+              Sign Up for Free
+            </Button>
+          </Link>
         </VStack>
 
         {/* Secondary Section */}

@@ -88,7 +88,7 @@ function LoginPage() {
   
                 <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4} mb={20}>
                   Don’t have an account?{" "}
-                  <Link color="#FD660B" fontWeight="bold">
+                  <Link href="/register" color="#FD660B" fontWeight="bold">
                     Sign up
                   </Link>
                 </Text>
