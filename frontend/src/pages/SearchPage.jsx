@@ -1,15 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Flex, Input, Button, Text, Grid, Image } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
+import axios from "axios";
 
 function SearchPage() {
-  const handleApplyFilters = (filters) => {
-    console.log("Applied Filters:", filters);
-    // Add logic to fetch or filter recipes based on the applied filters
-  };
+  const [recipes, setRecipes] = useState([]); 
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtersApplied, setFiltersApplied] = useState(false); // State to track if filters are applied
 
+  // Fetch recipes from the backend
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
+        setRecipes(response.data.data);
+        setFilteredRecipes(response.data.data); // Initially, show all recipes
+      } catch (error) {
+        console.error("Error fetching recipes:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
+
+  const handleApplyFilters = (filters) => {
+    setFiltersApplied(true); // Set filters applied state to true
+    if (filters.length === 0) {
+      setFilteredRecipes(recipes); // Show all recipes if no filters are applied
+    } else {
+      const filtered = recipes.filter((recipe) =>
+        filters.some((filter) =>
+          recipe.tags && recipe.tags.some((tag) =>
+            tag.toLowerCase().includes(filter.toLowerCase())
+          )
+        )
+      );
+      setFilteredRecipes(filtered);
+    }
+  };
   return (
     <Box
       bg="white"
@@ -45,7 +78,7 @@ function SearchPage() {
           <Box
             position="sticky" // Sticky positioning for both mobile and desktop
             top="10%" // Stick to the top of the viewport
-            zIndex="1000"
+            zIndex="0"
             p={4}
             bg="white"
             borderRadius="md"
@@ -57,7 +90,7 @@ function SearchPage() {
           {/* Sign-Up Box below Filters */}
           <Box
             position="sticky" // Sticky positioning for both mobile and desktop
-            top="450px" // Stick below the filter box
+            top="10%" // Stick below the filter box
             zIndex="0"
             p={4}
             bg="#D3F38E"
@@ -116,81 +149,61 @@ function SearchPage() {
 
           {/* Scrollable Recipes Grid */}
           <Box mt={4}>
-            <Grid
-              templateColumns={{
-                base: "repeat(2, 1fr)", // 2 columns for mobile
-                md: "repeat(4, 1fr)", // 5 columns for desktop
-              }}
-              gap={{ base: 3, md: 6 }}
-            >
-              {Array.from({ length: 25 }).map((_, index) => (
-                <Box
-                  key={index}
-                  bg="white"
-                  borderRadius="md"
-                  boxShadow="md"
-                  overflow="hidden"
-                  zIndex={2}
-                  position="relative"
-                >
-                  {/* Image Box */}
-                  <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
-                    <Image
-                      src={`/images/recipe-${index + 1}.jpg`}
-                      alt={`Recipe ${index + 1}`}
-                      objectFit="cover"
-                      width="100%"
-                      height="100%"
-                    />
-                  </Box>
-
-                  {/* Hover Description */}
+            {loading ? (
+              <Text textAlign="center" fontSize="18px" color="gray.500">
+                Loading recipes...
+              </Text>
+            ) : filteredRecipes.length === 0 ? (
+              <Text textAlign="center" fontSize="18px" color="gray.500">
+                No recipes match your filters. Please try again!
+              </Text>
+            ) : (
+              <Grid
+                templateColumns={{
+                  base: "repeat(2, 1fr)", // 2 columns for mobile
+                  md: "repeat(4, 1fr)", // 4 columns for desktop
+                }}
+                gap={{ base: 3, md: 6 }}
+              >
+                {filteredRecipes.map((recipe) => (
                   <Box
-                    position="absolute"
-                    top="0"
-                    left="0"
-                    width="100%"
-                    height="100%"
-                    bg="rgba(0, 0, 0, 0.6)"
-                    color="white"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                    opacity="0"
-                    transition="opacity 0.3s ease-in-out"
-                    _hover={{ opacity: 1 }}
+                    key={recipe._id}
+                    bg="white"
+                    borderRadius="md"
+                    boxShadow="md"
+                    overflow="hidden"
+                    zIndex={2}
+                    position="relative"
                   >
+                    {/* Image Box */}
+                    <Box
+                      height={{ base: "120px", md: "200px" }}
+                      overflow="hidden"
+                    >
+                      <Image
+                        src={recipe.image}
+                        alt={recipe.name}
+                        objectFit="cover"
+                        width="100%"
+                        height="100%"
+                      />
+                    </Box>
+
+                    {/* Food Name */}
                     <Text
-                      fontSize={{ base: "12px", md: "14px" }}
+                      textAlign="center"
+                      fontSize={{ base: "14px", md: "16px" }}
                       fontWeight="bold"
-                      textAlign="center"
-                    >
-                      Recipe Description {index + 1}
-                    </Text>
-                    <Text
-                      fontSize={{ base: "10px", md: "12px" }}
-                      textAlign="center"
+                      color="black"
                       mt={2}
+                      mb={4}
                     >
-                      A brief description of the recipe goes here.
+                      {recipe.name}
                     </Text>
                   </Box>
-
-                  {/* Food Name */}
-                  <Text
-                    textAlign="center"
-                    fontSize={{ base: "14px", md: "16px" }}
-                    fontWeight="bold"
-                    color="black"
-                    mt={2}
-                    mb={4}
-                  >
-                    Recipe Name {index + 1}
-                  </Text>
-                </Box>
-              ))}
-            </Grid>
+                ))}
+              </Grid>
+            )}
           </Box>
         </Box>
       </Flex>

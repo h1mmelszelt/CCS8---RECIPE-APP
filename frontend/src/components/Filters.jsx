@@ -5,15 +5,19 @@ function Filters({ onApplyFilters }) {
   const [filterInput, setFilterInput] = useState("");
   const [filters, setFilters] = useState([]);
 
+  // Add a new filter to the list (but don't apply it yet)
   const handleAddFilter = () => {
     if (filterInput.trim() && !filters.includes(filterInput.trim())) {
-      setFilters([...filters, filterInput.trim()]);
-      setFilterInput("");
+      const updatedFilters = [...filters, filterInput.trim()];
+      setFilters(updatedFilters);
+      setFilterInput(""); // Clear the input
     }
   };
 
+  // Remove a specific filter
   const handleRemoveFilter = (filter) => {
-    setFilters(filters.filter((f) => f !== filter));
+    const updatedFilters = filters.filter((f) => f !== filter);
+    setFilters(updatedFilters);
   };
 
   const handleApplyFilters = () => {
@@ -22,8 +26,12 @@ function Filters({ onApplyFilters }) {
     }
   };
 
+  // Clear all filters
   const handleClearFilters = () => {
     setFilters([]);
+    if (onApplyFilters) {
+      onApplyFilters([]); // Reset filters in the parent component
+    }
   };
 
   return (
