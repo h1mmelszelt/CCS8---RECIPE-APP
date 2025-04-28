@@ -340,6 +340,11 @@ useEffect(() => {
     gap={{ base: 2, md: 6 }} 
   >
     {recipes.slice(0,12).map((recipe) => (
+      <Link
+      to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
+      key={recipe._id}
+      style={{ textDecoration: "none" }} // Remove underline from the link
+    >
       <Box 
         key={recipe._id}
         bg="white"
@@ -374,7 +379,31 @@ useEffect(() => {
         >
           {recipe.name}
         </Text>
+
+          {/* Hover Description */}
+          <Box
+          position="absolute"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+          color="white"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          textAlign="center"
+          opacity="0" // Initially hidden
+          transition="opacity 0.3s ease-in-out" // Smooth transition
+          _hover={{ opacity: "1" }} // Show on hover
+        >
+
+          <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+            {recipe.description || "No description available."}
+          </Text>
+        </Box>
       </Box>
+      </Link>
     ))}
   </Grid>
 )}

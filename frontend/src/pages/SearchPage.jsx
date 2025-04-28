@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function SearchPage() {
   const location = useLocation();
@@ -191,15 +191,22 @@ const handleApplyFilters = (appliedFilters) => {
                 gap={{ base: 3, md: 6 }}
               >
                 {filteredRecipes.map((recipe) => (
-                  <Box
-                    key={recipe._id}
-                    bg="white"
-                    borderRadius="md"
-                    boxShadow="md"
-                    overflow="hidden"
-                    zIndex={2}
-                    position="relative"
-                  >
+    <Link
+    to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
+    key={recipe._id}
+    style={{ textDecoration: "none" }} // Remove underline from the link
+  >
+      <Box
+        bg="white"
+        borderRadius="md"
+        boxShadow="md"
+        overflow="hidden"
+        zIndex={2}
+        position="relative"
+        cursor="pointer" // Add pointer cursor to indicate clickability
+        _hover={{ boxShadow: "lg" }} // Add hover effect
+        role="group" // Enable group for _groupHover
+      >
                     {/* Image Box */}
                     <Box
                       height={{ base: "120px", md: "200px" }}
@@ -225,7 +232,29 @@ const handleApplyFilters = (appliedFilters) => {
                     >
                       {recipe.name}
                     </Text>
+                            {/* Hover Description */}
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+          color="white"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          textAlign="center"
+          opacity="0" // Initially hidden
+          transition="opacity 0.3s ease-in-out" // Smooth transition
+          _groupHover={{ opacity: "1" }} // Show on hover
+        >
+          <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+            {recipe.description || "No description available."}
+          </Text>
+        </Box>
                   </Box>
+                  </Link>
                 ))}
               </Grid>
             )}
