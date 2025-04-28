@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Flex, Input, Button, Text, Grid, Image } from "@chakra-ui/react";
+import { Box, Flex, Input, Button, Text, Grid, Image, VStack } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
@@ -71,60 +71,57 @@ function SearchPage() {
         <Box
           display="flex"
           flexDirection="column"
-          width={{ base: "100%", md: "350px" }} // Increased width for desktop
-          gap={3} // Add spacing between the Filter Box and Sign-Up Box
-          ml={{ base: 0, md: 2 }} // Move the container slightly to the right on desktop
+          width={{ base: "100%", md: "350px" }} // Adjust width for desktop
+          gap={3}
+          ml={{ base: 0, md: 2 }} // Add margin for desktop
         >
-          {/* Filters on the top-left */}
-          <Box
-            position="sticky" // Sticky positioning for both mobile and desktop
-            top="10%" // Stick to the top of the viewport
-            zIndex="0"
+          <VStack
+            spacing={4}
+            align="stretch"
             p={4}
             bg="white"
             borderRadius="md"
             boxShadow="md"
           >
-            <Filters onApplyFilters={handleApplyFilters} />
-          </Box>
+            {/* Filters */}
+            <Box>
+              <Filters onApplyFilters={handleApplyFilters} />
+            </Box>
 
-          {/* Sign-Up Box below Filters */}
-          <Box
-            position="sticky" // Sticky positioning for both mobile and desktop
-            top="10%" // Stick below the filter box
-            zIndex="0"
-            p={4}
-            bg="#D3F38E"
-            borderRadius="md"
-            boxShadow="md"
-            textAlign="center"
-            display={{ base: "none", md: "block" }}
-          >
-            <Box fontWeight="bold" fontSize="24px" mb={2}>
-              Don’t lose that perfect recipe!
-            </Box>
-            <Box fontSize="sm" mb={4}>
-              Found something delicious? Sign up for free to save it before you
-              scroll away!
-            </Box>
-            <Input
-              placeholder="Email"
-              size="sm"
-              mb={2}
+            {/* Sign-Up Box */}
+            <Box
+              bg="#D3F38E"
               borderRadius="md"
-              bg="white"
-            />
-            <Button colorScheme="green" size="sm" width="100%">
-              Sign Up
-            </Button>
-          </Box>
+              boxShadow="md"
+              textAlign="center"
+              p={4}
+            >
+              <Box fontWeight="bold" fontSize="24px" mb={2}>
+                Don’t lose that perfect recipe!
+              </Box>
+              <Box fontSize="sm" mb={4}>
+                Found something delicious? Sign up for free to save it before you
+                scroll away!
+              </Box>
+              <Input
+                placeholder="Email"
+                size="sm"
+                mb={2}
+                borderRadius="md"
+                bg="white"
+              />
+              <Button colorScheme="green" size="sm" width="100%">
+                Sign Up
+              </Button>
+            </Box>
+          </VStack>
         </Box>
 
         {/* Explore Recipes Section */}
         <Box
           py={6}
           position="relative"
-          width={{ base: "100%", md: "calc(100% - 300px)" }} // Adjust width to account for the wider sidebar
+          width={{ base: "100%", md: "calc(100% - 300px)" }} // Adjust width for desktop
           px={4}
           mx="auto"
           ml={{ md: "100px" }} // Push content to the right of the sidebar on desktop
@@ -132,7 +129,7 @@ function SearchPage() {
           {/* Sticky Header */}
           <Box
             position="sticky"
-            top="0" // Ensure it sticks to the top of the viewport
+            top="0"
             zIndex="0"
             bg="white"
             py={4}
