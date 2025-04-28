@@ -1,9 +1,41 @@
 import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import BG_Home from "/images/homebg.jpg";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function HomePage() {
+
+  const [recipes, setRecipes] = useState([]); // All recipes from the API
+  const [loading, setLoading] = useState(true);
+  const [snackLimit, setSnackLimit] = useState(4); // Limit for snack recipes
+  const [filipinoLimit, setFilipinoLimit] = useState(4); 
+
+    // Fetch recipes from the backend
+    useEffect(() => {
+      const fetchRecipes = async () => {
+        try {
+          const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
+          setRecipes(response.data.data); // Store all recipes
+        } catch (error) {
+          console.error("Error fetching recipes:", error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchRecipes();
+    }, []);
+  
+    // Filter recipes by tag
+    const getRecipesByTag = (tag) => {
+      return recipes.filter(
+        (recipe) =>
+          recipe.tags && recipe.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
+      );
+    };
+  
   return (
     <Box
       bg="gray.100"
@@ -151,9 +183,6 @@ function HomePage() {
                 >
                   Recipe Name {index + 1}
                 </Text>
-                <Text textAlign="center" fontSize="14px" color="orange.500">
-                  ★★★★☆
-                </Text>
               </Box>
             ))}
             {/* Show More Card */}
@@ -180,11 +209,10 @@ function HomePage() {
 
           <Divider borderColor="gray.400" my={8} />
 
-          {/* Snack Recipes Section */}
-          <Text
+        {/* Snack Recipes Section */}
+        <Text
             fontSize={{ base: "18px", md: "24px" }}
             fontWeight="bold"
-            mt={5}
             mb={4}
             textAlign="left"
           >
@@ -192,69 +220,74 @@ function HomePage() {
           </Text>
           <Grid
             templateColumns={{
-              base: "repeat(2, 1fr)",
-              md: "repeat(5, 1fr)",
+              base: "repeat(2, 1fr)", // 2 columns for mobile
+              md: "repeat(5, 1fr)", // 5 columns for desktop
             }}
-            gap={{ base: 2, md: 6 }}
+            gap={{ base: 2, md: 6 }} // Smaller gap for mobile, larger for desktop
           >
-            {Array.from({ length: 4 }).map((_, index) => (
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
+              getRecipesByTag("snack")
+              .slice(0, snackLimit)
+              .map((recipe) => (
+                <Box
+                  key={recipe._id}
+                  bg="white"
+                  borderRadius="md"
+                  boxShadow="md"
+                  overflow="hidden"
+                  zIndex={2}
+                >
+                  <Box height={{ base: "120px", md: "200px" }}  overflow="hidden">
+                    <Image
+                      src={recipe.image}
+                      alt={recipe.name}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                  <Text
+                    textAlign="center"
+                    fontSize={{ base: "14px", md: "16px" }}
+                    fontWeight="bold"
+                    color="black"
+                    mt={2}
+                    mb={2}
+                  >
+                    {recipe.name}
+                  </Text>
+                </Box>
+              ))
+            )}
+            {/* Show More Card */}
+            <Link to="/search?filter=snack" style={{ textDecoration: "none" }}>
               <Box
-                key={index}
-                bg="white"
+                bg="gray.100"
                 borderRadius="md"
                 boxShadow="md"
-                overflow="hidden"
-                zIndex={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height={{ base: "120px", md: "200px" }}
+                cursor="pointer"
+                _hover={{ bg: "gray.200" }}
               >
-                <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
-                  <Image
-                    src={`/images/snack-${index + 1}.jpg`}
-                    alt={`Snack ${index + 1}`}
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
                 <Text
-                  textAlign="center"
                   fontSize={{ base: "14px", md: "16px" }}
                   fontWeight="bold"
-                  color="black"
-                  mt={2}
-                  mb={2}
+                  color="gray.600"
                 >
-                  Snack Name {index + 1}
-                </Text>
-                <Text textAlign="center" fontSize="14px" color="orange.500">
-                  ★★★★☆
+                  Show More
                 </Text>
               </Box>
-            ))}
-            {/* Show More Card */}
-            <Box
-              bg="gray.100"
-              borderRadius="md"
-              boxShadow="md"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height={{ base: "120px", md: "200px" }}
-              cursor="pointer"
-              _hover={{ bg: "gray.200" }}
-            >
-              <Text
-                fontSize={{ base: "14px", md: "16px" }}
-                fontWeight="bold"
-                color="gray.600"
-              >
-                Show More
-              </Text>
-            </Box>
+            </Link>
           </Grid>
 
           <Divider borderColor="gray.400" my={8} />
 
-          {/* Italian Recipes Section */}
+          {/* Filipino Recipes Section */}
           <Text
             fontSize={{ base: "18px", md: "24px" }}
             fontWeight="bold"
@@ -262,7 +295,7 @@ function HomePage() {
             mb={4}
             textAlign="left"
           >
-            ITALIAN RECIPES
+            FILIPINO RECIPES
           </Text>
           <Grid
             templateColumns={{
@@ -271,59 +304,65 @@ function HomePage() {
             }}
             gap={{ base: 2, md: 6 }}
           >
-            {Array.from({ length: 4 }).map((_, index) => (
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
+              getRecipesByTag("filipino")
+              .slice(0, 4)
+              .map((recipe) => (
+                <Box
+                  key={recipe._id}
+                  bg="white"
+                  borderRadius="md"
+                  boxShadow="md"
+                  overflow="hidden"
+                  zIndex={2}
+                >
+                  <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
+                    <Image
+                      src={recipe.image}
+                      alt={recipe.name}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                  <Text
+                    textAlign="center"
+                    fontSize={{ base: "14px", md: "16px" }}
+                    fontWeight="bold"
+                    color="black"
+                    mt={2}
+                    mb={2}
+                  >
+                    {recipe.name}
+                  </Text>
+                </Box>
+              ))
+            )}
+
+            {/* Show More Card */}
+            <Link to="/search?filter=filipino" style={{ textDecoration: "none" }}>
               <Box
-                key={index}
-                bg="white"
+                bg="gray.100"
                 borderRadius="md"
                 boxShadow="md"
-                overflow="hidden"
-                zIndex={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height={{ base: "120px", md: "200px" }}
+                cursor="pointer"
+                _hover={{ bg: "gray.200" }}
               >
-                <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
-                  <Image
-                    src={`/images/italian-${index + 1}.jpg`}
-                    alt={`Italian Recipe ${index + 1}`}
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
                 <Text
-                  textAlign="center"
                   fontSize={{ base: "14px", md: "16px" }}
                   fontWeight="bold"
-                  color="black"
-                  mt={2}
-                  mb={2}
+                  color="gray.600"
                 >
-                  Italian Recipe {index + 1}
-                </Text>
-                <Text textAlign="center" fontSize="14px" color="orange.500">
-                  ★★★★☆
+                  Show More
                 </Text>
               </Box>
-            ))}
-            {/* Show More Card */}
-            <Box
-              bg="gray.100"
-              borderRadius="md"
-              boxShadow="md"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height={{ base: "120px", md: "200px" }}
-              cursor="pointer"
-              _hover={{ bg: "gray.200" }}
-            >
-              <Text
-                fontSize={{ base: "14px", md: "16px" }}
-                fontWeight="bold"
-                color="gray.600"
-              >
-                Show More
-              </Text>
-            </Box>
+            </Link>
           </Grid>
         </Box>
       </Box>

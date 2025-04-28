@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Box, Input, Button, Tag, TagLabel, TagCloseButton, VStack, Flex, Text } from "@chakra-ui/react";
 
-function Filters({ onApplyFilters }) {
+function Filters({ onApplyFilters, initialFilters = [] }) {
+  
   const [filterInput, setFilterInput] = useState("");
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState(initialFilters);
 
   // Add a new filter to the list (but don't apply it yet)
   const handleAddFilter = () => {
@@ -14,11 +15,16 @@ function Filters({ onApplyFilters }) {
     }
   };
 
-  // Remove a specific filter
-  const handleRemoveFilter = (filter) => {
-    const updatedFilters = filters.filter((f) => f !== filter);
-    setFilters(updatedFilters);
-  };
+// Remove a specific filter
+const handleRemoveFilter = (filter) => {
+  const updatedFilters = filters.filter((f) => f !== filter);
+  setFilters(updatedFilters);
+
+  // Notify the parent component about the updated filters
+  if (onApplyFilters) {
+    onApplyFilters(updatedFilters);
+  }
+};
 
   const handleApplyFilters = () => {
     console.log("Filters to apply:", filters); // Debug log

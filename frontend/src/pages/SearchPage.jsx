@@ -4,13 +4,18 @@ import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 function SearchPage() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const filter = queryParams.get("filter");
+
+
   const [recipes, setRecipes] = useState([]); 
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filtersApplied, setFiltersApplied] = useState(false); // State to track if filters are applied
-
+  
   // Fetch recipes from the backend
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -28,22 +33,40 @@ function SearchPage() {
     fetchRecipes();
   }, []);
 
-  // Handle applying filters
-  const handleApplyFilters = (filters) => {
-    console.log("Filters applied:", filters); // Debug log
-    if (filters.length === 0) {
-      setFilteredRecipes(recipes); // Show all recipes if no filters are applied
-    } else {
-      const filtered = recipes.filter((recipe) =>
-        filters.every((filter) =>
-          recipe.tags && recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
-        )
-      );
-      console.log("Filtered recipes:", filtered); // Debug log
-      setFilteredRecipes(filtered);
-    }
-  };
+// Update the filtered recipes when the filter query parameter changes
+useEffect(() => {
+  if (filter) {
+    const filtered = recipes.filter(
+      (recipe) =>
+        recipe.tags &&
+        recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
+    );
+    setFilteredRecipes(filtered);
+  } else {
+    setFilteredRecipes(recipes); // Show all recipes if no filter is applied
+  }
+}, [filter, recipes]);
   
+// Define handleApplyFilters
+const handleApplyFilters = (appliedFilters) => {
+  console.log("Filters applied:", appliedFilters);
+
+  // Filter recipes based on the applied filters
+  const filtered = recipes.filter((recipe) => {
+    // Check if the recipe matches all applied filters
+    return appliedFilters.every((filter) => {
+      // Example: Check if the recipe's tags include the filter
+      return (
+        recipe.tags &&
+        recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
+      );
+    });
+  });
+
+  // Update the filteredRecipes state with the filtered results
+  setFilteredRecipes(filtered);
+};
+
   return (
     <Box
       bg="white"
@@ -83,10 +106,14 @@ function SearchPage() {
             borderRadius="md"
             boxShadow="md"
           >
-            {/* Filters */}
-            <Box>
-              <Filters onApplyFilters={handleApplyFilters} />
-            </Box>
+
+{/* Filters Component */}
+<Box>
+  <Filters
+    onApplyFilters={handleApplyFilters}
+    initialFilters={filter ? [filter] : []} // Pass the filter as an initial filter
+  />
+</Box>
 
             {/* Sign-Up Box */}
             <Box

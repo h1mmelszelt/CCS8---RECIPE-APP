@@ -337,7 +337,7 @@ useEffect(() => {
       base: "repeat(2, 1fr)",
       md: "repeat(4, 1fr)",
     }}
-    gap={6}
+    gap={{ base: 2, md: 6 }} 
   >
     {recipes.slice(0,12).map((recipe) => (
       <Box 
@@ -348,9 +348,12 @@ useEffect(() => {
         overflow="hidden"
         zIndex={2}
         position="relative"
+        width={{ base: "160px", md: "300px" }} // Adjust width for responsiveness
       >
         {/* Recipe Image */}
-        <Box height={{ base: "200px", md: "250px" }} overflow="hidden">
+        <Box 
+        height={{ base: "120px", md: "200px" }} 
+        overflow="hidden">
           <Image
             src={recipe.image} // Use the recipe's image URL
             alt={recipe.name}
@@ -363,11 +366,11 @@ useEffect(() => {
         {/* Recipe Name */}
         <Text
           textAlign="center"
-          fontSize={{ base: "16px", md: "18px" }}
+          fontSize={{ base: "14px", md: "16px" }}
           fontWeight="bold"
           color="black"
           mt={2}
-          mb={4}
+          mb={2}
         >
           {recipe.name}
         </Text>
