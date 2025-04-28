@@ -9,6 +9,7 @@ import {
   Image,
   VStack,
 } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
@@ -23,6 +24,7 @@ function SearchPage() {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch recipes from the backend
   useEffect(() => {
@@ -79,9 +81,21 @@ function SearchPage() {
     setFilteredRecipes(filtered);
   };
 
+  // Handle search functionality
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") {
+      setFilteredRecipes(recipes); // Show all recipes if search query is empty
+    } else {
+      const filtered = recipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
+    }
+  };
+
   return (
     <Box
-      bg="white"
+      bg="gray.100"
       minH="100vh"
       width="100%"
       color="black"
@@ -95,11 +109,41 @@ function SearchPage() {
         top="0"
         left="75%"
         transform="translateX(-50%)"
-        width={{ base: "90vw", md: "60vw" }}
+        width={{ base: "0", md: "60vw" }} // Hide on smaller screens by setting width to 0
         maxW="none"
         zIndex={0}
         opacity={1}
+        display={{ base: "none", md: "block" }} // Hide on smaller screens, show on medium and larger screens
       />
+
+      <Box
+        display={{ base: "flex", md: "none" }} // Show only on smaller screens
+        px={4}
+        py={2}
+        bg="white"
+        boxShadow="md"
+        position="sticky"
+        top="0"
+        zIndex="1000"
+      >
+        <Input
+          placeholder="Search recipes by title..."
+          size="sm"
+          borderRadius="md"
+          bg="gray.100"
+          flex="1"
+          mr={2}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+        />
+        <Button
+          size="sm"
+          colorScheme="orange"
+          onClick={handleSearch} // Trigger search on click
+        >
+          <SearchIcon />
+        </Button>
+      </Box>
 
       <Flex mt={4} px={4} flexDirection={{ base: "column", md: "row" }}>
         {/* Filters and Sign-Up Box Container */}
@@ -128,6 +172,7 @@ function SearchPage() {
 
             {/* Sign-Up Box */}
             <Box
+              display={{ base: "none", md: "block" }}
               bg="#D3F38E"
               borderRadius="md"
               boxShadow="md"
