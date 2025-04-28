@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Box, Flex, Input, Button, Text, Grid, Image, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Input,
+  Button,
+  Text,
+  Grid,
+  Image,
+  VStack,
+} from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
@@ -11,11 +20,10 @@ function SearchPage() {
   const queryParams = new URLSearchParams(location.search);
   const filter = queryParams.get("filter");
 
-
-  const [recipes, setRecipes] = useState([]); 
+  const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Fetch recipes from the backend
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -33,39 +41,43 @@ function SearchPage() {
     fetchRecipes();
   }, []);
 
-// Update the filtered recipes when the filter query parameter changes
-useEffect(() => {
-  if (filter) {
-    const filtered = recipes.filter(
-      (recipe) =>
-        recipe.tags &&
-        recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
-    );
-    setFilteredRecipes(filtered);
-  } else {
-    setFilteredRecipes(recipes); // Show all recipes if no filter is applied
-  }
-}, [filter, recipes]);
-  
-// Define handleApplyFilters
-const handleApplyFilters = (appliedFilters) => {
-  console.log("Filters applied:", appliedFilters);
-
-  // Filter recipes based on the applied filters
-  const filtered = recipes.filter((recipe) => {
-    // Check if the recipe matches all applied filters
-    return appliedFilters.every((filter) => {
-      // Example: Check if the recipe's tags include the filter
-      return (
-        recipe.tags &&
-        recipe.tags.map((tag) => tag.toLowerCase()).includes(filter.toLowerCase())
+  // Update the filtered recipes when the filter query parameter changes
+  useEffect(() => {
+    if (filter) {
+      const filtered = recipes.filter(
+        (recipe) =>
+          recipe.tags &&
+          recipe.tags
+            .map((tag) => tag.toLowerCase())
+            .includes(filter.toLowerCase())
       );
-    });
-  });
+      setFilteredRecipes(filtered);
+    } else {
+      setFilteredRecipes(recipes); // Show all recipes if no filter is applied
+    }
+  }, [filter, recipes]);
 
-  // Update the filteredRecipes state with the filtered results
-  setFilteredRecipes(filtered);
-};
+  // Define handleApplyFilters
+  const handleApplyFilters = (appliedFilters) => {
+    console.log("Filters applied:", appliedFilters);
+
+    // Filter recipes based on the applied filters
+    const filtered = recipes.filter((recipe) => {
+      // Check if the recipe matches all applied filters
+      return appliedFilters.every((filter) => {
+        // Example: Check if the recipe's tags include the filter
+        return (
+          recipe.tags &&
+          recipe.tags
+            .map((tag) => tag.toLowerCase())
+            .includes(filter.toLowerCase())
+        );
+      });
+    });
+
+    // Update the filteredRecipes state with the filtered results
+    setFilteredRecipes(filtered);
+  };
 
   return (
     <Box
@@ -106,14 +118,13 @@ const handleApplyFilters = (appliedFilters) => {
             borderRadius="md"
             boxShadow="md"
           >
-
-{/* Filters Component */}
-<Box>
-  <Filters
-    onApplyFilters={handleApplyFilters}
-    initialFilters={filter ? [filter] : []} // Pass the filter as an initial filter
-  />
-</Box>
+            {/* Filters Component */}
+            <Box>
+              <Filters
+                onApplyFilters={handleApplyFilters}
+                initialFilters={filter ? [filter] : []} // Pass the filter as an initial filter
+              />
+            </Box>
 
             {/* Sign-Up Box */}
             <Box
@@ -127,8 +138,8 @@ const handleApplyFilters = (appliedFilters) => {
                 Don’t lose that perfect recipe!
               </Box>
               <Box fontSize="sm" mb={4}>
-                Found something delicious? Sign up for free to save it before you
-                scroll away!
+                Found something delicious? Sign up for free to save it before
+                you scroll away!
               </Box>
               <Input
                 placeholder="Email"
@@ -191,69 +202,69 @@ const handleApplyFilters = (appliedFilters) => {
                 gap={{ base: 3, md: 6 }}
               >
                 {filteredRecipes.map((recipe) => (
-    <Link
-    to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
-    key={recipe._id}
-    style={{ textDecoration: "none" }} // Remove underline from the link
-  >
-      <Box
-        bg="white"
-        borderRadius="md"
-        boxShadow="md"
-        overflow="hidden"
-        zIndex={2}
-        position="relative"
-        cursor="pointer" // Add pointer cursor to indicate clickability
-        _hover={{ boxShadow: "lg" }} // Add hover effect
-        role="group" // Enable group for _groupHover
-      >
-                    {/* Image Box */}
+                  <Link
+                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    key={recipe._id}
+                    style={{ textDecoration: "none" }} // Remove underline from the link
+                  >
                     <Box
-                      height={{ base: "120px", md: "200px" }}
+                      bg="white"
+                      borderRadius="md"
+                      boxShadow="md"
                       overflow="hidden"
+                      zIndex={2}
+                      position="relative"
+                      cursor="pointer" // Add pointer cursor to indicate clickability
+                      _hover={{ boxShadow: "lg" }} // Add hover effect
+                      role="group" // Enable group for _groupHover
                     >
-                      <Image
-                        src={recipe.image}
-                        alt={recipe.name}
-                        objectFit="cover"
+                      {/* Image Box */}
+                      <Box
+                        height={{ base: "120px", md: "200px" }}
+                        overflow="hidden"
+                      >
+                        <Image
+                          src={recipe.image}
+                          alt={recipe.name}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                      </Box>
+
+                      {/* Food Name */}
+                      <Text
+                        textAlign="center"
+                        fontSize={{ base: "14px", md: "16px" }}
+                        fontWeight="bold"
+                        color="black"
+                        mt={2}
+                        mb={4}
+                      >
+                        {recipe.name}
+                      </Text>
+                      {/* Hover Description */}
+                      <Box
+                        position="absolute"
+                        top="0"
+                        left="0"
                         width="100%"
                         height="100%"
-                      />
+                        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+                        color="white"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        opacity="0" // Initially hidden
+                        transition="opacity 0.3s ease-in-out" // Smooth transition
+                        _groupHover={{ opacity: "1" }} // Show on hover
+                      >
+                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                          {recipe.description || "No description available."}
+                        </Text>
+                      </Box>
                     </Box>
-
-                    {/* Food Name */}
-                    <Text
-                      textAlign="center"
-                      fontSize={{ base: "14px", md: "16px" }}
-                      fontWeight="bold"
-                      color="black"
-                      mt={2}
-                      mb={4}
-                    >
-                      {recipe.name}
-                    </Text>
-                            {/* Hover Description */}
-        <Box
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height="100%"
-          bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-          color="white"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          textAlign="center"
-          opacity="0" // Initially hidden
-          transition="opacity 0.3s ease-in-out" // Smooth transition
-          _groupHover={{ opacity: "1" }} // Show on hover
-        >
-          <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-            {recipe.description || "No description available."}
-          </Text>
-        </Box>
-                  </Box>
                   </Link>
                 ))}
               </Grid>
