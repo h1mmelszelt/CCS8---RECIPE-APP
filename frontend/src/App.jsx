@@ -18,6 +18,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Import NotificationSettingsPage
 import FAQPage from "./pages/FAQPage";
 import AboutUsPage from "./pages/AboutUsPage";
+import SignInRequired from "./pages/SignInRequired";
 
 function App() {
   const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
@@ -81,6 +82,7 @@ function App() {
             <Route path="/recipes/:recipeId" element={<RecipePage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
+            <Route path="/sign-in-required" element={<SignInRequired />} />
           </Routes>
           <Sitemap />
         </Box>
