@@ -1,41 +1,41 @@
 import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
 import Navbar from "../components/Navbar(Logged)";
 import BG_Home from "/images/homebg.jpg";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 function HomePage() {
-
   const [recipes, setRecipes] = useState([]); // All recipes from the API
   const [loading, setLoading] = useState(true);
   const [snackLimit, setSnackLimit] = useState(4); // Limit for snack recipes
-  const [filipinoLimit, setFilipinoLimit] = useState(4); 
+  const [filipinoLimit, setFilipinoLimit] = useState(4);
 
-    // Fetch recipes from the backend
-    useEffect(() => {
-      const fetchRecipes = async () => {
-        try {
-          const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
-          setRecipes(response.data.data); // Store all recipes
-        } catch (error) {
-          console.error("Error fetching recipes:", error.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchRecipes();
-    }, []);
-  
-    // Filter recipes by tag
-    const getRecipesByTag = (tag) => {
-      return recipes.filter(
-        (recipe) =>
-          recipe.tags && recipe.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
-      );
+  // Fetch recipes from the backend
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
+        setRecipes(response.data.data); // Store all recipes
+      } catch (error) {
+        console.error("Error fetching recipes:", error.message);
+      } finally {
+        setLoading(false);
+      }
     };
-  
+
+    fetchRecipes();
+  }, []);
+
+  // Filter recipes by tag
+  const getRecipesByTag = (tag) => {
+    return recipes.filter(
+      (recipe) =>
+        recipe.tags &&
+        recipe.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
+    );
+  };
+
   return (
     <Box
       bg="gray.100"
@@ -119,19 +119,19 @@ function HomePage() {
 
         {/* Create Recipe Button */}
         <Link to="/create" style={{ textDecoration: "none" }}>
-        <Button
-          mb={{ base: 12, md: 10 }}
-          colorScheme="orange"
-          bg="#FD660B"
-          color="white"
-          _hover={{ bg: "#e55a0a" }}
-          size={{ base: "lg", md: "lg" }} // Increased size
-          mx="auto" // Center horizontally
-          display="block" // Ensure centering works
-          mt={{ base: 5, md: 5 }} // Add margin-top for spacing
-        >
-          CREATE RECIPE
-        </Button>
+          <Button
+            mb={{ base: 12, md: 10 }}
+            colorScheme="orange"
+            bg="#FD660B"
+            color="white"
+            _hover={{ bg: "#e55a0a" }}
+            size={{ base: "lg", md: "lg" }} // Increased size
+            mx="auto" // Center horizontally
+            display="block" // Ensure centering works
+            mt={{ base: 5, md: 5 }} // Add margin-top for spacing
+          >
+            CREATE RECIPE
+          </Button>
         </Link>
 
         {/* Divider Between Button and Grid */}
@@ -209,8 +209,8 @@ function HomePage() {
 
           <Divider borderColor="gray.400" my={8} />
 
-        {/* Snack Recipes Section */}
-        <Text
+          {/* Snack Recipes Section */}
+          <Text
             fontSize={{ base: "18px", md: "24px" }}
             fontWeight="bold"
             mb={4}
@@ -229,69 +229,72 @@ function HomePage() {
               <Text>Loading...</Text>
             ) : (
               getRecipesByTag("snack")
-              .slice(0, snackLimit)
-              .map((recipe) => (
-                <Link
-          to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
-          key={recipe._id}
-          style={{ textDecoration: "none" }} // Remove underline from the link
-        >
-          <Box
-            bg="white"
-            borderRadius="md"
-            boxShadow="md"
-            overflow="hidden"
-            zIndex={2}
-            position="relative"
-            cursor="pointer" // Add pointer cursor to indicate clickability
-            _hover={{ boxShadow: "lg" }} // Add hover effect
-            role="group"
-          >
-            {/* Recipe Image */}
-                  <Box height={{ base: "120px", md: "200px" }}  overflow="hidden">
-                    <Image
-                      src={recipe.image}
-                      alt={recipe.name}
-                      objectFit="cover"
-                      width="100%"
-                      height="100%"
-                    />
-                  </Box>
-                  {/* Recipe Name */}
-                  <Text
-                    textAlign="center"
-                    fontSize={{ base: "14px", md: "16px" }}
-                    fontWeight="bold"
-                    color="black"
-                    mt={2}
-                    mb={2}
+                .slice(0, snackLimit)
+                .map((recipe) => (
+                  <Link
+                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    key={recipe._id}
+                    style={{ textDecoration: "none" }} // Remove underline from the link
                   >
-                    {recipe.name}
-                  </Text>
-            {/* Hover Description */}
-            <Box
-              position="absolute"
-              top="0"
-              left="0"
-              width="100%"
-              height="100%"
-              bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-              color="white"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              textAlign="center"
-              opacity="0" // Initially hidden
-              transition="opacity 0.3s ease-in-out" // Smooth transition
-              _groupHover={{ opacity: "1" }} // Show on hover
-            >
-              <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                {recipe.description || "No description available."}
-              </Text>
-            </Box>
-                </Box>
-                </Link>
-              ))
+                    <Box
+                      bg="white"
+                      borderRadius="md"
+                      boxShadow="md"
+                      overflow="hidden"
+                      zIndex={2}
+                      position="relative"
+                      cursor="pointer" // Add pointer cursor to indicate clickability
+                      _hover={{ boxShadow: "lg" }} // Add hover effect
+                      role="group"
+                    >
+                      {/* Recipe Image */}
+                      <Box
+                        height={{ base: "120px", md: "200px" }}
+                        overflow="hidden"
+                      >
+                        <Image
+                          src={recipe.image}
+                          alt={recipe.name}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                      </Box>
+                      {/* Recipe Name */}
+                      <Text
+                        textAlign="center"
+                        fontSize={{ base: "14px", md: "16px" }}
+                        fontWeight="bold"
+                        color="black"
+                        mt={2}
+                        mb={2}
+                      >
+                        {recipe.name}
+                      </Text>
+                      {/* Hover Description */}
+                      <Box
+                        position="absolute"
+                        top="0"
+                        left="0"
+                        width="100%"
+                        height="100%"
+                        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+                        color="white"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        opacity="0" // Initially hidden
+                        transition="opacity 0.3s ease-in-out" // Smooth transition
+                        _groupHover={{ opacity: "1" }} // Show on hover
+                      >
+                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                          {recipe.description || "No description available."}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Link>
+                ))
             )}
             {/* Show More Card */}
             <Link to="/search?filter=snack" style={{ textDecoration: "none" }}>
@@ -340,71 +343,77 @@ function HomePage() {
               <Text>Loading...</Text>
             ) : (
               getRecipesByTag("filipino")
-              .slice(0, 4)
-              .map((recipe) => (
-                <Link
-          to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
-          key={recipe._id}
-          style={{ textDecoration: "none" }} // Remove underline from the link
-        >
-                <Box
-                bg="white"
-                borderRadius="md"
-                boxShadow="md"
-                overflow="hidden"
-                zIndex={2}
-                position="relative"
-                cursor="pointer" // Add pointer cursor to indicate clickability
-                _hover={{ boxShadow: "lg" }} // Add hover effect
-                role="group"
-                >
-                  <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
-                    <Image
-                      src={recipe.image}
-                      alt={recipe.name}
-                      objectFit="cover"
-                      width="100%"
-                      height="100%"
-                    />
-                  </Box>
-                  <Text
-                    textAlign="center"
-                    fontSize={{ base: "14px", md: "16px" }}
-                    fontWeight="bold"
-                    color="black"
-                    mt={2}
-                    mb={2}
+                .slice(0, 4)
+                .map((recipe) => (
+                  <Link
+                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    key={recipe._id}
+                    style={{ textDecoration: "none" }} // Remove underline from the link
                   >
-                    {recipe.name}
-                  </Text>
-            {/* Hover Description */}
-            <Box
-              position="absolute"
-              top="0"
-              left="0"
-              width="100%"
-              height="100%"
-              bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-              color="white"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              textAlign="center"
-              opacity="0" // Initially hidden
-              transition="opacity 0.3s ease-in-out" // Smooth transition
-              _groupHover={{ opacity: "1" }} // Show on hover
-            >
-              <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                {recipe.description || "No description available."}
-              </Text>
-            </Box>
-                </Box>
-                </Link>
-              ))
+                    <Box
+                      bg="white"
+                      borderRadius="md"
+                      boxShadow="md"
+                      overflow="hidden"
+                      zIndex={2}
+                      position="relative"
+                      cursor="pointer" // Add pointer cursor to indicate clickability
+                      _hover={{ boxShadow: "lg" }} // Add hover effect
+                      role="group"
+                    >
+                      <Box
+                        height={{ base: "120px", md: "200px" }}
+                        overflow="hidden"
+                      >
+                        <Image
+                          src={recipe.image}
+                          alt={recipe.name}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                      </Box>
+                      <Text
+                        textAlign="center"
+                        fontSize={{ base: "14px", md: "16px" }}
+                        fontWeight="bold"
+                        color="black"
+                        mt={2}
+                        mb={2}
+                      >
+                        {recipe.name}
+                      </Text>
+                      {/* Hover Description */}
+                      <Box
+                        position="absolute"
+                        top="0"
+                        left="0"
+                        width="100%"
+                        height="100%"
+                        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+                        color="white"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        opacity="0" // Initially hidden
+                        transition="opacity 0.3s ease-in-out" // Smooth transition
+                        _groupHover={{ opacity: "1" }} // Show on hover
+                      >
+                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                          {recipe.description || "No description available."}
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Link>
+                ))
             )}
 
             {/* Show More Card */}
-            <Link to="/search?filter=filipino" style={{ textDecoration: "none" }}>
+            <Link
+              to="/search?filter=filipino"
+              style={{ textDecoration: "none" }}
+            >
               <Box
                 bg="gray.100"
                 borderRadius="md"

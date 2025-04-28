@@ -10,30 +10,27 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 const MotionText = motion(Text);
 
-
 function GetStartedPage() {
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [recipes, setRecipes] = useState([]);
-    const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/recipes");
+        console.log("Fetched recipes from API:", response.data); // Debug log
+        setRecipes(response.data.data);
+      } catch (error) {
+        console.error("Error fetching recipes:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-useEffect(() => {
-  const fetchRecipes = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/recipes");
-      console.log("Fetched recipes from API:", response.data); // Debug log
-      setRecipes(response.data.data);
-    } catch (error) {
-      console.error("Error fetching recipes:", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchRecipes();
-}, []);
+    fetchRecipes();
+  }, []);
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
@@ -153,9 +150,7 @@ useEffect(() => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
             zIndex={2}
           >
-            <Link to="/login">
-            Log In
-            </Link>
+            <Link to="/login">Log In</Link>
           </MotionText>
         </Flex>
       </Flex>
@@ -324,89 +319,89 @@ useEffect(() => {
         </Flex>
         <Box px="10%" py={6}>
           {loading ? (
-  <Text textAlign="center" fontSize="18px" color="gray.500">
-    Loading recipes...
-  </Text>
-) : recipes.length === 0 ? (
-  <Text textAlign="center" fontSize="18px" color="gray.500">
-    No recipes available at the moment. Please check back later!
-  </Text>
-) : (
-  <Grid
-    templateColumns={{
-      base: "repeat(2, 1fr)",
-      md: "repeat(4, 1fr)",
-    }}
-    gap={{ base: 2, md: 6 }} 
-  >
-    {recipes.slice(0,12).map((recipe) => (
-      <Link
-      to={`/recipe/${recipe._id}`} // Navigate to the recipe details page
-      key={recipe._id}
-      style={{ textDecoration: "none" }} // Remove underline from the link
-    >
-      <Box 
-        key={recipe._id}
-        bg="white"
-        borderRadius="md"
-        boxShadow="md"
-        overflow="hidden"
-        zIndex={2}
-        position="relative"
-        width={{ base: "160px", md: "300px" }} // Adjust width for responsiveness
-      >
-        {/* Recipe Image */}
-        <Box 
-        height={{ base: "120px", md: "200px" }} 
-        overflow="hidden">
-          <Image
-            src={recipe.image} // Use the recipe's image URL
-            alt={recipe.name}
-            objectFit="cover"
-            width="100%"
-            height="100%"
-          />
-        </Box>
+            <Text textAlign="center" fontSize="18px" color="gray.500">
+              Loading recipes...
+            </Text>
+          ) : recipes.length === 0 ? (
+            <Text textAlign="center" fontSize="18px" color="gray.500">
+              No recipes available at the moment. Please check back later!
+            </Text>
+          ) : (
+            <Grid
+              templateColumns={{
+                base: "repeat(2, 1fr)",
+                md: "repeat(4, 1fr)",
+              }}
+              gap={{ base: 2, md: 6 }}
+            >
+              {recipes.slice(0, 12).map((recipe) => (
+                <Link
+                  to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                  key={recipe._id}
+                  style={{ textDecoration: "none" }} // Remove underline from the link
+                >
+                  <Box
+                    key={recipe._id}
+                    bg="white"
+                    borderRadius="md"
+                    boxShadow="md"
+                    overflow="hidden"
+                    zIndex={2}
+                    position="relative"
+                    width={{ base: "160px", md: "300px" }} // Adjust width for responsiveness
+                  >
+                    {/* Recipe Image */}
+                    <Box
+                      height={{ base: "120px", md: "200px" }}
+                      overflow="hidden"
+                    >
+                      <Image
+                        src={recipe.image} // Use the recipe's image URL
+                        alt={recipe.name}
+                        objectFit="cover"
+                        width="100%"
+                        height="100%"
+                      />
+                    </Box>
 
-        {/* Recipe Name */}
-        <Text
-          textAlign="center"
-          fontSize={{ base: "14px", md: "16px" }}
-          fontWeight="bold"
-          color="black"
-          mt={2}
-          mb={2}
-        >
-          {recipe.name}
-        </Text>
+                    {/* Recipe Name */}
+                    <Text
+                      textAlign="center"
+                      fontSize={{ base: "14px", md: "16px" }}
+                      fontWeight="bold"
+                      color="black"
+                      mt={2}
+                      mb={2}
+                    >
+                      {recipe.name}
+                    </Text>
 
-          {/* Hover Description */}
-          <Box
-          position="absolute"
-          top="0"
-          left="0"
-          width="100%"
-          height="100%"
-          bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-          color="white"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          textAlign="center"
-          opacity="0" // Initially hidden
-          transition="opacity 0.3s ease-in-out" // Smooth transition
-          _hover={{ opacity: "1" }} // Show on hover
-        >
-
-          <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-            {recipe.description || "No description available."}
-          </Text>
-        </Box>
-      </Box>
-      </Link>
-    ))}
-  </Grid>
-)}
+                    {/* Hover Description */}
+                    <Box
+                      position="absolute"
+                      top="0"
+                      left="0"
+                      width="100%"
+                      height="100%"
+                      bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
+                      color="white"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      textAlign="center"
+                      opacity="0" // Initially hidden
+                      transition="opacity 0.3s ease-in-out" // Smooth transition
+                      _hover={{ opacity: "1" }} // Show on hover
+                    >
+                      <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                        {recipe.description || "No description available."}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Link>
+              ))}
+            </Grid>
+          )}
         </Box>
       </Box>
     </Box>
