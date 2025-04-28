@@ -17,6 +17,7 @@ import {
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { Link, useNavigate } from "react-router-dom";
 
 const RecipePage = () => {
   const { recipeId } = useParams();
@@ -113,9 +114,6 @@ const RecipePage = () => {
                 </Button>
               </HStack>
               <HStack spacing={8}>
-                <Text fontSize="md" color="gray.600">
-                  Prep Time: {recipe.prepTime || "N/A"} mins
-                </Text>
                 <Text fontSize="md" color="gray.600">
                   Serving Size: {recipe.servingSize || "N/A"}
                 </Text>
@@ -304,29 +302,39 @@ const RecipePage = () => {
           {/* Right Section */}
           <GridItem>
             {/* Related Recipes */}
-        <Heading as="h2" size="lg" mb={4}>
-          Related Recipes
-        </Heading>
-        <VStack spacing={4} align="stretch">
+<Heading as="h2" size="lg" mb={4}>
+  Related Recipes
+</Heading>
+<VStack spacing={4} align="stretch">
   {relatedRecipes.length > 0 ? (
     relatedRecipes.map((relatedRecipe) => (
-      <HStack key={relatedRecipe._id} spacing={4} align="center">
-        <Image
-          src={relatedRecipe.image}
-          alt={relatedRecipe.name}
-          boxSize="80px"
+      <Link key={relatedRecipe._id} to={`/recipes/${relatedRecipe._id}`} style={{ textDecoration: "none" }}>
+        <HStack
+          spacing={4}
+          align="center"
+          cursor="pointer"
+          _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
+          transition="all 0.2s ease-in-out"
+          p={2}
           borderRadius="md"
-          objectFit="cover"
-        />
-        <VStack align="start" spacing={1}>
-          <Text fontSize="sm" fontWeight="bold">
-            {relatedRecipe.name}
-          </Text>
-          <Text fontSize="xs" color="gray.500">
-            {relatedRecipe.description}
-          </Text>
-        </VStack>
-      </HStack>
+        >
+          <Image
+            src={relatedRecipe.image}
+            alt={relatedRecipe.name}
+            boxSize="80px"
+            borderRadius="md"
+            objectFit="cover"
+          />
+          <VStack align="start" spacing={1}>
+            <Text fontSize="sm" fontWeight="bold">
+              {relatedRecipe.name}
+            </Text>
+            <Text fontSize="xs" color="gray.500">
+              {relatedRecipe.description}
+            </Text>
+          </VStack>
+        </HStack>
+      </Link>
     ))
   ) : (
     <Text fontSize="sm" color="gray.500">
@@ -364,23 +372,33 @@ const RecipePage = () => {
 <VStack spacing={4} align="stretch">
   {trendingRecipes && trendingRecipes.length > 0 ? (
     trendingRecipes.map((recipe) => (
-      <HStack key={recipe._id} spacing={4} align="center">
-        <Image
-          src={recipe.image || "/images/default-recipe.jpg"}
-          alt={recipe.name || "Recipe"}
-          boxSize="80px"
+      <Link key={recipe._id} to={`/recipe/${recipe._id}`} style={{ textDecoration: "none" }}>
+        <HStack
+          spacing={4}
+          align="center"
+          cursor="pointer"
+          _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
+          transition="all 0.2s ease-in-out"
+          p={2}
           borderRadius="md"
-          objectFit="cover"
-        />
-        <VStack align="start" spacing={1}>
-          <Text fontSize="sm" fontWeight="bold">
-            {recipe.name}
-          </Text>
-          <Text fontSize="xs" color="gray.500">
-            {recipe.description || "No description available"}
-          </Text>
-        </VStack>
-      </HStack>
+        >
+          <Image
+            src={recipe.image || "/images/default-recipe.jpg"}
+            alt={recipe.name || "Recipe"}
+            boxSize="80px"
+            borderRadius="md"
+            objectFit="cover"
+          />
+          <VStack align="start" spacing={1}>
+            <Text fontSize="sm" fontWeight="bold">
+              {recipe.name}
+            </Text>
+            <Text fontSize="xs" color="gray.500">
+              {recipe.description || "No description available"}
+            </Text>
+          </VStack>
+        </HStack>
+      </Link>
     ))
   ) : (
     <Text fontSize="sm" color="gray.500">

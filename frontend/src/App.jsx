@@ -1,5 +1,5 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Sitemap from "./components/Sitemap";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
