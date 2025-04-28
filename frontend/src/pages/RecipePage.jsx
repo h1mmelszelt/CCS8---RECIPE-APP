@@ -21,6 +21,22 @@ import Navbar from "../components/Navbar";
 const RecipePage = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
+  const [relatedRecipes, setRelatedRecipes] = useState([]);
+  const [trendingRecipes, setTrendingRecipes] = useState([]);
+
+  useEffect(() => {
+    const fetchTrendingRecipes = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:5000/api/recipes/popular");
+        console.log("Trending Recipes Data:", data); // Debugging
+        setTrendingRecipes(data.data);
+      } catch (error) {
+        console.error("Error fetching trending recipes:", error);
+      }
+    };
+  
+    fetchTrendingRecipes();
+  }, []);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -29,6 +45,11 @@ const RecipePage = () => {
           `http://localhost:5000/api/recipes/${recipeId}`
         );
         setRecipe(data.data);
+
+        const relatedResponse = await axios.get(
+          `http://localhost:5000/api/recipes/related/${recipeId}`
+        );
+        setRelatedRecipes(relatedResponse.data.data);
       } catch (error) {
         console.error("Error fetching recipe:", error);
       }
@@ -283,30 +304,36 @@ const RecipePage = () => {
           {/* Right Section */}
           <GridItem>
             {/* Related Recipes */}
-            <Heading as="h2" size="lg" mb={4}>
-              Related Recipes
-            </Heading>
-            <VStack spacing={4} align="stretch">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <HStack key={index} spacing={4} align="center">
-                  <Image
-                    src={`/images/recipe-${index + 1}.jpg`}
-                    alt={`Recipe ${index + 1}`}
-                    boxSize="80px"
-                    borderRadius="md"
-                    objectFit="cover"
-                  />
-                  <VStack align="start" spacing={1}>
-                    <Text fontSize="sm" fontWeight="bold">
-                      Recipe Name {index + 1}
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Display Name
-                    </Text>
-                  </VStack>
-                </HStack>
-              ))}
-            </VStack>
+        <Heading as="h2" size="lg" mb={4}>
+          Related Recipes
+        </Heading>
+        <VStack spacing={4} align="stretch">
+  {relatedRecipes.length > 0 ? (
+    relatedRecipes.map((relatedRecipe) => (
+      <HStack key={relatedRecipe._id} spacing={4} align="center">
+        <Image
+          src={relatedRecipe.image}
+          alt={relatedRecipe.name}
+          boxSize="80px"
+          borderRadius="md"
+          objectFit="cover"
+        />
+        <VStack align="start" spacing={1}>
+          <Text fontSize="sm" fontWeight="bold">
+            {relatedRecipe.name}
+          </Text>
+          <Text fontSize="xs" color="gray.500">
+            {relatedRecipe.description}
+          </Text>
+        </VStack>
+      </HStack>
+    ))
+  ) : (
+    <Text fontSize="sm" color="gray.500">
+      No related recipes found.
+    </Text>
+  )}
+</VStack>
 
             {/* Newsletter */}
             <Box bg="#D3F38E" p={4} borderRadius="md" mt={6}>
@@ -331,30 +358,36 @@ const RecipePage = () => {
             </Box>
 
             {/* Trending Recipes */}
-            <Heading as="h2" size="lg" mt={8} mb={4}>
-              Trending Recipes
-            </Heading>
-            <VStack spacing={4} align="stretch">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <HStack key={index} spacing={4} align="center">
-                  <Image
-                    src={`/images/recipe-${index + 1}.jpg`}
-                    alt={`Recipe ${index + 1}`}
-                    boxSize="80px"
-                    borderRadius="md"
-                    objectFit="cover"
-                  />
-                  <VStack align="start" spacing={1}>
-                    <Text fontSize="sm" fontWeight="bold">
-                      Recipe Name {index + 1}
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Display Name
-                    </Text>
-                  </VStack>
-                </HStack>
-              ))}
-            </VStack>
+<Heading as="h2" size="lg" mt={8} mb={4}>
+  Trending Recipes
+</Heading>
+<VStack spacing={4} align="stretch">
+  {trendingRecipes && trendingRecipes.length > 0 ? (
+    trendingRecipes.map((recipe) => (
+      <HStack key={recipe._id} spacing={4} align="center">
+        <Image
+          src={recipe.image || "/images/default-recipe.jpg"}
+          alt={recipe.name || "Recipe"}
+          boxSize="80px"
+          borderRadius="md"
+          objectFit="cover"
+        />
+        <VStack align="start" spacing={1}>
+          <Text fontSize="sm" fontWeight="bold">
+            {recipe.name}
+          </Text>
+          <Text fontSize="xs" color="gray.500">
+            {recipe.description || "No description available"}
+          </Text>
+        </VStack>
+      </HStack>
+    ))
+  ) : (
+    <Text fontSize="sm" color="gray.500">
+      No trending recipes found.
+    </Text>
+  )}
+</VStack>
           </GridItem>
         </Grid>
       </Box>

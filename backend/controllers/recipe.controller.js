@@ -140,18 +140,36 @@ export const getRecipeById = async (req, res) => {
   }
 };
 
-/*export const getRelatedRecipes = async (req, res) => {
-  const { tags } = req.body;
+export const getRelatedRecipes = async (req, res) => {
+  const { id } = req.params; // Get the current recipe ID
 
-  if (!tags || !Array.isArray(tags)) {
-    return res.status(400).json({ success: false, message: "Tags are required" });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ success: false, message: "Invalid Recipe ID" });
   }
 
   try {
-    const relatedRecipes = await Recipe.find({ tags: { $in: tags } }).limit(5);
+    // Fetch the current recipe to get its tags
+    const currentRecipe = await Recipe.findById(id);
+
+    if (!currentRecipe) {
+      return res.status(404).json({ success: false, message: "Recipe not found" });
+    }
+
+    const tags = currentRecipe.tags;
+
+    if (!tags || tags.length === 0) {
+      return res.status(200).json({ success: true, data: [] }); // No related recipes if no tags
+    }
+
+    // Find related recipes with matching tags, excluding the current recipe
+    const relatedRecipes = await Recipe.find({
+      tags: { $in: tags },
+      _id: { $ne: id }, // Exclude the current recipe
+    }).limit(5);
+
     res.status(200).json({ success: true, data: relatedRecipes });
   } catch (error) {
     console.error("Error fetching related recipes:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-};*/
+};
