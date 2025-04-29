@@ -32,6 +32,7 @@ function GetStartedPage() {
     fetchRecipes();
   }, []);
 
+  window.scrollTo(0, 0);
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
       {/* Navbar */}

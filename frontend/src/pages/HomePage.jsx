@@ -26,6 +26,7 @@ function HomePage() {
 
     fetchRecipes();
   }, []);
+  window.scrollTo(0, 0);
 
   // Filter recipes by tag
   const getRecipesByTag = (tag) => {
