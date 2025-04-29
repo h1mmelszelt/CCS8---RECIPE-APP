@@ -25,7 +25,7 @@ function getCompressedImageUrl(url) {
     // Insert transformation params after '/upload/'
     return url.replace(
       /\/upload\//,
-      "/upload/q_auto,f_auto/"
+      "/upload/q_auto:eco,f_auto,w_400,h_300,c_fill/"
     );
   }
   return url;
