@@ -23,14 +23,25 @@ import { FiUser, FiHome } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NotificationsPage from "../pages/NotificationsPage";
-import { useEffect } from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const { setIsAuthenticated } = useContext(AuthContext); 
 
+
+    // Logout function
+    const handleLogout = () => {
+      console.log("Logout triggered");
+      localStorage.removeItem("token"); // Remove token from localStorage
+      setIsAuthenticated(false); // Update authentication state
+      navigate("/login"); // Redirect to login page
+    };
+  
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
@@ -341,6 +352,9 @@ function Navbar() {
                   py={3}
                 >
                   Settings
+                </MenuItem>
+                <MenuItem onClick={handleLogout} color="red">
+                  Logout
                 </MenuItem>
                 <Box borderBottom="1px solid #E2E8F0" />
               </MenuList>

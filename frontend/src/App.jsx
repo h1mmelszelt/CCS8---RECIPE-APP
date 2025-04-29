@@ -1,5 +1,5 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sitemap from "./components/Sitemap";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
@@ -19,6 +19,7 @@ import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Impo
 import FAQPage from "./pages/FAQPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import SignInRequired from "./pages/SignInRequired";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
@@ -45,6 +46,7 @@ function App() {
   ];
   return (
     <>
+    <AuthProvider>
       <CustomThemeProvider>
         <Box
           minH={"100vh"}
@@ -54,12 +56,7 @@ function App() {
           <Routes>
             <Route path="/" element={<GetStartedPage />} />
             {/* Protected Home Page Route */}
-            <Route
-              path="/home"
-              element={
-              localStorage.getItem("token") ? <HomePage /> : <Navigate to="/login" />
-            }           
-            />
+            <Route path="/home" element={<HomePage />} />
             <Route
               path="/profile/:id"
               element={
@@ -93,6 +90,7 @@ function App() {
           <Sitemap />
         </Box>
       </CustomThemeProvider>
+      </AuthProvider>
     </>
   );
 }

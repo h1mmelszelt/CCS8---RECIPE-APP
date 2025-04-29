@@ -23,13 +23,15 @@ import {
 import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // Adjust the path if necessary
 
 function Navbar({ transparent }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
+  const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate
-  const isAuthenticated = false;
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -38,13 +40,13 @@ function Navbar({ transparent }) {
   };
 
   const handleProtectedRoute = (path) => {
-    if (!isAuthenticated) {
-      navigate("/sign-in-required"); // Redirect to the SignInRequired page
+    if (!isAuthenticated && path !== "/home") {
+      navigate("/login"); // Redirect to the login page for protected routes
     } else {
       navigate(path); // Navigate to the intended path
     }
   };
-
+  
   return (
     <Box
       px={{ base: 4, md: 6 }}
@@ -139,8 +141,7 @@ function Navbar({ transparent }) {
           <MenuList bg="white" border="1px solid #E2E8F0" p={0}>
             {/* Home Menu Item */}
             <MenuItem
-              as={Link}
-              to="/home"
+              onClick={() => handleProtectedRoute("/home")}
               color="black"
               _hover={{ bg: "#F9F9F9" }} // Slight hover effect
               fontWeight="semibold" // Semi-bold text

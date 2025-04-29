@@ -1,18 +1,25 @@
 import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
-import Navbar from "../components/Navbar(Logged)";
+import NavbarLogged from "../components/Navbar(Logged)"; 
+import Navbar from "../components/Navbar";
 import BG_Home from "/images/homebg.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react"; 
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
   const [loading, setLoading] = useState(true);
-  const [snackLimit, setSnackLimit] = useState(4); // Limit for snack recipes
-  const [filipinoLimit, setFilipinoLimit] = useState(4);
+  const [createLoading, setCreateLoading] = useState(false);
+  const { isAuthenticated } = useContext(AuthContext); 
+  const navigate = useNavigate(); // Initialize navigate
+  const snackLimit = 4;
 
   // Fetch recipes from the backend
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchRecipes = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
@@ -26,7 +33,7 @@ function HomePage() {
 
     fetchRecipes();
   }, []);
-  window.scrollTo(0, 0);
+
 
   // Filter recipes by tag
   const getRecipesByTag = (tag) => {
@@ -35,6 +42,15 @@ function HomePage() {
         recipe.tags &&
         recipe.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
     );
+  };
+
+  const handleCreateRecipe = () => {
+    console.log("isAuthenticated:", isAuthenticated);
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate("/create");
+    }
   };
 
   return (
@@ -46,18 +62,9 @@ function HomePage() {
       overflowY="scroll" // Allow vertical scrolling
       overflowX="hidden" // Disable horizontal movement
     >
-      {/* Navbar */}
-      <Box
-        position="fixed"
-        top="0"
-        left="0"
-        width="100%"
-        zIndex="1000"
-        bg="white"
-        boxShadow="md"
-      >
-        <Navbar />
-      </Box>
+    
+    {/* Conditionally render the navbar */}
+    {isAuthenticated ? <NavbarLogged /> : <Navbar />}
 
       {/* Header Image */}
       <Box
@@ -119,8 +126,9 @@ function HomePage() {
         </Text>
 
         {/* Create Recipe Button */}
-        <Link to="/create" style={{ textDecoration: "none" }}>
           <Button
+            onClick={handleCreateRecipe} 
+            isLoading={createLoading} 
             mb={{ base: 12, md: 10 }}
             colorScheme="orange"
             bg="#FD660B"
@@ -133,7 +141,7 @@ function HomePage() {
           >
             CREATE RECIPE
           </Button>
-        </Link>
+
 
         {/* Divider Between Button and Grid */}
         <Divider borderColor="gray.400" />
