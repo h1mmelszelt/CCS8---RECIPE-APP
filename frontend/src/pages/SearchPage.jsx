@@ -17,6 +17,19 @@ import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
+// Helper to add Cloudinary compression params
+function getCompressedImageUrl(url) {
+  if (!url) return url;
+  // Check if it's a Cloudinary URL
+  if (url.includes("res.cloudinary.com")) {
+    // Insert transformation params after '/upload/'
+    return url.replace(
+      /\/upload\//,
+      "/upload/q_auto,f_auto/"
+    );
+  }
+  return url;
+}
 
 function SearchPage() {
   const location = useLocation();
@@ -290,7 +303,7 @@ function SearchPage() {
                         overflow="hidden"
                       >
                         <Image
-                          src={recipe.image}
+                          src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
                           objectFit="cover"
                           width="100%"
