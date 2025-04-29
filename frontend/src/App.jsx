@@ -1,5 +1,5 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Sitemap from "./components/Sitemap";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
@@ -53,7 +53,13 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<GetStartedPage />} />
-            <Route path="/home" element={<HomePage />} />
+            {/* Protected Home Page Route */}
+            <Route
+              path="/home"
+              element={
+              localStorage.getItem("token") ? <HomePage /> : <Navigate to="/login" />
+            }           
+            />
             <Route
               path="/profile/:id"
               element={

@@ -1,8 +1,54 @@
 import Navbar from "../components/Navbar";
-import { Box, Flex, Text, Input, Button, Checkbox, Link, VStack, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Input, Button, Checkbox, Link, VStack, Image, useToast } from "@chakra-ui/react";
 import cooking from "/images/AdobeStock guy cooking.jpeg";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/login", {
+        email,
+        password,
+      });
+
+      // Save token to localStorage
+      localStorage.setItem("token", response.data.token);
+
+      // Show success message
+      toast({
+        title: "Login successful",
+        description: "You are now logged in.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Redirect to home page
+      navigate("/home");
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: error.response?.data?.message || "An error occurred.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
     return (
       <>
         <Navbar />
@@ -35,22 +81,26 @@ function LoginPage() {
                     E-mail Address
                   </Text>
                   <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    borderRadius="md"
-                    bg="white"
-                    mb={4}
+                  type="email"
+                  placeholder="Enter your email"
+                  borderRadius="md"
+                  bg="white"
+                  mb={4}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   />
   
                   <Text fontSize="sm" mb={1} color="black">
                     Password
                   </Text>
                   <Input
-                    type="password"
-                    placeholder="Enter your password"
-                    borderRadius="md"
-                    bg="white"
-                    mb={2}
+                  type="password"
+                  placeholder="Enter your password"
+                  borderRadius="md"
+                  bg="white"
+                  mb={2}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   />
   
                   <Flex justify="space-between" align="center" mb={20}>
@@ -71,19 +121,20 @@ function LoginPage() {
                     </Link>
                   </Flex>
   
-                  <Link href="/home" style={{ textDecoration: "none" }}>
+
                     <Button
-                      w="100%"
-                      bg="#AAD05E"
-                      color="white"
-                      _hover={{ bg: "#99BD50" }}
-                      borderRadius="md"
-                      mx="auto"
-                      display="block"
+                  w="100%"
+                  bg="#AAD05E"
+                  color="white"
+                  _hover={{ bg: "#99BD50" }}
+                  borderRadius="md"
+                  mx="auto"
+                  display="block"
+                  onClick={handleLogin}
+                  isLoading={loading}
                     >
                       Sign in
                     </Button>
-                  </Link>
                 </Box>
   
                 <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4} mb={20}>

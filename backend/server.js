@@ -21,6 +21,7 @@ app.use(express.json());
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api", userRoutes);
 
 app.listen(5000, () => {
   connectDB();
