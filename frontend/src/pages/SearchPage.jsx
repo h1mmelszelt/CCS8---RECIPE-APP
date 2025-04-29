@@ -59,6 +59,8 @@ function SearchPage() {
     }
   }, [filter, recipes]);
 
+  window.scrollTo(0, 0);
+
   // Define handleApplyFilters
   const handleApplyFilters = (appliedFilters) => {
     console.log("Filters applied:", appliedFilters);
