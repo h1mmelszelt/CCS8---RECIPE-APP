@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Define the checkAuthStatus function
-  const checkAuthStatus = () => {
+  /*const checkAuthStatus = () => {
     const token = localStorage.getItem("token");
     console.log("Token in localStorage:", token);
     
@@ -35,6 +35,30 @@ export const AuthProvider = ({ children }) => {
       }
     } else {
     console.log("No token found");
+      setIsAuthenticated(false);
+    }
+  };*/
+
+  const checkAuthStatus = async () => {
+    const token = localStorage.getItem("token");
+    
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+  
+        if (decoded.exp < currentTime) {
+          localStorage.removeItem("token");
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Auth error:", error);
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+      }
+    } else {
       setIsAuthenticated(false);
     }
   };

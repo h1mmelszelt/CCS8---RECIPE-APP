@@ -4,6 +4,8 @@ import cooking from "/images/AdobeStock guy cooking.jpeg";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function LoginPage() {
 
@@ -12,7 +14,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
-
+  const { setIsAuthenticated } = useContext(AuthContext);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -24,6 +26,8 @@ function LoginPage() {
 
       // Save token to localStorage
       localStorage.setItem("token", response.data.token);
+
+      setIsAuthenticated(true);
 
       // Show success message
       toast({
