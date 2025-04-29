@@ -7,17 +7,23 @@ import {
   Button,
   VStack,
   HStack,
-  Image,
   IconButton,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import Navbar from "../components/Navbar(Logged)";
+import axios from "axios"; // Import axios for API requests
 
 function CreatePage() {
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
+  const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
+  const [servings, setServings] = useState("");
   const [tags, setTags] = useState([""]);
+  const toast = useToast(); // For user feedback
 
   const handleAddIngredient = () => setIngredients([...ingredients, ""]);
   const handleRemoveIngredient = (index) =>
@@ -46,16 +52,77 @@ function CreatePage() {
     setTags(updated);
   };
 
+  const handleSaveRecipe = async () => {
+    // Validate form data
+    if (
+      !title ||
+      !image ||
+      !description ||
+      ingredients.length === 0 ||
+      instructions.length === 0 ||
+      tags.length === 0
+    ) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const newRecipe = {
+      name: title,
+      image,
+      description,
+      ingredients,
+      instructions,
+      servingSize: servings,
+      tags,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/recipes",
+        newRecipe
+      );
+      toast({
+        title: "Success",
+        description: "Recipe saved successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      // Optionally, reset the form
+      setTitle("");
+      setImage("");
+      setDescription("");
+      setIngredients([""]);
+      setInstructions([""]);
+      setServings("");
+      setTags([""]);
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save the recipe. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box
       bg="gray.100"
       minH="100vh"
       color="black"
-      pb={{ base: "60px", md: "0" }} // Adjust padding for mobile view
+      pb={{ base: "60px", md: "0" }}
     >
       <Navbar />
       <Box maxW="800px" mx="auto" p={6}>
-        {/* Container */}
         <Box
           bg="white"
           border="1px solid #E2E8F0"
@@ -67,44 +134,43 @@ function CreatePage() {
             Create New Recipe
           </Text>
           <VStack spacing={4} align="stretch">
-            {/* Recipe Title */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Recipe Title:
               </Text>
               <Input
                 placeholder="What's the name of your recipe?"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 border="1px solid"
-                borderColor="gray.300" // Uniform gray border
+                borderColor="gray.300"
               />
             </Box>
-
-            {/* Recipe Image */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Recipe Image URL:
               </Text>
               <Input
                 placeholder="Enter the URL of your recipe image"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
                 border="1px solid"
-                borderColor="gray.300" // Uniform gray border
+                borderColor="gray.300"
               />
             </Box>
-
-            {/* Description */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Description:
               </Text>
               <Textarea
                 placeholder="What's your recipe about?"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 maxLength={120}
                 border="1px solid"
-                borderColor="gray.300" // Uniform gray border
+                borderColor="gray.300"
               />
             </Box>
-
-            {/* Ingredients */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Ingredients:
@@ -118,7 +184,7 @@ function CreatePage() {
                       handleIngredientChange(index, e.target.value)
                     }
                     border="1px solid"
-                    borderColor="gray.300" // Uniform gray border
+                    borderColor="gray.300"
                   />
                   <IconButton
                     icon={<DeleteIcon />}
@@ -134,15 +200,13 @@ function CreatePage() {
                 bg="white"
                 color="orange.500"
                 border="1px solid"
-                borderColor="orange.300" // Uniform gray border
+                borderColor="orange.300"
                 _hover={{ bg: "orange.300", color: "white" }}
                 onClick={handleAddIngredient}
               >
                 Add Ingredients
               </Button>
             </Box>
-
-            {/* Instructions */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Instructions:
@@ -156,7 +220,7 @@ function CreatePage() {
                       handleInstructionChange(index, e.target.value)
                     }
                     border="1px solid"
-                    borderColor="gray.300" // Uniform gray border
+                    borderColor="gray.300"
                   />
                   <IconButton
                     icon={<DeleteIcon />}
@@ -172,27 +236,25 @@ function CreatePage() {
                 bg="white"
                 color="orange.500"
                 border="1px solid"
-                borderColor="orange.300" // Uniform gray border
+                borderColor="orange.300"
                 _hover={{ bg: "orange.300", color: "white" }}
                 onClick={handleAddInstruction}
               >
                 Add Steps
               </Button>
             </Box>
-
-            {/* Servings */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Servings:
               </Text>
               <Input
                 placeholder="How many servings does this recipe make?"
+                value={servings}
+                onChange={(e) => setServings(e.target.value)}
                 border="1px solid"
-                borderColor="gray.300" // Uniform gray border
+                borderColor="gray.300"
               />
             </Box>
-
-            {/* Tags */}
             <Box>
               <Text fontWeight="medium" mb={2}>
                 Tags:
@@ -204,7 +266,7 @@ function CreatePage() {
                     value={tag}
                     onChange={(e) => handleTagChange(index, e.target.value)}
                     border="1px solid"
-                    borderColor="gray.300" // Uniform gray border
+                    borderColor="gray.300"
                   />
                   <IconButton
                     icon={<DeleteIcon />}
@@ -220,16 +282,17 @@ function CreatePage() {
                 bg="white"
                 color="orange.500"
                 border="1px solid"
-                borderColor="orange.300" // Uniform gray border
+                borderColor="orange.300"
                 _hover={{ bg: "orange.300", color: "white" }}
                 onClick={handleAddTag}
               >
                 Add Tags
               </Button>
             </Box>
-            {/* Save Button */}
             <Flex justify="flex-end">
-              <Button colorScheme="orange">Save</Button>
+              <Button colorScheme="orange" onClick={handleSaveRecipe}>
+                Save
+              </Button>
             </Flex>
           </VStack>
         </Box>
