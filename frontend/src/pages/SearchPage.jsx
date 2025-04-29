@@ -15,6 +15,8 @@ import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+
 
 function SearchPage() {
   const location = useLocation();
@@ -25,14 +27,27 @@ function SearchPage() {
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("query") || "";
 
-  // Fetch recipes from the backend
+
+  // Fetch recipes based on search query
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
+        const queryParams = new URLSearchParams(location.search);
+        const query = queryParams.get("query");
+
+        if (query && query.trim() !== "") {
+          const response = await axios.get(`http://localhost:5000/api/recipes/search/${encodeURIComponent(query)}`);
+          setRecipes(response.data.data);
+          setFilteredRecipes(response.data.data);
+          setSearchQuery(query)
+        } else {
+          const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
         setRecipes(response.data.data);
         setFilteredRecipes(response.data.data); // Initially, show all recipes
+        }
       } catch (error) {
         console.error("Error fetching recipes:", error.message);
       } finally {
@@ -41,25 +56,22 @@ function SearchPage() {
     };
 
     fetchRecipes();
-  }, []);
-
-  // Update the filtered recipes when the filter query parameter changes
-  useEffect(() => {
-    if (filter) {
-      const filtered = recipes.filter(
-        (recipe) =>
-          recipe.tags &&
-          recipe.tags
-            .map((tag) => tag.toLowerCase())
-            .includes(filter.toLowerCase())
-      );
-      setFilteredRecipes(filtered);
-    } else {
-      setFilteredRecipes(recipes); // Show all recipes if no filter is applied
-    }
-  }, [filter, recipes]);
+  }, [location.search]);
+  
 
   window.scrollTo(0, 0);
+
+  // Handle search functionality
+  const handleSearch = () => {
+    if (searchQuery.trim() === "") {
+      setFilteredRecipes(recipes); // Show all recipes if search query is empty
+    } else {
+      const filtered = recipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
+    }
+  };
 
   // Define handleApplyFilters
   const handleApplyFilters = (appliedFilters) => {
@@ -83,17 +95,21 @@ function SearchPage() {
     setFilteredRecipes(filtered);
   };
 
-  // Handle search functionality
-  const handleSearch = () => {
-    if (searchQuery.trim() === "") {
-      setFilteredRecipes(recipes); // Show all recipes if search query is empty
-    } else {
-      const filtered = recipes.filter((recipe) =>
-        recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+        // Update the filtered recipes when the filter query parameter changes
+  useEffect(() => {
+    if (filter) {
+      const filtered = recipes.filter(
+        (recipe) =>
+          recipe.tags &&
+          recipe.tags
+            .map((tag) => tag.toLowerCase())
+            .includes(filter.toLowerCase())
       );
       setFilteredRecipes(filtered);
+    } else {
+      setFilteredRecipes(recipes); // Show all recipes if no filter is applied
     }
-  };
+  }, [filter, recipes]);
 
   return (
     <Box
@@ -118,7 +134,7 @@ function SearchPage() {
         display={{ base: "none", md: "block" }} // Hide on smaller screens, show on medium and larger screens
       />
 
-      <Box
+      <Box // Mobile Search Bar
         display={{ base: "flex", md: "none" }} // Show only on smaller screens
         px={4}
         py={2}
@@ -128,7 +144,7 @@ function SearchPage() {
         top="0"
         zIndex="1000"
       >
-        <Input
+        <Input 
           placeholder="Search recipes by title..."
           size="sm"
           borderRadius="md"
@@ -137,6 +153,9 @@ function SearchPage() {
           mr={2}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch(); // Trigger search on Enter key
+          }}
         />
         <Button
           size="sm"
@@ -195,7 +214,7 @@ function SearchPage() {
                 borderRadius="md"
                 bg="white"
               />
-              <Button colorScheme="green" size="sm" width="100%">
+              <Button bg="#97C33A" size="sm" width="100%" _hover={{ bg: "#7da52f" }}>
                 Sign Up
               </Button>
             </Box>

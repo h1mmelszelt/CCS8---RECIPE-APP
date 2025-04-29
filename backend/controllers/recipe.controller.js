@@ -175,3 +175,18 @@ export const getRelatedRecipes = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+export const searchRecipes = async (req, res) => {
+  const { query } = req.params; // Extract query from params
+
+  try {
+    const recipes = await Recipe.find({
+      name: { $regex: query, $options: "i" }, // Perform case-insensitive search
+    });
+
+    res.status(200).json({ success: true, data: recipes });
+  } catch (error) {
+    console.error("Error searching recipes:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};

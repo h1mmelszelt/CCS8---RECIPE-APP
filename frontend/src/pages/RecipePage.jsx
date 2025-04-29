@@ -321,7 +321,7 @@ const RecipePage = () => {
           <Image
             src={relatedRecipe.image}
             alt={relatedRecipe.name}
-            boxSize="80px"
+            boxSize="100px"
             borderRadius="md"
             objectFit="cover"
           />
@@ -359,7 +359,7 @@ const RecipePage = () => {
                   bg="white"
                   borderRadius="md"
                 />
-                <Button bg="#97C33A" size="sm" width="150px">
+                <Button bg="#97C33A" size="sm" width="150px" _hover={{ bg: "#7da52f" }}>
                   Subscribe
                 </Button>
               </HStack>

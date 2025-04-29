@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon, BellIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NotificationsPage from "../pages/NotificationsPage";
 import { useEffect } from "react";
@@ -28,6 +28,16 @@ import { useEffect } from "react";
 function Navbar() {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    } else {
+      navigate(`/search`); // Clear the query parameter if search is empty
+    }
+  };
 
   // State for notifications
   const [notifications, setNotifications] = useState([
@@ -115,15 +125,24 @@ function Navbar() {
             {/* Search Bar */}
             <InputGroup maxW="400px" display={{ base: "none", md: "flex" }}>
               <InputRightElement cursor="pointer">
-                <Link to="/search">
-                  <SearchIcon color="#FD660B" boxSize={5} />
-                </Link>
+                <SearchIcon
+                  color="#FD660B"
+                  boxSize={5}
+                  onClick={() => handleSearch(searchQuery)}
+                />
               </InputRightElement>
               <Input
                 type="text"
                 placeholder="Search recipes..."
                 borderRadius="15px"
                 bg="#E6E6E6"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch(e.target.value);
+                  }
+                }}
               />
             </InputGroup>
 

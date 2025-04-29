@@ -7,7 +7,8 @@ import {
   getPopularRecipes,
   getUserRecipes,
   getRecipeById,
-  getRelatedRecipes
+  getRelatedRecipes,
+  searchRecipes
 } from "../controllers/recipe.controller.js";
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.put("/:id", updateRecipe);
 router.delete("/:id", deleteRecipe);
 router.get("users/:id", getUserRecipes); //users/ must be there or the next line will not work
 router.get("/related/:id", getRelatedRecipes);
+router.get("/search/:query", searchRecipes);
 
 export default router;
