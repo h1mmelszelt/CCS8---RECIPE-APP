@@ -12,6 +12,20 @@ import axios from "axios";
 
 const MotionText = motion(Text);
 
+// Helper to add Cloudinary compression params
+function getCompressedImageUrl(url) {
+  if (!url) return url;
+  // Check if it's a Cloudinary URL
+  if (url.includes("res.cloudinary.com")) {
+    // Insert transformation params after '/upload/'
+    return url.replace(
+      /\/upload\//,
+      "/upload/q_auto:eco,f_auto,w_400,h_300,c_fill/"
+    );
+  }
+  return url;
+}
+
 function GetStartedPage() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -357,7 +371,7 @@ function GetStartedPage() {
                       overflow="hidden"
                     >
                       <Image
-                        src={recipe.image} // Use the recipe's image URL
+                        src={getCompressedImageUrl(recipe.image)} // Use the recipe's image URL
                         alt={recipe.name}
                         objectFit="cover"
                         width="100%"

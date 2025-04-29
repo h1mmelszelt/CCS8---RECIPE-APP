@@ -5,6 +5,20 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+// Helper to add Cloudinary compression params
+function getCompressedImageUrl(url) {
+  if (!url) return url;
+  // Check if it's a Cloudinary URL
+  if (url.includes("res.cloudinary.com")) {
+    // Insert transformation params after '/upload/'
+    return url.replace(
+      /\/upload\//,
+      "/upload/q_auto:eco,f_auto,w_400,h_300,c_fill/"
+    );
+  }
+  return url;
+}
+
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
   const [loading, setLoading] = useState(true);
@@ -254,7 +268,7 @@ function HomePage() {
                         overflow="hidden"
                       >
                         <Image
-                          src={recipe.image}
+                          src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
                           objectFit="cover"
                           width="100%"
@@ -367,7 +381,7 @@ function HomePage() {
                         overflow="hidden"
                       >
                         <Image
-                          src={recipe.image}
+                          src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
                           objectFit="cover"
                           width="100%"
