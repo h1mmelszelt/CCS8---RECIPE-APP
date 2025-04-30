@@ -354,7 +354,7 @@ function GetStartedPage() {
                       overflow="hidden"
                     >
                       <Image
-                        src={recipe.image} // Use the recipe's image URL
+                        src={getCompressedImageUrl(recipe.image)} // Use the recipe's image URL
                         alt={recipe.name}
                         objectFit="cover"
                         width="100%"
