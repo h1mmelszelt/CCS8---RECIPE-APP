@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Image,
@@ -11,13 +12,68 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa"; // Import icons
-import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 import BG_Image from "/images/11.png";
 
 const ProfileSettingsPage = () => {
-  const [activeSetting, setActiveSetting] = useState("Profile Settings"); // State to track active setting
+  const { id: userId } = useParams(); // Get userId from URL
+  const [userData, setUserData] = useState({
+    username: "",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeSetting, setActiveSetting] = useState("Profile Settings"); // Initialize activeSetting
+
+  useEffect(() => {
+    console.log("User ID from URL:", userId);
+
+    const fetchUserData = async () => {
+      try {
+        if (userId) {
+          const { data } = await axios.get(
+            `http://localhost:5000/api/users/${userId}`
+          );
+          console.log("Fetched User Data:", data); // Debugging: Log the fetched data
+          setUserData({
+            username: data.username || "", // Assuming "name" is the first name
+            email: data.email || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false); // Stop loading after data is fetched
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      if (userId) {
+        await axios.put(`http://localhost:5000/api/users/${userId}`, userData);
+        alert("Profile updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile.");
+    }
+  };
+
+  if (isLoading) {
+    return <Text>Loading...</Text>; // Show a loading message while fetching data
+  }
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
@@ -75,16 +131,16 @@ const ProfileSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: "/settings" },
+              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}` },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: "/notification-settings",
+                link: `/notification-settings/${userId}`,
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: "/advanced-settings",
+                link: `/advanced-settings/${userId}`,
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
@@ -195,9 +251,14 @@ const ProfileSettingsPage = () => {
                 >
                   {" "}
                   {/* Adjust label width */}
-                  First Name
+                  Username
                 </Text>
-                <Input placeholder="Enter your first name" width="65%" />{" "}
+                <Input
+                placeholder="Enter your username"
+                name="username"
+                value={userData.username}
+                onChange={handleInputChange}
+                />
                 {/* Adjust input width */}
               </Flex>
             </Box>
@@ -206,60 +267,29 @@ const ProfileSettingsPage = () => {
                 <Text
                   fontSize={{ base: "14px", md: "16px" }}
                   fontWeight="medium"
-                  width="35%"
-                >
-                  Last Name
-                </Text>
-                <Input placeholder="Enter your last name" width="65%" />
-              </Flex>
-            </Box>
-            <Box width={{ base: "100%", md: "60%" }}>
-              <Flex direction="row" align="center" gap={2}>
-                <Text
-                  fontSize={{ base: "14px", md: "16px" }}
-                  fontWeight="medium"
-                  width="35%"
+                  width="27.5%"
                 >
                   Email
                 </Text>
-                <Input placeholder="Enter your email" width="65%" />
+                <Text
+                fontSize={{ base: "14px", md: "16px" }}
+                fontWeight="medium"
+                color="gray.700"
+                >
+                  {userData.email || "No email available"}
+                </Text>
               </Flex>
             </Box>
             <Box width={{ base: "100%", md: "60%" }}>
-              <Flex direction="row" align="center" gap={2}>
-                <Text
-                  fontSize={{ base: "14px", md: "16px" }}
-                  fontWeight="medium"
-                  width="35%"
-                >
-                  Phone Number
-                  <Text as="span" color="red">
-                    *
-                  </Text>
-                </Text>
-                <Flex width="65%" gap={2}>
-                  {" "}
-                  {/* Wrap dropdown and input in a Flex container */}
-                  <Select placeholder="Country Code" width="40%">
-                    {" "}
-                    {/* Dropdown for country code */}
-                    <option value="+1">+1 (USA)</option>
-                    <option value="+44">+44 (UK)</option>
-                    <option value="+91">+91 (India)</option>
-                    {/* Add more country codes as needed */}
-                  </Select>
-                  <Input placeholder="Enter your phone number" width="60%" />{" "}
-                  {/* Input for phone number */}
-                </Flex>
-              </Flex>
             </Box>
             <Button
               bg="#58653C"
               color="white"
               _hover={{ bg: "green.500" }}
-              width={{ base: "80%", md: "200px" }} // Full width on mobile
+              width={{ base: "80%", md: "200px" }}
               mx="auto"
               mt="5%"
+              onClick={handleSaveChanges}
             >
               Save Changes
             </Button>

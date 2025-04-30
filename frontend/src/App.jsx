@@ -74,17 +74,17 @@ function App() {
             />
             <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings/:id" element={<SettingsPage />} />
             <Route
               path="/notifications"
               element={<NotificationsPage notifications={notifications} />}
             />
             <Route
-              path="/advanced-settings"
+              path="/advanced-settings/:id"
               element={<AdvancedSettingsPage />}
             />
             <Route
-              path="/notification-settings"
+              path="/notification-settings/:id"
               element={<NotificationSettingsPage />}
             />
             <Route path="/create" element={<CreatePage />} />

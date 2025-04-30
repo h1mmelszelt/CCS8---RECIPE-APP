@@ -344,7 +344,7 @@ function Navbar() {
                 {/* Settings Menu Item */}
                 <MenuItem
                   as={Link}
-                  to="/settings"
+                  to={`/settings/${userId}`}
                   color="black"
                   _hover={{ bg: "#F9F9F9" }}
                   fontWeight="semibold"

@@ -13,11 +13,12 @@ import {
 
 import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import BG_Image from "/images/11.png";
 import { useThemeToggle } from "../components/ThemeProvider"; // Import the theme toggle hook
 
 const AdvancedSettingsPage = () => {
+  const { id: userId } = useParams(); // Get userId from URL
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
   const toggleTheme = useThemeToggle();
 
@@ -82,16 +83,16 @@ const AdvancedSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: "/settings" },
+              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}` },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: "/notification-settings",
+                link: `/notification-settings/${userId}`,
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: "/advanced-settings",
+                link: `/advanced-settings/${userId}`,
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
