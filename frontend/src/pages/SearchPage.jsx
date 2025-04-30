@@ -10,26 +10,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import { useSearchParams, useNavigate } from "react-router-dom";
-
-// Helper to add Cloudinary compression params
-function getCompressedImageUrl(url) {
-  if (!url) return url;
-  // Check if it's a Cloudinary URL
-  if (url.includes("res.cloudinary.com")) {
-    // Insert transformation params after '/upload/'
-    return url.replace(
-      /\/upload\//,
-      "/upload/q_auto:eco,f_auto,w_400,h_300,c_fill/"
-    );
-  }
-  return url;
-}
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 function SearchPage() {
   const location = useLocation();

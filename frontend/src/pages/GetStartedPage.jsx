@@ -9,6 +9,7 @@ import Fabio from "/images/fabio.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 const MotionText = motion(Text);
 
@@ -354,7 +355,7 @@ function GetStartedPage() {
                       overflow="hidden"
                     >
                       <Image
-                        src={recipe.image} // Use the recipe's image URL
+                        src={getCompressedImageUrl(recipe.image)} // Use the recipe's image URL
                         alt={recipe.name}
                         objectFit="cover"
                         width="100%"

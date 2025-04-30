@@ -7,6 +7,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
@@ -257,7 +258,7 @@ function HomePage() {
                         overflow="hidden"
                       >
                         <Image
-                          src={recipe.image}
+                          src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
                           objectFit="cover"
                           width="100%"
@@ -370,7 +371,7 @@ function HomePage() {
                         overflow="hidden"
                       >
                         <Image
-                          src={recipe.image}
+                          src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
                           objectFit="cover"
                           width="100%"

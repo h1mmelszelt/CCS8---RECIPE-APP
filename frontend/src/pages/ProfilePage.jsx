@@ -17,6 +17,7 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import { FaStar, FaEdit } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 const tabs = [
   { key: "created", label: "Recipes Created" },
@@ -98,8 +99,8 @@ const ProfilePage = ({ isOwner }) => {
             >
               <Box position="relative">
                 <Image
-                  src={recipe.image}
-                  alt={recipe.title}
+                  src={getCompressedImageUrl(recipe.image)}
+g                  alt={recipe.title}
                   height="200px"
                   width="100%"
                   objectFit="cover"
