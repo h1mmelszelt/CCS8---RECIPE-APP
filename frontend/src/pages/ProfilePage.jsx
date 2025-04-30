@@ -12,10 +12,11 @@ import {
   Icon,
   Divider,
   IconButton,
+  Button,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { FaStar, FaEdit } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
@@ -37,32 +38,24 @@ const ProfilePage = ({ isOwner }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Fetch user data
         const { data } = await axios.get(
           `http://localhost:5000/api/users/${userId}`
         );
-        console.log("User ID:", userId);
         setUserData(data);
 
-        // Fetch user's created recipes
         const recipesResponse = await axios.get(
           `http://localhost:5000/api/recipes/user/${userId}`
         );
-        console.log("Created Recipes:", recipesResponse.data.data); // Debug log
         setCreatedRecipes(recipesResponse.data.data);
 
-        // Fetch user's bookmarks
         const bookmarksResponse = await axios.get(
           `http://localhost:5000/api/users/bookmarks/${userId}`
         );
-        console.log("Bookmarks:", bookmarksResponse.data.data); // Debug log
         setBookmarks(bookmarksResponse.data.data);
 
-        // Fetch user's reviews
         const reviewsResponse = await axios.get(
           `http://localhost:5000/api/reviews/user/${userId}`
         );
-        console.log("Reviews:", reviewsResponse.data.data); // Debug log
         setReviews(reviewsResponse.data.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -77,7 +70,7 @@ const ProfilePage = ({ isOwner }) => {
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
         My Created Recipes
       </Text>
-      <Divider borderColor="black.300" mb={4} />
+      <Divider borderColor="orange.300" mb={4} />
       {createdRecipes.length === 0 ? (
         <Text>No recipes created yet.</Text>
       ) : (
@@ -89,31 +82,17 @@ const ProfilePage = ({ isOwner }) => {
               borderRadius="lg"
               overflow="hidden"
               bg="white"
-              boxShadow="sm"
-              cursor="pointer"
+              boxShadow="md"
               transition="0.3s ease"
-              _hover={{
-                borderColor: "orange.200",
-                boxShadow: "0 0 3px 1px orange",
-              }}
+              _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
             >
-              <Box position="relative">
-                <Image
-                  src={getCompressedImageUrl(recipe.image)}
-g                  alt={recipe.title}
-                  height="200px"
-                  width="100%"
-                  objectFit="cover"
-                />
-                <Box position="absolute" top="8px" right="8px">
-                  <IconButton
-                    icon={<FiMoreHorizontal />}
-                    size="sm"
-                    variant="ghost"
-                    aria-label="More options"
-                  />
-                </Box>
-              </Box>
+              <Image
+                src={getCompressedImageUrl(recipe.image)}
+                alt={recipe.title}
+                height="200px"
+                width="100%"
+                objectFit="cover"
+              />
               <VStack align="start" spacing={2} p={4}>
                 <Text
                   fontSize="lg"
@@ -126,6 +105,21 @@ g                  alt={recipe.title}
                 <Text fontSize="sm" color="gray.600" noOfLines={2}>
                   {recipe.description}
                 </Text>
+                <HStack spacing={2} mt={2}>
+                  <Avatar
+                    size="sm"
+                    src={userData.avatar}
+                    name={userData.name}
+                  />
+                  <VStack align="start" spacing={0}>
+                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                      {userData.name}
+                    </Text>
+                    <Text fontSize="xs" color="gray.500">
+                      @{userData.username}
+                    </Text>
+                  </VStack>
+                </HStack>
               </VStack>
             </Box>
           ))}
@@ -139,7 +133,7 @@ g                  alt={recipe.title}
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
         My Bookmarks
       </Text>
-      <Divider borderColor="black.300" mb={4} />
+      <Divider borderColor="orange.300" mb={4} />
       <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
         {bookmarks.map((bookmark) => (
           <Box
@@ -148,23 +142,17 @@ g                  alt={recipe.title}
             borderRadius="lg"
             overflow="hidden"
             bg="white"
-            boxShadow="sm"
-            cursor="pointer"
+            boxShadow="md"
             transition="0.3s ease"
-            _hover={{
-              borderColor: "orange.200",
-              boxShadow: "0 0 3px 1px orange",
-            }}
+            _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
           >
-            <Box position="relative">
-              <Image
-                src={bookmark.image}
-                alt={bookmark.title}
-                height="200px"
-                width="100%"
-                objectFit="cover"
-              />
-            </Box>
+            <Image
+              src={bookmark.image}
+              alt={bookmark.title}
+              height="200px"
+              width="100%"
+              objectFit="cover"
+            />
             <VStack align="start" spacing={2} p={4}>
               <Text
                 fontSize="lg"
@@ -174,19 +162,38 @@ g                  alt={recipe.title}
               >
                 {bookmark.title}
               </Text>
+              <Text fontSize="sm" color="gray.600" noOfLines={2}>
+                {bookmark.description}
+              </Text>
+              {bookmark.user && ( // Ensure bookmark.user exists
+                <HStack spacing={2} mt={2}>
+                  <Avatar
+                    size="sm"
+                    src={bookmark.user.avatar || ""}
+                    name={bookmark.user.name || "Unknown User"}
+                  />
+                  <VStack align="start" spacing={0}>
+                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                      {bookmark.user.name || "Unknown User"}
+                    </Text>
+                    <Text fontSize="xs" color="gray.500">
+                      @{bookmark.user.username || "unknown"}
+                    </Text>
+                  </VStack>
+                </HStack>
+              )}
             </VStack>
           </Box>
         ))}
       </SimpleGrid>
     </Box>
   );
-
   const renderReviewCards = () => (
     <Box>
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-        My Reviews
+        {userData?.name}'s Reviews & Comments
       </Text>
-      <Divider borderColor="black.300" mb={4} />
+      <Divider borderColor="orange.300" mb={4} />
       {reviews.length === 0 ? (
         <Text>No reviews found.</Text>
       ) : (
@@ -198,14 +205,44 @@ g                  alt={recipe.title}
               borderWidth="1px"
               borderRadius="lg"
               bg="white"
+              boxShadow="sm"
+              transition="0.3s ease"
+              _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
             >
-              <Text fontWeight="bold">
-                {review.recipe_id?.name || "Unknown Recipe"} {/* Recipe name */}
+              <Flex justify="space-between" align="center" mb={2}>
+                <Text fontWeight="bold" color="orange.500">
+                  Commented on:{" "}
+                  <Text as="span" color="blue.500" cursor="pointer">
+                    {review.recipe_id?.name || "Unknown Recipe"}
+                  </Text>
+                </Text>
+                <IconButton
+                  icon={<FiMoreHorizontal />}
+                  size="sm"
+                  variant="ghost"
+                  aria-label="More options"
+                />
+              </Flex>
+              <Text fontSize="sm" color="gray.600" mb={2}>
+                {review.text}
               </Text>
-              <Text>{review.text}</Text> {/* Review text */}
-              <Text fontSize="sm" color="gray.500">
-                Rating: {review.rating} {/* Review rating */}
-              </Text>
+              <Flex justify="space-between" align="center">
+                <HStack spacing={1}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Icon
+                      key={i}
+                      as={FaStar}
+                      color={i < review.rating ? "orange.400" : "gray.300"}
+                    />
+                  ))}
+                  <Text fontSize="sm" color="gray.600">
+                    ({review.rating}/5)
+                  </Text>
+                </HStack>
+                <Text fontSize="xs" color="gray.500">
+                  Posted on: {new Date(review.createdAt).toLocaleDateString()}
+                </Text>
+              </Flex>
             </Box>
           ))}
         </VStack>
@@ -228,7 +265,6 @@ g                  alt={recipe.title}
         borderRadius="md"
         overflow="hidden"
       >
-        {/* User Info */}
         <Box
           bg="#FDE4CE"
           border="1px solid #ED984D"
@@ -245,11 +281,28 @@ g                  alt={recipe.title}
               <Text fontSize="sm" color="gray.500">
                 @{userData.username}
               </Text>
+              <Text fontSize="md" color="gray.700">
+                Will cook for compliments. Will eat for survival. Chomp chomp.
+              </Text>
+              <Text fontSize="sm" color="gray.500">
+                Joined: April 2025
+              </Text>
+              {isOwner && (
+                <Link to="/settings">
+                  <Button
+                    leftIcon={<FaEdit />}
+                    colorScheme="green"
+                    variant="solid"
+                    size="sm"
+                  >
+                    Edit Profile
+                  </Button>
+                </Link>
+              )}
             </VStack>
           </Flex>
         </Box>
 
-        {/* Tabs */}
         <Box bg="white" border="1px solid #c5c5c5" borderBottom="none">
           <Flex direction="row" justify="flex-start" px={4} py={2}>
             {tabs
@@ -271,7 +324,6 @@ g                  alt={recipe.title}
           </Flex>
         </Box>
 
-        {/* Content */}
         <Box
           bg="white"
           border="1px solid #c5c5c5"
