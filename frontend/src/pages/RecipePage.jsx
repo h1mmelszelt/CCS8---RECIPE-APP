@@ -31,13 +31,19 @@ const RecipePage = () => {
         const { data } = await axios.get(
           "http://localhost:5000/api/recipes/popular"
         );
-        console.log("Trending Recipes Data:", data); // Debugging
-        setTrendingRecipes(data.data);
+        // Map aggregation result to extract recipe details from _id
+        const popularRecipes = Array.isArray(data.data)
+          ? data.data.map((item) => ({
+              ...item._id, // recipe details
+              averageRating: item.averageRating,
+              totalReviews: item.totalReviews,
+            }))
+          : [];
+        setTrendingRecipes(popularRecipes);
       } catch (error) {
         console.error("Error fetching trending recipes:", error);
       }
     };
-
     fetchTrendingRecipes();
   }, []);
 

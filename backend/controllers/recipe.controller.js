@@ -97,7 +97,7 @@ export const getPopularRecipes = async (req, res) => {
 
     const results = await Recipe.populate(popular, { path: "_id" });
 
-    res.status(200).json(results);
+    res.status(200).json({ success: true, data: results });
   } catch (err) {
     console.error("Error fetching popular recipes:", err);
     res.status(500).json({ error: "Failed to get popular recipes" });
