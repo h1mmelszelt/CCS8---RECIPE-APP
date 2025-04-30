@@ -1,19 +1,18 @@
 import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
-import NavbarLogged from "../components/Navbar(Logged)"; 
-import Navbar from "../components/Navbar";
+
 import BG_Home from "/images/homebg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react"; 
+import { useContext } from "react";
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
   const [loading, setLoading] = useState(true);
   const [createLoading, setCreateLoading] = useState(false);
-  const { isAuthenticated } = useContext(AuthContext); 
+  const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize navigate
   const snackLimit = 4;
 
@@ -33,7 +32,6 @@ function HomePage() {
 
     fetchRecipes();
   }, []);
-
 
   // Filter recipes by tag
   const getRecipesByTag = (tag) => {
@@ -62,9 +60,7 @@ function HomePage() {
       overflowY="scroll" // Allow vertical scrolling
       overflowX="hidden" // Disable horizontal movement
     >
-    
-    {/* Conditionally render the navbar */}
-    {isAuthenticated ? <NavbarLogged /> : <Navbar />}
+      {/* Conditionally render the navbar */}
 
       {/* Header Image */}
       <Box
@@ -126,22 +122,21 @@ function HomePage() {
         </Text>
 
         {/* Create Recipe Button */}
-          <Button
-            onClick={handleCreateRecipe} 
-            isLoading={createLoading} 
-            mb={{ base: 12, md: 10 }}
-            colorScheme="orange"
-            bg="#FD660B"
-            color="white"
-            _hover={{ bg: "#e55a0a" }}
-            size={{ base: "lg", md: "lg" }} // Increased size
-            mx="auto" // Center horizontally
-            display="block" // Ensure centering works
-            mt={{ base: 5, md: 5 }} // Add margin-top for spacing
-          >
-            CREATE RECIPE
-          </Button>
-
+        <Button
+          onClick={handleCreateRecipe}
+          isLoading={createLoading}
+          mb={{ base: 12, md: 10 }}
+          colorScheme="orange"
+          bg="#FD660B"
+          color="white"
+          _hover={{ bg: "#e55a0a" }}
+          size={{ base: "lg", md: "lg" }} // Increased size
+          mx="auto" // Center horizontally
+          display="block" // Ensure centering works
+          mt={{ base: 5, md: 5 }} // Add margin-top for spacing
+        >
+          CREATE RECIPE
+        </Button>
 
         {/* Divider Between Button and Grid */}
         <Divider borderColor="gray.400" />

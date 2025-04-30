@@ -8,16 +8,13 @@ import {
   Image,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import Navbar from "../components/Navbar(Logged)";
-import aboutUsImage from "/images/cooking by AdobeStock.jpg"
+
+import aboutUsImage from "/images/cooking by AdobeStock.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const AboutUsPage = () => {
   return (
     <Box bg="white" minH="100vh" color="black">
-      {/* Navbar */}
-      <Navbar />
-
       {/* Main Content */}
       <Box px={{ base: 4, md: 20 }} py={10}>
         {/* About Us Section */}
@@ -63,7 +60,11 @@ const AboutUsPage = () => {
               that loves food as much as you do.”
             </Text>
           </Box>
-          <Box flex="1" display={{ base: "block", md: "block" }} justifyContent="center">
+          <Box
+            flex="1"
+            display={{ base: "block", md: "block" }}
+            justifyContent="center"
+          >
             <Image
               src={aboutUsImage}
               alt="Cooking"

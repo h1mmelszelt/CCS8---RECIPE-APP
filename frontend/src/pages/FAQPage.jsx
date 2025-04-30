@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
+
 import {
   Box,
   Flex,
@@ -49,9 +49,6 @@ const FAQPage = () => {
 
   return (
     <Box bg="white" minH="100vh">
-      {/* Navbar */}
-      <Navbar transparent={false} />
-
       {/* Header Section */}
       <Box px={{ base: 4, md: 20 }} py={10}>
         <Flex direction={{ base: "column", md: "row" }} align="center" gap={10}>
@@ -88,10 +85,11 @@ const FAQPage = () => {
           </VStack>
 
           {/* Right Section - Image */}
-          <Box 
+          <Box
             flex="1"
-            ml={{ base: 0, md: 10 } }
-            display={{ base: "block", md: "block" }} >
+            ml={{ base: 0, md: 10 }}
+            display={{ base: "block", md: "block" }}
+          >
             <Image
               src={faqImage}
               alt="FAQ"

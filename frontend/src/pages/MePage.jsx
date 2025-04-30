@@ -12,14 +12,10 @@ import {
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { FaUserCog, FaSignOutAlt, FaStar, FaUser } from "react-icons/fa";
-import Navbar from "../components/Navbar(Logged)";
 
 function MePage() {
   return (
     <Box bg="gray.100" minH="100vh" color="black">
-      {/* Navbar */}
-      <Navbar />
-
       {/* Page Content */}
       <Box px={{ base: 4, md: 20 }} py={10}>
         {/* User Info Section */}

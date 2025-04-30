@@ -1,6 +1,12 @@
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Sitemap from "./components/Sitemap";
+import NavbarWrapper from "./components/NavbarWrapper";
 import GetStartedPage from "./pages/GetStartedPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
@@ -15,7 +21,7 @@ import RegisterPage from "./pages/RegisterPage";
 import RecipePage from "./pages/RecipePage";
 import { CustomThemeProvider } from "./components/ThemeProvider";
 import NotificationsPage from "./pages/NotificationsPage";
-import NotificationSettingsPage from "./pages/NotificationSettingsPage"; // Import NotificationSettingsPage
+import NotificationSettingsPage from "./pages/NotificationSettingsPage";
 import FAQPage from "./pages/FAQPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import SignInRequired from "./pages/SignInRequired";
@@ -44,8 +50,8 @@ function App() {
       time: "Tuesday",
     },
   ];
+
   return (
-    <>
     <AuthProvider>
       <CustomThemeProvider>
         <Box
@@ -53,9 +59,12 @@ function App() {
           bg={useColorModeValue("gray.100", "gray.900")}
           fontFamily="'Poppins', sans-serif"
         >
+          {/* Navbar */}
+          <NavbarWrapper />
+
+          {/* Routes */}
           <Routes>
             <Route path="/" element={<GetStartedPage />} />
-            {/* Protected Home Page Route */}
             <Route path="/home" element={<HomePage />} />
             <Route
               path="/profile/:id"
@@ -87,11 +96,12 @@ function App() {
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/sign-in-required" element={<SignInRequired />} />
           </Routes>
+
+          {/* Footer */}
           <Sitemap />
         </Box>
       </CustomThemeProvider>
-      </AuthProvider>
-    </>
+    </AuthProvider>
   );
 }
 

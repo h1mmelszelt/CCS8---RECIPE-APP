@@ -46,7 +46,7 @@ function Navbar({ transparent }) {
       navigate(path); // Navigate to the intended path
     }
   };
-  
+
   return (
     <Box
       px={{ base: 4, md: 6 }}

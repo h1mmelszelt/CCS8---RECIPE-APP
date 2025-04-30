@@ -1,8 +1,18 @@
-import { Box, Image, Text, Flex, VStack, Icon, Button, Divider, Switch } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  Text,
+  Flex,
+  VStack,
+  Icon,
+  Button,
+  Divider,
+  Switch,
+} from "@chakra-ui/react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa"; // Import icons
 import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
-import Navbar from "../components/Navbar(Logged)";
+
 import BG_Image from "/images/11.png";
 
 const NotificationSettingsPage = () => {
@@ -10,10 +20,7 @@ const NotificationSettingsPage = () => {
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
-      {/* Navbar */}
-      <Box position="relative" zIndex={2}>
-        <Navbar />
-      </Box>
+      <Box position="relative" zIndex={2}></Box>
 
       {/* Background Images */}
       <Image
@@ -57,38 +64,55 @@ const NotificationSettingsPage = () => {
           p={6}
           width={{ base: "100%", md: "300px" }} // Full width on mobile, fixed width on larger screens
         >
-          <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" color="#FD660B" mb={4}>
+          <Text
+            fontSize={{ base: "20px", md: "24px" }}
+            fontWeight="bold"
+            color="#FD660B"
+            mb={4}
+          >
             Settings
           </Text>
           <VStack align="start" spacing={4}>
             {[
               { label: "Profile Settings", icon: FaUser, link: "/settings" },
-              { label: "Notifications", icon: FaBell, link: "/notification-settings" },
-              { label: "Advanced Settings", icon: FaSlidersH, link: "/advanced-settings" },
+              {
+                label: "Notifications",
+                icon: FaBell,
+                link: "/notification-settings",
+              },
+              {
+                label: "Advanced Settings",
+                icon: FaSlidersH,
+                link: "/advanced-settings",
+              },
             ].map((item) => (
-            <Link to={item.link} key={item.label} style={{ width: "100%" }}>
-              <Flex
-                key={item.label}
-                align="center"
-                width="100%"
-                bg={activeSetting === item.label ? "#dfedc3" : "transparent"}
-                borderLeftWidth={activeSetting === item.label ? "4px" : "0"}
-                borderLeftColor={activeSetting === item.label ? "green.600" : "transparent"}
-                p={2}
-                cursor="pointer"
-                onClick={() => setActiveSetting(item.label)} // Set active setting on click
-              >
-                <Icon as={item.icon} color="#97C33A" boxSize={5} mr={3} />
-                <Text
-                  fontSize={{ base: "14px", md: "16px" }}
-                  fontWeight="medium"
-                  color={activeSetting === item.label ? "green.600" : "#97C33A"}
-                  _hover={{ textDecoration: "none" }}
+              <Link to={item.link} key={item.label} style={{ width: "100%" }}>
+                <Flex
+                  key={item.label}
+                  align="center"
+                  width="100%"
+                  bg={activeSetting === item.label ? "#dfedc3" : "transparent"}
+                  borderLeftWidth={activeSetting === item.label ? "4px" : "0"}
+                  borderLeftColor={
+                    activeSetting === item.label ? "green.600" : "transparent"
+                  }
+                  p={2}
+                  cursor="pointer"
+                  onClick={() => setActiveSetting(item.label)} // Set active setting on click
                 >
-                  {item.label}
-                </Text>
-              </Flex>
-            </Link>
+                  <Icon as={item.icon} color="#97C33A" boxSize={5} mr={3} />
+                  <Text
+                    fontSize={{ base: "14px", md: "16px" }}
+                    fontWeight="medium"
+                    color={
+                      activeSetting === item.label ? "green.600" : "#97C33A"
+                    }
+                    _hover={{ textDecoration: "none" }}
+                  >
+                    {item.label}
+                  </Text>
+                </Flex>
+              </Link>
             ))}
           </VStack>
         </Box>
@@ -103,7 +127,12 @@ const NotificationSettingsPage = () => {
           width="100%" // Full width on mobile
           zIndex={1}
         >
-          <Text fontSize={{ base: "20px", md: "24px" }} fontWeight="bold" color="#FD660B" mb={4}>
+          <Text
+            fontSize={{ base: "20px", md: "24px" }}
+            fontWeight="bold"
+            color="#FD660B"
+            mb={4}
+          >
             Notifications
           </Text>
 
@@ -124,7 +153,8 @@ const NotificationSettingsPage = () => {
                     Weekly Newsletter
                   </Text>
                   <Text fontSize="14px" color="gray.600">
-                    Receive our weekly newsletter with the latest updates and popular posts.
+                    Receive our weekly newsletter with the latest updates and
+                    popular posts.
                   </Text>
                 </Box>
                 <Switch colorScheme="green" size="lg" /> {/* Slider button */}
@@ -138,7 +168,8 @@ const NotificationSettingsPage = () => {
                     Receive alerts when others engage with your content.
                   </Text>
                 </Box>
-                <Switch colorScheme="green" size="lg"/> {/* Slider button with default ON */}
+                <Switch colorScheme="green" size="lg" />{" "}
+                {/* Slider button with default ON */}
               </Flex>
               <Flex justify="space-between" align="center">
                 <Box>
@@ -146,10 +177,12 @@ const NotificationSettingsPage = () => {
                     User Account
                   </Text>
                   <Text fontSize="14px" color="gray.600">
-                    Stay informed about important updates to your account, like password changes and login activity.
+                    Stay informed about important updates to your account, like
+                    password changes and login activity.
                   </Text>
                 </Box>
-                <Switch colorScheme="green" size="lg"/> {/* Slider button with default ON */}
+                <Switch colorScheme="green" size="lg" />{" "}
+                {/* Slider button with default ON */}
               </Flex>
             </Box>
             <Button

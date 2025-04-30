@@ -1,5 +1,15 @@
-import Navbar from "../components/Navbar";
-import { Box, Flex, Text, Input, Button, Checkbox, Link, VStack, Image, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Input,
+  Button,
+  Checkbox,
+  Link,
+  VStack,
+  Image,
+  useToast,
+} from "@chakra-ui/react";
 import cooking from "/images/AdobeStock guy cooking.jpeg";
 import { useState } from "react";
 import axios from "axios";
@@ -8,7 +18,6 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function LoginPage() {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,10 +28,13 @@ function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/users/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        {
+          email,
+          password,
+        }
+      );
 
       // Save token to localStorage
       localStorage.setItem("token", response.data.token);
@@ -53,38 +65,63 @@ function LoginPage() {
     }
   };
 
-    return (
-      <>
-        <Navbar />
-        <Flex minH="100vh" align="flex-start" justify="center" bg="gray.100" backgroundImage={{ base: `url(${cooking})`, md: "none" }}
+  return (
+    <>
+      <Flex
+        minH="100vh"
+        align="flex-start"
+        justify="center"
+        bg="gray.100"
+        backgroundImage={{ base: `url(${cooking})`, md: "none" }}
         backgroundSize="cover"
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
-        pt={20}>
+        pt={20}
+      >
+        <Box
+          borderRadius="lg"
+          boxShadow="lg"
+          overflow="hidden"
+          display="flex"
+          flexDirection={{ base: "column", md: "row" }}
+          maxW={{ base: "90%", md: "900px" }}
+          w="100%"
+        >
+          {/* Left Section */}
           <Box
+            flex="1"
+            p={8}
+            bg={{
+              base: "rgba(253, 228, 206, 0.9)",
+              md: "rgba(253, 228, 206, 1)",
+            }}
             borderRadius="lg"
-            boxShadow="lg"
-            overflow="hidden"
-            display="flex"
-            flexDirection={{ base: "column", md: "row" }}
-            maxW={{ base: "90%", md: "900px" }}
-            w="100%"
           >
-            {/* Left Section */}
-            <Box flex="1" p={8} bg={{ base: "rgba(253, 228, 206, 0.9)", md: "rgba(253, 228, 206, 1)" }} borderRadius="lg">
-              <VStack align="start" spacing={2} mt={8}>
-                <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="bold" color="black" textAlign={{ base: "center", md: "left" }} w="100%">
-                  Welcome back
+            <VStack align="start" spacing={2} mt={8}>
+              <Text
+                fontSize={{ base: "2xl", md: "3xl" }}
+                fontWeight="bold"
+                color="black"
+                textAlign={{ base: "center", md: "left" }}
+                w="100%"
+              >
+                Welcome back
+              </Text>
+              <Text
+                fontSize={{ base: "md", md: "lg" }}
+                color="black"
+                mb={20}
+                textAlign={{ base: "center", md: "left" }}
+                w="100%"
+              >
+                Please enter your details
+              </Text>
+
+              <Box w="100%">
+                <Text fontSize="sm" mb={1} color="black">
+                  E-mail Address
                 </Text>
-                <Text fontSize={{ base: "md", md: "lg" }} color="black" mb={20} textAlign={{ base: "center", md: "left" }} w="100%">
-                  Please enter your details
-                </Text>
-  
-                <Box w="100%">
-                  <Text fontSize="sm" mb={1} color="black">
-                    E-mail Address
-                  </Text>
-                  <Input
+                <Input
                   type="email"
                   placeholder="Enter your email"
                   borderRadius="md"
@@ -92,12 +129,12 @@ function LoginPage() {
                   mb={4}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  />
-  
-                  <Text fontSize="sm" mb={1} color="black">
-                    Password
-                  </Text>
-                  <Input
+                />
+
+                <Text fontSize="sm" mb={1} color="black">
+                  Password
+                </Text>
+                <Input
                   type="password"
                   placeholder="Enter your password"
                   borderRadius="md"
@@ -105,28 +142,27 @@ function LoginPage() {
                   mb={2}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  />
-  
-                  <Flex justify="space-between" align="center" mb={20}>
-                    <Checkbox
-                      colorScheme="white"
-                      iconColor="orange"
-                      sx={{
-                        "& .chakra-checkbox__control": {
-                          bg: "white",
-                          borderColor: "white",
-                        },
-                      }}
-                    >
-                      Remember Me
-                    </Checkbox>
-                    <Link fontSize="sm" color="#FD660B">
-                      Forgot Password?
-                    </Link>
-                  </Flex>
-  
+                />
 
-                    <Button
+                <Flex justify="space-between" align="center" mb={20}>
+                  <Checkbox
+                    colorScheme="white"
+                    iconColor="orange"
+                    sx={{
+                      "& .chakra-checkbox__control": {
+                        bg: "white",
+                        borderColor: "white",
+                      },
+                    }}
+                  >
+                    Remember Me
+                  </Checkbox>
+                  <Link fontSize="sm" color="#FD660B">
+                    Forgot Password?
+                  </Link>
+                </Flex>
+
+                <Button
                   w="100%"
                   bg="#AAD05E"
                   color="white"
@@ -136,37 +172,41 @@ function LoginPage() {
                   display="block"
                   onClick={handleLogin}
                   isLoading={loading}
-                    >
-                      Sign in
-                    </Button>
-                </Box>
-  
-                <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4} mb={20}>
-                  Don’t have an account?{" "}
-                  <Link href="/register" color="#FD660B" fontWeight="bold">
-                    Sign up
-                  </Link>
-                </Text>
-              </VStack>
-            </Box>
-  
-            {/* Right Section */}
-            <Box
-              flex="1"
-              display={{ base: "none", md: "block" }}
-            >
-              <Image
-                src={cooking}
-                alt="Chef cooking"
-                objectFit="cover"
-                w="100%"
-                h="100%"
-              />
-            </Box>
+                >
+                  Sign in
+                </Button>
+              </Box>
+
+              <Text
+                fontSize="sm"
+                color="gray.600"
+                mx="auto"
+                textAlign="center"
+                mt={4}
+                mb={20}
+              >
+                Don’t have an account?{" "}
+                <Link href="/register" color="#FD660B" fontWeight="bold">
+                  Sign up
+                </Link>
+              </Text>
+            </VStack>
           </Box>
-        </Flex>
-      </>
-    );
-  }
-  
-  export default LoginPage;
+
+          {/* Right Section */}
+          <Box flex="1" display={{ base: "none", md: "block" }}>
+            <Image
+              src={cooking}
+              alt="Chef cooking"
+              objectFit="cover"
+              w="100%"
+              h="100%"
+            />
+          </Box>
+        </Box>
+      </Flex>
+    </>
+  );
+}
+
+export default LoginPage;

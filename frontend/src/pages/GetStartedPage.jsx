@@ -1,5 +1,5 @@
 import { Box, Button, Image, Text, Flex, VStack, Grid } from "@chakra-ui/react";
-import Navbar from "../components/Navbar";
+
 import BowlLeaf from "/images/BowlLeaf.png";
 import { motion } from "framer-motion";
 import BG_Image from "/images/11.png";
@@ -35,10 +35,7 @@ function GetStartedPage() {
   window.scrollTo(0, 0);
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
-      {/* Navbar */}
-      <Box position="relative" zIndex={999}>
-        <Navbar boxShadow={false} transparent={true} />
-      </Box>
+      <Box position="relative" zIndex={999}></Box>
 
       {/* Decorative Backgrounds */}
       <Image

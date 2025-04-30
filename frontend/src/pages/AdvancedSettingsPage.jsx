@@ -10,7 +10,7 @@ import {
   VStack,
   Icon,
 } from "@chakra-ui/react";
-import Navbar from "../components/Navbar(Logged)";
+
 import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -19,8 +19,8 @@ import { useThemeToggle } from "../components/ThemeProvider"; // Import the them
 
 const AdvancedSettingsPage = () => {
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
-  const toggleTheme = useThemeToggle(); 
-  
+  const toggleTheme = useThemeToggle();
+
   return (
     <Box
       position="relative"
@@ -28,10 +28,7 @@ const AdvancedSettingsPage = () => {
       overflow="hidden"
       pb={{ base: "60px", md: "0" }}
     >
-      {/* Navbar */}
-      <Box position="relative" zIndex={2}>
-        <Navbar />
-      </Box>
+      <Box position="relative" zIndex={2}></Box>
 
       {/* Background Images */}
       <Image
@@ -204,7 +201,7 @@ const AdvancedSettingsPage = () => {
               <Text fontSize="16px" fontWeight="medium" color="black">
                 Dark Mode
               </Text>
-              <Switch colorScheme="green" size="lg" onChange={toggleTheme}/>
+              <Switch colorScheme="green" size="lg" onChange={toggleTheme} />
             </Flex>
           </Box>
 

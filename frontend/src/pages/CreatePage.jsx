@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
-import Navbar from "../components/Navbar(Logged)";
+
 import axios from "axios"; // Import axios for API requests
 
 function CreatePage() {
@@ -121,7 +121,6 @@ function CreatePage() {
       color="black"
       pb={{ base: "60px", md: "0" }}
     >
-      <Navbar />
       <Box maxW="800px" mx="auto" p={6}>
         <Box
           bg="white"

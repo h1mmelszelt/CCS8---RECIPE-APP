@@ -14,7 +14,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import Navbar from "../components/Navbar(Logged)";
+
 import { FaStar, FaEdit } from "react-icons/fa"; // Add this import
 import RecipeCard from "../components/RecipeCard"; // Import RecipeCard
 import ReviewCard from "../components/ReviewCard"; // Import ReviewCard
@@ -341,8 +341,6 @@ const ProfilePage = ({ isOwner }) => {
 
   return (
     <>
-      <Navbar />
-
       {/* Profile Container */}
       <Flex justify="center" pt={{ base: 4, md: 10 }} px={4}>
         <Box

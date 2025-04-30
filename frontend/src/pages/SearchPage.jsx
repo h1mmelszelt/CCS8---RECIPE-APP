@@ -10,7 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import Navbar from "../components/Navbar(Logged)";
+
 import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
@@ -43,7 +43,6 @@ function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
 
-
   // Fetch recipes based on search query
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -52,14 +51,18 @@ function SearchPage() {
         const query = queryParams.get("query");
 
         if (query && query.trim() !== "") {
-          const response = await axios.get(`http://localhost:5000/api/recipes/search/${encodeURIComponent(query)}`);
+          const response = await axios.get(
+            `http://localhost:5000/api/recipes/search/${encodeURIComponent(
+              query
+            )}`
+          );
           setRecipes(response.data.data);
           setFilteredRecipes(response.data.data);
-          setSearchQuery(query)
+          setSearchQuery(query);
         } else {
           const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
-        setRecipes(response.data.data);
-        setFilteredRecipes(response.data.data); // Initially, show all recipes
+          setRecipes(response.data.data);
+          setFilteredRecipes(response.data.data); // Initially, show all recipes
         }
       } catch (error) {
         console.error("Error fetching recipes:", error.message);
@@ -70,7 +73,6 @@ function SearchPage() {
 
     fetchRecipes();
   }, [location.search]);
-  
 
   window.scrollTo(0, 0);
 
@@ -108,7 +110,7 @@ function SearchPage() {
     setFilteredRecipes(filtered);
   };
 
-        // Update the filtered recipes when the filter query parameter changes
+  // Update the filtered recipes when the filter query parameter changes
   useEffect(() => {
     if (filter) {
       const filtered = recipes.filter(
@@ -132,8 +134,6 @@ function SearchPage() {
       color="black"
       pb={{ base: "60px", md: "0" }}
     >
-      <Navbar />
-
       <Image
         src={BG_Image}
         position="absolute"
@@ -157,7 +157,7 @@ function SearchPage() {
         top="0"
         zIndex="1000"
       >
-        <Input 
+        <Input
           placeholder="Search recipes by title..."
           size="sm"
           borderRadius="md"
@@ -227,7 +227,12 @@ function SearchPage() {
                 borderRadius="md"
                 bg="white"
               />
-              <Button bg="#97C33A" size="sm" width="100%" _hover={{ bg: "#7da52f" }}>
+              <Button
+                bg="#97C33A"
+                size="sm"
+                width="100%"
+                _hover={{ bg: "#7da52f" }}
+              >
                 Sign Up
               </Button>
             </Box>

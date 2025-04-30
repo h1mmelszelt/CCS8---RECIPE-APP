@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../components/Navbar";
+
 import { Link, useNavigate } from "react-router-dom";
 
 const RecipePage = () => {
@@ -28,14 +28,16 @@ const RecipePage = () => {
   useEffect(() => {
     const fetchTrendingRecipes = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/recipes/popular");
+        const { data } = await axios.get(
+          "http://localhost:5000/api/recipes/popular"
+        );
         console.log("Trending Recipes Data:", data); // Debugging
         setTrendingRecipes(data.data);
       } catch (error) {
         console.error("Error fetching trending recipes:", error);
       }
     };
-  
+
     fetchTrendingRecipes();
   }, []);
 
@@ -62,7 +64,6 @@ const RecipePage = () => {
 
   return (
     <>
-      <Navbar />
       <Box maxW="1200px" mx="auto" p={6}>
         {/* Breadcrumb */}
         <Text fontSize="sm" color="gray.500" mb={4}>
@@ -77,7 +78,10 @@ const RecipePage = () => {
               {recipe.name}
             </Heading>
             <HStack spacing={4} align="center" mb={6}>
-              <Avatar src={recipe.user_id?.avatar} name={recipe.user_id?.name} />
+              <Avatar
+                src={recipe.user_id?.avatar}
+                name={recipe.user_id?.name}
+              />
               <Text fontSize="md" color="gray.600">
                 {recipe.user_id?.name || "Unknown Author"}
               </Text>
@@ -195,11 +199,7 @@ const RecipePage = () => {
                 p={4}
                 mb={4}
               >
-                <Input
-                  placeholder="Add Comment..."
-                  variant="unstyled"
-                  mb={2}
-                />
+                <Input placeholder="Add Comment..." variant="unstyled" mb={2} />
                 <HStack justify="space-between">
                   <HStack spacing={2}>
                     <Button size="sm" variant="ghost">
@@ -241,9 +241,7 @@ const RecipePage = () => {
                       <Text fontSize="sm" color="gray.500">
                         &lt;Time since comment&gt;
                       </Text>
-                      <Text mt={2}>
-                        &lt;Comment&gt;
-                      </Text>
+                      <Text mt={2}>&lt;Comment&gt;</Text>
                       <HStack spacing={4} mt={2}>
                         <Button size="xs" variant="ghost">
                           Reply
@@ -269,9 +267,7 @@ const RecipePage = () => {
                       <Text fontSize="sm" color="gray.500">
                         &lt;Time since comment&gt;
                       </Text>
-                      <Text mt={2}>
-                        &lt;Comment&gt;
-                      </Text>
+                      <Text mt={2}>&lt;Comment&gt;</Text>
                       <HStack spacing={4} mt={2}>
                         <Button size="xs" variant="ghost">
                           Reply
@@ -302,46 +298,50 @@ const RecipePage = () => {
           {/* Right Section */}
           <GridItem>
             {/* Related Recipes */}
-<Heading as="h2" size="lg" mb={4}>
-  Related Recipes
-</Heading>
-<VStack spacing={4} align="stretch">
-  {relatedRecipes.length > 0 ? (
-    relatedRecipes.map((relatedRecipe) => (
-      <Link key={relatedRecipe._id} to={`/recipes/${relatedRecipe._id}`} style={{ textDecoration: "none" }}>
-        <HStack
-          spacing={4}
-          align="center"
-          cursor="pointer"
-          _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
-          transition="all 0.2s ease-in-out"
-          p={2}
-          borderRadius="md"
-        >
-          <Image
-            src={relatedRecipe.image}
-            alt={relatedRecipe.name}
-            boxSize="100px"
-            borderRadius="md"
-            objectFit="cover"
-          />
-          <VStack align="start" spacing={1}>
-            <Text fontSize="sm" fontWeight="bold">
-              {relatedRecipe.name}
-            </Text>
-            <Text fontSize="xs" color="gray.500">
-              {relatedRecipe.description}
-            </Text>
-          </VStack>
-        </HStack>
-      </Link>
-    ))
-  ) : (
-    <Text fontSize="sm" color="gray.500">
-      No related recipes found.
-    </Text>
-  )}
-</VStack>
+            <Heading as="h2" size="lg" mb={4}>
+              Related Recipes
+            </Heading>
+            <VStack spacing={4} align="stretch">
+              {relatedRecipes.length > 0 ? (
+                relatedRecipes.map((relatedRecipe) => (
+                  <Link
+                    key={relatedRecipe._id}
+                    to={`/recipes/${relatedRecipe._id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <HStack
+                      spacing={4}
+                      align="center"
+                      cursor="pointer"
+                      _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
+                      transition="all 0.2s ease-in-out"
+                      p={2}
+                      borderRadius="md"
+                    >
+                      <Image
+                        src={relatedRecipe.image}
+                        alt={relatedRecipe.name}
+                        boxSize="100px"
+                        borderRadius="md"
+                        objectFit="cover"
+                      />
+                      <VStack align="start" spacing={1}>
+                        <Text fontSize="sm" fontWeight="bold">
+                          {relatedRecipe.name}
+                        </Text>
+                        <Text fontSize="xs" color="gray.500">
+                          {relatedRecipe.description}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                  </Link>
+                ))
+              ) : (
+                <Text fontSize="sm" color="gray.500">
+                  No related recipes found.
+                </Text>
+              )}
+            </VStack>
 
             {/* Newsletter */}
             <Box bg="#D3F38E" p={4} borderRadius="md" mt={6}>
@@ -359,53 +359,62 @@ const RecipePage = () => {
                   bg="white"
                   borderRadius="md"
                 />
-                <Button bg="#97C33A" size="sm" width="150px" _hover={{ bg: "#7da52f" }}>
+                <Button
+                  bg="#97C33A"
+                  size="sm"
+                  width="150px"
+                  _hover={{ bg: "#7da52f" }}
+                >
                   Subscribe
                 </Button>
               </HStack>
             </Box>
 
             {/* Trending Recipes */}
-<Heading as="h2" size="lg" mt={8} mb={4}>
-  Trending Recipes
-</Heading>
-<VStack spacing={4} align="stretch">
-  {trendingRecipes && trendingRecipes.length > 0 ? (
-    trendingRecipes.map((recipe) => (
-      <Link key={recipe._id} to={`/recipe/${recipe._id}`} style={{ textDecoration: "none" }}>
-        <HStack
-          spacing={4}
-          align="center"
-          cursor="pointer"
-          _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
-          transition="all 0.2s ease-in-out"
-          p={2}
-          borderRadius="md"
-        >
-          <Image
-            src={recipe.image || "/images/default-recipe.jpg"}
-            alt={recipe.name || "Recipe"}
-            boxSize="80px"
-            borderRadius="md"
-            objectFit="cover"
-          />
-          <VStack align="start" spacing={1}>
-            <Text fontSize="sm" fontWeight="bold">
-              {recipe.name}
-            </Text>
-            <Text fontSize="xs" color="gray.500">
-              {recipe.description || "No description available"}
-            </Text>
-          </VStack>
-        </HStack>
-      </Link>
-    ))
-  ) : (
-    <Text fontSize="sm" color="gray.500">
-      No trending recipes found.
-    </Text>
-  )}
-</VStack>
+            <Heading as="h2" size="lg" mt={8} mb={4}>
+              Trending Recipes
+            </Heading>
+            <VStack spacing={4} align="stretch">
+              {trendingRecipes && trendingRecipes.length > 0 ? (
+                trendingRecipes.map((recipe) => (
+                  <Link
+                    key={recipe._id}
+                    to={`/recipe/${recipe._id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <HStack
+                      spacing={4}
+                      align="center"
+                      cursor="pointer"
+                      _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
+                      transition="all 0.2s ease-in-out"
+                      p={2}
+                      borderRadius="md"
+                    >
+                      <Image
+                        src={recipe.image || "/images/default-recipe.jpg"}
+                        alt={recipe.name || "Recipe"}
+                        boxSize="80px"
+                        borderRadius="md"
+                        objectFit="cover"
+                      />
+                      <VStack align="start" spacing={1}>
+                        <Text fontSize="sm" fontWeight="bold">
+                          {recipe.name}
+                        </Text>
+                        <Text fontSize="xs" color="gray.500">
+                          {recipe.description || "No description available"}
+                        </Text>
+                      </VStack>
+                    </HStack>
+                  </Link>
+                ))
+              ) : (
+                <Text fontSize="sm" color="gray.500">
+                  No trending recipes found.
+                </Text>
+              )}
+            </VStack>
           </GridItem>
         </Grid>
       </Box>
