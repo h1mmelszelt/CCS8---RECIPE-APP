@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import Sitemap from "./components/Sitemap";
 import NavbarWrapper from "./components/NavbarWrapper";
@@ -26,6 +27,7 @@ import FAQPage from "./pages/FAQPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import SignInRequired from "./pages/SignInRequired";
 import { AuthProvider } from "./context/AuthContext";
+import SitemapPage from "./pages/SitemapPage";
 
 function App() {
   const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
@@ -50,7 +52,7 @@ function App() {
       time: "Tuesday",
     },
   ];
-
+  const location = useLocation();
   return (
     <AuthProvider>
       <CustomThemeProvider>
@@ -93,10 +95,13 @@ function App() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/sign-in-required" element={<SignInRequired />} />
+            <Route path="/site-map" element={<SitemapPage />} />
           </Routes>
 
-          {/* Footer */}
-          <Sitemap />
+          {/* Footer: Hide on SitemapPage */}
+          {location.pathname !== "/site-map" && (
+            <Sitemap />
+          )}
         </Box>
       </CustomThemeProvider>
     </AuthProvider>

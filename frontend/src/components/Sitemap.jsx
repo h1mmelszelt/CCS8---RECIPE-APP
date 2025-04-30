@@ -121,7 +121,7 @@ function Sitemap() {
               _placeholder={{ color: "black.400" }}
               color="white"
             />
-            <Button bg="red.500" color="white" _hover={{ bg: "red.600" }}>
+            <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
               Subscribe
             </Button>
           </Flex>
@@ -157,6 +157,10 @@ function Sitemap() {
           </Link>
           <Link href="#" isExternal>
             <FaPinterest size={20} color="black" />
+          </Link>
+          {/* Add Sitemap link here */}
+          <Link href="/site-map" fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+            Sitemap
           </Link>
         </HStack>
       </Flex>

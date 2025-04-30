@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -325,7 +326,7 @@ const RecipePage = () => {
                       borderRadius="md"
                     >
                       <Image
-                        src={relatedRecipe.image}
+                        src={getCompressedImageUrl(relatedRecipe.image)}
                         alt={relatedRecipe.name}
                         boxSize="100px"
                         borderRadius="md"
@@ -398,7 +399,7 @@ const RecipePage = () => {
                       borderRadius="md"
                     >
                       <Image
-                        src={recipe.image || "/images/default-recipe.jpg"}
+                        src={getCompressedImageUrl(recipe.image)}
                         alt={recipe.name || "Recipe"}
                         boxSize="80px"
                         borderRadius="md"
