@@ -11,12 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa"; // Import icons
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link, useParams } from "react-router-dom"; // Import Link for navigation
 
 import BG_Image from "/images/11.png";
 
 const NotificationSettingsPage = () => {
+  const { id: userId } = useParams();
   const [activeSetting, setActiveSetting] = useState("Notifications"); // State to track active setting
+  
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
@@ -74,16 +76,16 @@ const NotificationSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: "/settings" },
+              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}`},
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: "/notification-settings",
+                link: `/notification-settings/${userId}`,
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: "/advanced-settings",
+                link: `/advanced-settings/${userId}`,
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
