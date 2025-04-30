@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Recipe from "../models/recipe.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -131,7 +132,7 @@ export const loginUser = async (req, res) => {
 
     // Debugging: Log the JWT_SECRET value
     console.log("JWT_SECRET:", process.env.JWT_SECRET);
-    
+
     // Generate JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -146,5 +147,55 @@ export const loginUser = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
+  }
+};
+
+// Add a recipe to bookmarks
+export const addBookmark = async (req, res) => {
+  const { userId, recipeId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Check if the recipe is already bookmarked
+    if (user.bookmarks.includes(recipeId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Recipe already bookmarked" });
+    }
+
+    user.bookmarks.push(recipeId);
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Recipe bookmarked successfully" });
+  } catch (error) {
+    console.error("Error adding bookmark:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Get all bookmarks for a user
+export const getBookmarks = async (req, res) => {
+  const { id } = req.params; // Use 'id' instead of 'userId'
+
+  try {
+    const user = await User.findById(id).populate("bookmarks");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, data: user.bookmarks });
+  } catch (error) {
+    console.error("Error fetching bookmarks:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

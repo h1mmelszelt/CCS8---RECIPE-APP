@@ -38,6 +38,7 @@ function LoginPage() {
 
       // Save token to localStorage
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.user.id);
 
       setIsAuthenticated(true);
 

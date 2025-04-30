@@ -68,9 +68,7 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route
               path="/profile/:id"
-              element={
-                <ProfilePage isOwner={loggedInUserId === profileOwnerId} />
-              }
+              element={<ProfilePage isOwner={true} />}
             />
             <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />

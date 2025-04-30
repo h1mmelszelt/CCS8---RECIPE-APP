@@ -105,14 +105,16 @@ export const getPopularRecipes = async (req, res) => {
 };
 
 export const getUserRecipes = async (req, res) => {
-  const userId = req.params.userId;
+  const id = req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  console.log("Received userId:", id);
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ success: false, message: "Invalid User ID" });
   }
 
   try {
-    const recipes = await Recipe.find({ user_id: userId });
+    const recipes = await Recipe.find({ user_id: id });
     res.status(200).json({ success: true, data: recipes });
   } catch (error) {
     console.error("Error fetching user's recipes:", error.message);
@@ -146,7 +148,9 @@ export const getRelatedRecipes = async (req, res) => {
   const { id } = req.params; // Get the current recipe ID
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: "Invalid Recipe ID" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Invalid Recipe ID" });
   }
 
   try {
@@ -154,7 +158,9 @@ export const getRelatedRecipes = async (req, res) => {
     const currentRecipe = await Recipe.findById(id);
 
     if (!currentRecipe) {
-      return res.status(404).json({ success: false, message: "Recipe not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
     }
 
     const tags = currentRecipe.tags;

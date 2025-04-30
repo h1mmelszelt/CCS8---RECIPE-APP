@@ -31,17 +31,17 @@ function Navbar() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const { setIsAuthenticated } = useContext(AuthContext); 
+  const { setIsAuthenticated } = useContext(AuthContext);
+  const userId = localStorage.getItem("userId");
 
+  // Logout function
+  const handleLogout = () => {
+    console.log("Logout triggered");
+    localStorage.removeItem("token"); // Remove token from localStorage
+    setIsAuthenticated(false); // Update authentication state
+    navigate("/login"); // Redirect to login page
+  };
 
-    // Logout function
-    const handleLogout = () => {
-      console.log("Logout triggered");
-      localStorage.removeItem("token"); // Remove token from localStorage
-      setIsAuthenticated(false); // Update authentication state
-      navigate("/login"); // Redirect to login page
-    };
-  
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
@@ -250,7 +250,7 @@ function Navbar() {
             </Box>
 
             {/* User Profile Icon */}
-            <Link to="/profile/:id">
+            <Link to={`/profile/${userId}`}>
               <IconButton
                 icon={<FiUser size={20} />}
                 aria-label="User Profile"
