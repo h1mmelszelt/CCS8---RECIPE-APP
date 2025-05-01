@@ -28,6 +28,7 @@ import AboutUsPage from "./pages/AboutUsPage";
 import SignInRequired from "./pages/SignInRequired";
 import { AuthProvider } from "./context/AuthContext";
 import SitemapPage from "./pages/SitemapPage";
+import LoggedOutSettings from "./pages/LoggedOutSettings";
 
 function App() {
   const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
@@ -72,9 +73,10 @@ function App() {
               path="/profile/:id"
               element={<ProfilePage isOwner={true} />}
             />
-            <Route path="/me" element={<MePage />} />
+            <Route path="/me/:id" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/settings/:id" element={<SettingsPage />} />
+            <Route path="/logged-out-settings" element={<LoggedOutSettings />} />
             <Route
               path="/notifications"
               element={<NotificationsPage notifications={notifications} />}

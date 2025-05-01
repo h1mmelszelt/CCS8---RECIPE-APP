@@ -206,7 +206,7 @@ function Navbar({ transparent }) {
             {/* Settings Menu Item */}
             <MenuItem
               as={Link}
-              to="/settings"
+              to="/logged-out-settings"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
               fontWeight="semibold"
