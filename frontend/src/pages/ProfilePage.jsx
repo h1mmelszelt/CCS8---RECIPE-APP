@@ -1,3 +1,5 @@
+import ReviewCard from "../components/ReviewCard";
+
 import RecipeCard from "../components/RecipeCard";
 import React, { useState, useEffect } from "react";
 import {
@@ -66,26 +68,6 @@ const ProfilePage = ({ isOwner }) => {
     fetchUserData();
   }, [userId]);
 
-  const renderRecipeCards = () => (
-    <Box>
-      <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-        My Created Recipes
-      </Text>
-      <Divider borderColor="orange.300" mb={4} />
-      {createdRecipes.length === 0 ? (
-        <Text>No recipes created yet.</Text>
-      ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-          {createdRecipes.map((recipe) => (
-            <Link to={`/recipes/${recipe._id}`} key={recipe._id}>
-              <RecipeCard recipe={recipe} />
-            </Link>
-          ))}
-        </SimpleGrid>
-      )}
-    </Box>
-  );
-
   /*{/* Author and Rating }
   <HStack justify="space-between" align="center">
   <HStack spacing={2}>
@@ -115,14 +97,42 @@ const ProfilePage = ({ isOwner }) => {
   </HStack>
 </HStack> */
 
+  const renderRecipeCards = () => (
+    <Box>
+      <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+        {isOwner ? "My Created Recipes" : `${userData?.name}'s Created Recipes`}
+      </Text>
+      <Divider borderColor="orange.300" mb={4} />
+      {createdRecipes.length === 0 ? (
+        <Text>
+          {isOwner
+            ? "You haven't created any recipes yet."
+            : `${userData?.name} hasn't created any recipes yet.`}
+        </Text>
+      ) : (
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+          {createdRecipes.map((recipe) => (
+            <Link to={`/recipes/${recipe._id}`} key={recipe._id}>
+              <RecipeCard recipe={recipe} />
+            </Link>
+          ))}
+        </SimpleGrid>
+      )}
+    </Box>
+  );
+
   const renderBookmarkCards = () => (
     <Box>
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-        My Bookmarks
+        {isOwner ? "My Bookmarks" : `${userData?.name}'s Bookmarks`}
       </Text>
       <Divider borderColor="orange.300" mb={4} />
       {bookmarks.length === 0 ? (
-        <Text>No bookmarks found.</Text>
+        <Text>
+          {isOwner
+            ? "You haven't bookmarked any recipes yet."
+            : `${userData?.name} hasn't bookmarked any recipes yet.`}
+        </Text>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) => (
@@ -134,61 +144,96 @@ const ProfilePage = ({ isOwner }) => {
       )}
     </Box>
   );
+
   const renderReviewCards = () => (
     <Box>
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-        {userData?.name}'s Reviews & Comments
+        {isOwner
+          ? "My Reviews & Comments"
+          : `${userData?.name}'s Reviews & Comments`}
       </Text>
       <Divider borderColor="orange.300" mb={4} />
       {reviews.length === 0 ? (
-        <Text>No reviews found.</Text>
+        <Text>
+          {isOwner
+            ? "You haven't written any reviews yet."
+            : `${userData?.name} hasn't written any reviews yet.`}
+        </Text>
       ) : (
         <VStack spacing={4} align="stretch">
           {reviews.map((review, index) => (
             <Box
               key={index}
-              p={4}
-              borderWidth="1px"
-              borderRadius="lg"
               bg="white"
+              p={4}
+              borderRadius="lg"
               boxShadow="sm"
-              transition="0.3s ease"
-              _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
+              borderColor={"gray.200"}
+              borderWidth={"1px"}
+              borderLeft="4px solid #A3E635" // Lime green border
+              position="relative"
+              transition="0.3s ease" // Smooth transition for hover effect
+              _hover={{
+                boxShadow: "0 0 1px 2px #A3E635", // Green glow effect
+              }}
             >
-              <Flex justify="space-between" align="center" mb={2}>
-                <Text fontWeight="bold" color="orange.500">
-                  Commented on:{" "}
-                  <Text as="span" color="blue.500" cursor="pointer">
-                    {review.recipe_id?.name || "Unknown Recipe"}
+              <HStack align="start">
+                <VStack align="start" spacing={2} w="100%">
+                  {/* Recipe Name */}
+                  <Text fontSize="sm">
+                    Commented on:{" "}
+                    <Link
+                      to={`/recipes/${review.recipe_id?._id}`}
+                      style={{
+                        color: "#ED8936", // Orange color
+                        fontWeight: "bold", // Bold text
+                        textDecoration: "underline", // Underline the text
+                      }}
+                      onMouseEnter={(e) => (e.target.style.color = "#C05621")} // Darker orange on hover
+                      onMouseLeave={(e) => (e.target.style.color = "#ED8936")} // Reset to original color
+                    >
+                      {review.recipe_id?.name || "Unknown Recipe"}
+                    </Link>
                   </Text>
-                </Text>
+
+                  {/* Review Text */}
+                  <Box
+                    fontStyle="italic"
+                    borderLeft="2px solid #E2E8F0"
+                    pl={3}
+                    color="gray.700"
+                  >
+                    <Text>{review.text}</Text>
+                  </Box>
+
+                  {/* Rating */}
+                  <Text fontSize="sm" color="green.500" fontWeight="medium">
+                    Rating:{" "}
+                    {[...Array(5)].map((_, i) => (
+                      <Icon
+                        as={FaStar}
+                        key={i}
+                        color={i < review.rating ? "orange.400" : "gray.300"}
+                        fontSize="sm"
+                      />
+                    ))}{" "}
+                    ({review.rating}/5)
+                  </Text>
+                </VStack>
+
+                {/* More Options Button */}
                 <IconButton
                   icon={<FiMoreHorizontal />}
                   size="sm"
                   variant="ghost"
                   aria-label="More options"
                 />
-              </Flex>
-              <Text fontSize="sm" color="gray.600" mb={2}>
-                {review.text}
+              </HStack>
+
+              {/* Date */}
+              <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
+                Posted on: {new Date(review.createdAt).toLocaleDateString()}
               </Text>
-              <Flex justify="space-between" align="center">
-                <HStack spacing={1}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Icon
-                      key={i}
-                      as={FaStar}
-                      color={i < review.rating ? "orange.400" : "gray.300"}
-                    />
-                  ))}
-                  <Text fontSize="sm" color="gray.600">
-                    ({review.rating}/5)
-                  </Text>
-                </HStack>
-                <Text fontSize="xs" color="gray.500">
-                  Posted on: {new Date(review.createdAt).toLocaleDateString()}
-                </Text>
-              </Flex>
             </Box>
           ))}
         </VStack>
@@ -205,63 +250,81 @@ const ProfilePage = ({ isOwner }) => {
   if (!userData) return <Text>Loading...</Text>;
 
   return (
-    <Flex justify="center" pt={{ base: 4, md: 10 }} px={4}>
+    <Flex
+      justify="center"
+      align="center"
+      bg="gray.100"
+      minH="100vh"
+      px={4}
+      py={8} // Add vertical padding for uniform spacing
+    >
       <Box
-        w={{ base: "100%", md: "90%", lg: "900px" }}
+        w={{ base: "100%", md: "80%", lg: "60%" }}
+        bg="white"
         borderRadius="md"
+        boxShadow="lg"
         overflow="hidden"
       >
+        {/* Profile Header */}
         <Box
-          bg="#FDE4CE"
-          border="1px solid #ED984D"
-          borderTopRadius="md"
+          bg="orange.100"
+          borderBottom="1px solid #d1cece"
           px={6}
           py={8}
+          textAlign="center"
         >
-          <Flex direction="row" align="center" gap={4}>
-            <Avatar size="xl" name={userData.name} src={userData.avatar} />
-            <VStack align="start">
-              <Text fontSize="2xl" fontWeight="bold">
-                {userData.name}
-              </Text>
-              <Text fontSize="sm" color="gray.500">
-                @{userData.username}
-              </Text>
-              <Text fontSize="md" color="gray.700">
-                Will cook for compliments. Will eat for survival. Chomp chomp.
-              </Text>
-              <Text fontSize="sm" color="gray.500">
-                Joined: April 2025
-              </Text>
-              {isOwner && (
-                <Link to="/settings">
-                  <Button
-                    leftIcon={<FaEdit />}
-                    colorScheme="green"
-                    variant="solid"
-                    size="sm"
-                  >
-                    Edit Profile
-                  </Button>
-                </Link>
-              )}
-            </VStack>
-          </Flex>
+          <Avatar
+            size="2xl"
+            name={userData?.name}
+            src={userData?.avatar}
+            mb={4}
+            border="4px solid white"
+          />
+          <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+            {userData?.name}
+          </Text>
+          <Text fontSize="sm" color="gray.500" mb={2}>
+            @{userData?.username}
+          </Text>
+          <Text fontSize="md" color="gray.700" mb={4}>
+            Will cook for compliments. Will eat for survival. Chomp chomp.
+          </Text>
+          <Text fontSize="sm" color="gray.500">
+            Joined: April 2025
+          </Text>
+          {isOwner && (
+            <Link to={`/settings/${userId}`}>
+              <Button
+                leftIcon={<FaEdit />}
+                colorScheme="orange"
+                variant="solid"
+                size="sm"
+                mt={4}
+              >
+                Edit Profile
+              </Button>
+            </Link>
+          )}
         </Box>
 
-        <Box bg="white" border="1px solid #c5c5c5" borderBottom="none">
-          <Flex direction="row" justify="flex-start" px={4} py={2}>
+        {/* Tabs Navigation */}
+        <Box bg="white" borderBottom="1px solid #c5c5c5">
+          <Flex direction="row" justify="center" px={4} py={0}>
             {tabs
               .filter((tab) => isOwner || tab.key !== "bookmarks")
               .map((tab) => (
                 <Box
                   key={tab.key}
                   textAlign="center"
-                  py={1}
-                  px={4}
+                  py={2}
+                  px={6}
                   cursor="pointer"
+                  fontWeight="bold"
                   color={activeTab === tab.key ? "orange.500" : "gray.700"}
                   bg={activeTab === tab.key ? "#FFF0E1" : "white"}
+                  borderBottom={
+                    activeTab === tab.key ? "3px solid orange" : "none"
+                  }
                   onClick={() => setActiveTab(tab.key)}
                 >
                   {tab.label}
@@ -270,13 +333,8 @@ const ProfilePage = ({ isOwner }) => {
           </Flex>
         </Box>
 
-        <Box
-          bg="white"
-          border="1px solid #c5c5c5"
-          borderTop="none"
-          px={6}
-          py={8}
-        >
+        {/* Tab Content */}
+        <Box bg="white" px={6} py={8}>
           {tabContent[activeTab]}
         </Box>
       </Box>

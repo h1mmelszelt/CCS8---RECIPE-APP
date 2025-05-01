@@ -14,6 +14,7 @@ import { FiMoreHorizontal } from "react-icons/fi";
 const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
   return (
     <Box
+      key={index}
       bg="white"
       p={4}
       borderRadius="lg"
@@ -32,8 +33,12 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
           {/* Recipe Name */}
           <Text fontSize="sm">
             Commented on:{" "}
-            <Link color="orange.500" fontWeight="semibold">
-              {recipeName}
+            <Link
+              color="orange.500"
+              fontWeight="semibold"
+              href={`/recipes/${review.recipe_id?._id}`}
+            >
+              {review.recipe_id?.name || "Unknown Recipe"}
             </Link>
           </Text>
 
@@ -44,7 +49,7 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
             pl={3}
             color="gray.700"
           >
-            <Text>{reviewText}</Text>
+            <Text>{review.text}</Text>
           </Box>
 
           {/* Rating */}
@@ -54,11 +59,11 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
               <Icon
                 as={FaStar}
                 key={i}
-                color={i < rating ? "green.400" : "gray.300"}
+                color={i < review.rating ? "green.400" : "gray.300"}
                 fontSize="sm"
               />
             ))}{" "}
-            ({rating}/5)
+            ({review.rating}/5)
           </Text>
         </VStack>
 
@@ -73,7 +78,7 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
 
       {/* Date */}
       <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
-        Posted on: {date}
+        Posted on: {new Date(review.createdAt).toLocaleDateString()}
       </Text>
     </Box>
   );

@@ -1,9 +1,37 @@
-import React from "react";
-import { Box, Image, Text, Icon } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Image, Text, Icon, VStack, Button } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
-const RecipeCard = ({ recipe }) => {
+const RecipeCard = ({ recipe, loggedInUserId }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const isOwner = recipe.user_id === loggedInUserId; // Check if the recipe belongs to the logged-in user
+
+  const handleToggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
+
+  const handleEdit = () => {
+    console.log("Edit recipe:", recipe._id);
+    // Add navigation or logic for editing the recipe
+  };
+
+  const handleDelete = () => {
+    console.log("Delete recipe:", recipe._id);
+    // Add logic for deleting the recipe
+  };
+
+  const handleReport = () => {
+    console.log("Report recipe:", recipe._id);
+    // Add logic for reporting the recipe
+  };
+
+  const handleBookmark = () => {
+    console.log("Bookmark recipe:", recipe._id);
+    // Add logic for bookmarking the recipe
+  };
+
   return (
     <Box
       borderWidth="1px"
@@ -19,6 +47,7 @@ const RecipeCard = ({ recipe }) => {
         boxShadow: "lg",
         transform: "scale(1.02)",
       }}
+      position="relative"
     >
       {/* Recipe Image */}
       <Box position="relative">
@@ -49,8 +78,53 @@ const RecipeCard = ({ recipe }) => {
         >
           {/* Three-Dot Menu */}
           <Box position="absolute" top="9px" right="15px">
-            <Icon as={FiMoreHorizontal} boxSize={6} cursor="pointer" />
+            <Icon
+              as={FiMoreHorizontal}
+              boxSize={6}
+              cursor="pointer"
+              onClick={handleToggleMenu}
+            />
           </Box>
+
+          {/* Popup Menu */}
+          {showMenu && (
+            <Box
+              position="absolute"
+              top="40px"
+              right="15px"
+              bg="white"
+              borderRadius="md"
+              boxShadow="md"
+              zIndex="10"
+              p={2}
+            >
+              <VStack align="stretch" spacing={2}>
+                {isOwner ? (
+                  <>
+                    <Button size="sm" onClick={handleEdit}>
+                      Edit
+                    </Button>
+                    <Button size="sm" colorScheme="red" onClick={handleDelete}>
+                      Delete
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="sm" onClick={handleReport}>
+                      Report
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="orange"
+                      onClick={handleBookmark}
+                    >
+                      Save as Bookmark
+                    </Button>
+                  </>
+                )}
+              </VStack>
+            </Box>
+          )}
 
           {/* Description */}
           <Box textAlign="center" mt={12}>
