@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Text,
@@ -7,14 +7,21 @@ import {
   VStack,
   Icon,
   IconButton,
+  Button,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
+  const [showPopup, setShowPopup] = useState(false); // State to toggle popup
+
+  const handleTogglePopup = (e) => {
+    e.stopPropagation(); // Prevent click propagation
+    setShowPopup((prev) => !prev);
+  };
+
   return (
     <Box
-      key={index}
       bg="white"
       p={4}
       borderRadius="lg"
@@ -68,12 +75,35 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
         </VStack>
 
         {/* More Options Button */}
-        <IconButton
-          icon={<FiMoreHorizontal />}
-          size="sm"
-          variant="ghost"
-          aria-label="More options"
-        />
+        <Box position="relative">
+          <IconButton
+            icon={<FiMoreHorizontal />}
+            size="sm"
+            variant="ghost"
+            aria-label="More options"
+            onClick={handleTogglePopup}
+          />
+          {showPopup && (
+            <Box
+              position="absolute"
+              top="30px"
+              right="0"
+              bg="white"
+              borderRadius="md"
+              boxShadow="md"
+              p={2}
+              zIndex="10"
+            >
+              <Button
+                size="sm"
+                colorScheme="red"
+                onClick={() => alert("Delete action triggered!")}
+              >
+                Delete
+              </Button>
+            </Box>
+          )}
+        </Box>
       </HStack>
 
       {/* Date */}

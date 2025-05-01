@@ -18,7 +18,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { FaStar, FaEdit } from "react-icons/fa";
+import { FaStar, FaCog } from "react-icons/fa";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { getCompressedImageUrl } from "../utils/imageUtils";
@@ -295,13 +295,13 @@ const ProfilePage = ({ isOwner }) => {
           {isOwner && (
             <Link to={`/settings/${userId}`}>
               <Button
-                leftIcon={<FaEdit />}
+                leftIcon={<FaCog />}
                 colorScheme="orange"
                 variant="solid"
                 size="sm"
                 mt={4}
               >
-                Edit Profile
+                Account Settings
               </Button>
             </Link>
           )}

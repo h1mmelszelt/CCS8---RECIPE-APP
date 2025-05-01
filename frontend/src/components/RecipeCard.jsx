@@ -35,6 +35,9 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
   return (
     <Box
       borderWidth="1px"
+      _hover={{
+        boxShadow: "0 0 6px 1px #FD660B", // Add orange glow effect on hover
+      }}
       borderColor="gray.300"
       borderStyle="solid"
       borderRadius="sm"
@@ -42,11 +45,7 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
       cursor="pointer"
       bg="white"
       boxShadow="md"
-      transition="0.3s ease"
-      _hover={{
-        boxShadow: "lg",
-        transform: "scale(1.02)",
-      }}
+      transition="0.4s ease"
       position="relative"
     >
       {/* Recipe Image */}
@@ -76,56 +75,6 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
           justifyContent="space-between"
           p={3}
         >
-          {/* Three-Dot Menu */}
-          <Box position="absolute" top="9px" right="15px">
-            <Icon
-              as={FiMoreHorizontal}
-              boxSize={6}
-              cursor="pointer"
-              onClick={handleToggleMenu}
-            />
-          </Box>
-
-          {/* Popup Menu */}
-          {showMenu && (
-            <Box
-              position="absolute"
-              top="40px"
-              right="15px"
-              bg="white"
-              borderRadius="md"
-              boxShadow="md"
-              zIndex="10"
-              p={2}
-            >
-              <VStack align="stretch" spacing={2}>
-                {isOwner ? (
-                  <>
-                    <Button size="sm" onClick={handleEdit}>
-                      Edit
-                    </Button>
-                    <Button size="sm" colorScheme="red" onClick={handleDelete}>
-                      Delete
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button size="sm" onClick={handleReport}>
-                      Report
-                    </Button>
-                    <Button
-                      size="sm"
-                      colorScheme="orange"
-                      onClick={handleBookmark}
-                    >
-                      Save as Bookmark
-                    </Button>
-                  </>
-                )}
-              </VStack>
-            </Box>
-          )}
-
           {/* Description */}
           <Box textAlign="center" mt={12}>
             <Text fontSize="sm" noOfLines={3}>
