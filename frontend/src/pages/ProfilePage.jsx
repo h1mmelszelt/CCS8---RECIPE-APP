@@ -104,11 +104,28 @@ const ProfilePage = ({ isOwner }) => {
       </Text>
       <Divider borderColor="orange.300" mb={4} />
       {createdRecipes.length === 0 ? (
-        <Text>
-          {isOwner
-            ? "You haven't created any recipes yet."
-            : `${userData?.name} hasn't created any recipes yet.`}
-        </Text>
+        <Box
+          border="2px dashed#f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px" // Set minimum height
+          minW="100%" // Set minimum width to fill the container
+          display="flex" // Center content vertically and horizontally
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't created any recipes yet."
+              : `${userData?.name} hasn't created any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) => (
@@ -128,11 +145,28 @@ const ProfilePage = ({ isOwner }) => {
       </Text>
       <Divider borderColor="orange.300" mb={4} />
       {bookmarks.length === 0 ? (
-        <Text>
-          {isOwner
-            ? "You haven't bookmarked any recipes yet."
-            : `${userData?.name} hasn't bookmarked any recipes yet.`}
-        </Text>
+        <Box
+          border="2px dashed#f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px" // Set minimum height
+          minW="100%" // Set minimum width to fill the container
+          display="flex" // Center content vertically and horizontally
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't bookmarked any recipes yet."
+              : `${userData?.name} hasn't bookmarked any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) => (
@@ -154,11 +188,28 @@ const ProfilePage = ({ isOwner }) => {
       </Text>
       <Divider borderColor="orange.300" mb={4} />
       {reviews.length === 0 ? (
-        <Text>
-          {isOwner
-            ? "You haven't written any reviews yet."
-            : `${userData?.name} hasn't written any reviews yet.`}
-        </Text>
+        <Box
+          border="2px dashed#f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px" // Set minimum height
+          minW="100%" // Set minimum width to fill the container
+          display="flex" // Center content vertically and horizontally
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't commented on any recipes yet."
+              : `${userData?.name} hasn't commented on any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
       ) : (
         <VStack spacing={4} align="stretch">
           {reviews.map((review, index) => (
@@ -262,7 +313,7 @@ const ProfilePage = ({ isOwner }) => {
         w={{ base: "100%", md: "80%", lg: "60%" }}
         bg="white"
         borderRadius="md"
-        boxShadow="lg"
+        boxShadow="md"
         overflow="hidden"
       >
         {/* Profile Header */}
