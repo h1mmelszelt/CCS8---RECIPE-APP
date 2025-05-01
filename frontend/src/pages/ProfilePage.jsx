@@ -76,52 +76,110 @@ const ProfilePage = ({ isOwner }) => {
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) => (
-            <Box
-              key={recipe._id}
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              bg="white"
-              boxShadow="md"
-              transition="0.3s ease"
-              _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
-            >
-              <Image
-                src={getCompressedImageUrl(recipe.image)}
-                alt={recipe.title}
-                height="200px"
-                width="100%"
-                objectFit="cover"
-              />
-              <VStack align="start" spacing={2} p={4}>
-                <Text
-                  fontSize="lg"
-                  fontWeight="bold"
-                  color="gray.800"
-                  noOfLines={1}
-                >
-                  {recipe.title}
-                </Text>
-                <Text fontSize="sm" color="gray.600" noOfLines={2}>
-                  {recipe.description}
-                </Text>
-                <HStack spacing={2} mt={2}>
-                  <Avatar
-                    size="sm"
-                    src={userData.avatar}
-                    name={userData.name}
+            <Link to={`/recipes/${recipe._id}`} key={recipe._id}>
+              <Box
+                borderWidth="1px"
+                borderColor="gray.300"
+                borderStyle="solid"
+                borderRadius="sm"
+                overflow="hidden"
+                cursor={"pointer"}
+                bg="white"
+                boxShadow="md"
+                transition="0.3s ease"
+                _hover={{
+                  boxShadow: "lg",
+                  transform: "scale(1.02)",
+                }}
+              >
+                {/* Recipe Image */}
+                <Box position="relative">
+                  <Image
+                    src={getCompressedImageUrl(recipe.image)}
+                    alt={recipe.name}
+                    height="200px"
+                    width="100%"
+                    objectFit="cover"
                   />
-                  <VStack align="start" spacing={0}>
-                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                      {userData.name}
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      @{userData.username}
-                    </Text>
-                  </VStack>
-                </HStack>
-              </VStack>
-            </Box>
+
+                  {/* Hover Overlay */}
+                  <Box
+                    position="absolute"
+                    top="0"
+                    left="0"
+                    right="0"
+                    bottom="0"
+                    bg="rgba(0, 0, 0, 0.8)"
+                    color="white"
+                    opacity="0"
+                    transition="opacity 0.3s ease"
+                    _hover={{ opacity: "1" }}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    p={3}
+                  >
+                    {/* Three-Dot Menu */}
+                    <Box position="absolute" top="9px" right="15px">
+                      <Icon
+                        as={FiMoreHorizontal}
+                        boxSize={6}
+                        cursor="pointer"
+                      />
+                    </Box>
+
+                    {/* Description */}
+                    <Box textAlign="center" mt={12}>
+                      <Text fontSize="sm" noOfLines={3}>
+                        {recipe.description}
+                      </Text>
+                    </Box>
+
+                    {/* Author and Rating */}
+                    <HStack justify="space-between" align="center">
+                      <HStack spacing={2}>
+                        <Avatar
+                          size="sm"
+                          src={userData.avatar}
+                          name={userData.name}
+                        />
+                        <Text fontSize="sm" fontWeight="bold">
+                          {userData.name}
+                        </Text>
+                      </HStack>
+                      <HStack spacing={1} align="center">
+                        <Icon as={FaStar} color="orange.400" boxSize={4} />
+                        <Text
+                          fontSize="sm"
+                          fontWeight="bold"
+                          color="orange.400"
+                        >
+                          {(recipe.averageRating || 0).toFixed(1)}
+                          {/* Display rating with one decimal */}
+                        </Text>
+                        <Text fontSize="sm" color="gray.500">
+                          ({recipe.totalReviews || 0}){" "}
+                          {/* Display number of reviews */}
+                        </Text>
+                      </HStack>
+                    </HStack>
+                  </Box>
+                </Box>
+
+                {/* Recipe Title */}
+                <Box p={1}>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="bold"
+                    color="gray.800"
+                    noOfLines={1}
+                    textAlign="center"
+                  >
+                    {recipe.name}
+                  </Text>
+                </Box>
+              </Box>
+            </Link>
           ))}
         </SimpleGrid>
       )}
@@ -134,58 +192,118 @@ const ProfilePage = ({ isOwner }) => {
         My Bookmarks
       </Text>
       <Divider borderColor="orange.300" mb={4} />
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-        {bookmarks.map((bookmark) => (
-          <Box
-            key={bookmark._id}
-            borderWidth="1px"
-            borderRadius="lg"
-            overflow="hidden"
-            bg="white"
-            boxShadow="md"
-            transition="0.3s ease"
-            _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
-          >
-            <Image
-              src={bookmark.image}
-              alt={bookmark.title}
-              height="200px"
-              width="100%"
-              objectFit="cover"
-            />
-            <VStack align="start" spacing={2} p={4}>
-              <Text
-                fontSize="lg"
-                fontWeight="bold"
-                color="gray.800"
-                noOfLines={1}
+      {bookmarks.length === 0 ? (
+        <Text>No bookmarks found.</Text>
+      ) : (
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+          {bookmarks.map((bookmark) => (
+            <Link to={`/recipes/${bookmark._id}`} key={bookmark._id}>
+              <Box
+                borderWidth="1px"
+                borderColor="gray.300"
+                borderStyle="solid"
+                borderRadius="sm"
+                overflow="hidden"
+                cursor="pointer"
+                bg="white"
+                boxShadow="md"
+                transition="0.3s ease"
+                _hover={{
+                  boxShadow: "lg",
+                  transform: "scale(1.02)",
+                }}
               >
-                {bookmark.title}
-              </Text>
-              <Text fontSize="sm" color="gray.600" noOfLines={2}>
-                {bookmark.description}
-              </Text>
-              {bookmark.user && ( // Ensure bookmark.user exists
-                <HStack spacing={2} mt={2}>
-                  <Avatar
-                    size="sm"
-                    src={bookmark.user.avatar || ""}
-                    name={bookmark.user.name || "Unknown User"}
+                {/* Bookmark Image */}
+                <Box position="relative">
+                  <Image
+                    src={getCompressedImageUrl(bookmark.image)}
+                    alt={bookmark.name}
+                    height="200px"
+                    width="100%"
+                    objectFit="cover"
                   />
-                  <VStack align="start" spacing={0}>
-                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                      {bookmark.user.name || "Unknown User"}
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      @{bookmark.user.username || "unknown"}
-                    </Text>
-                  </VStack>
-                </HStack>
-              )}
-            </VStack>
-          </Box>
-        ))}
-      </SimpleGrid>
+
+                  {/* Hover Overlay */}
+                  <Box
+                    position="absolute"
+                    top="0"
+                    left="0"
+                    right="0"
+                    bottom="0"
+                    bg="rgba(0, 0, 0, 0.8)"
+                    color="white"
+                    opacity="0"
+                    transition="opacity 0.3s ease"
+                    _hover={{ opacity: "1" }}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    p={3}
+                  >
+                    {/* Three-Dot Menu */}
+                    <Box position="absolute" top="9px" right="15px">
+                      <Icon
+                        as={FiMoreHorizontal}
+                        boxSize={6}
+                        cursor="pointer"
+                      />
+                    </Box>
+
+                    {/* Description */}
+                    <Box textAlign="center" mt={12}>
+                      <Text fontSize="sm" noOfLines={3}>
+                        {bookmark.description || "No description available."}
+                      </Text>
+                    </Box>
+
+                    {/* Author and Rating */}
+                    {bookmark.user && (
+                      <HStack justify="space-between" align="center">
+                        <HStack spacing={2}>
+                          <Avatar
+                            size="sm"
+                            src={bookmark.user.avatar || ""}
+                            name={bookmark.user.name || "Unknown User"}
+                          />
+                          <Text fontSize="sm" fontWeight="bold">
+                            {bookmark.user.name || "Unknown User"}
+                          </Text>
+                        </HStack>
+                        <HStack spacing={1} align="center">
+                          <Icon as={FaStar} color="orange.400" boxSize={4} />
+                          <Text
+                            fontSize="sm"
+                            fontWeight="bold"
+                            color="orange.400"
+                          >
+                            {(bookmark.rating || 0).toFixed(1)}
+                          </Text>
+                          <Text fontSize="sm" color="gray.500">
+                            ({bookmark.totalReviews || 0})
+                          </Text>
+                        </HStack>
+                      </HStack>
+                    )}
+                  </Box>
+                </Box>
+
+                {/* Bookmark Title */}
+                <Box p={1}>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="bold"
+                    color="gray.800"
+                    noOfLines={1}
+                    textAlign="center"
+                  >
+                    {bookmark.title}
+                  </Text>
+                </Box>
+              </Box>
+            </Link>
+          ))}
+        </SimpleGrid>
+      )}
     </Box>
   );
   const renderReviewCards = () => (

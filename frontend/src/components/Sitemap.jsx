@@ -36,8 +36,9 @@ function Sitemap() {
             </Text>
           </Text>
           <Text fontSize="sm" color="black.400">
-          Discover thousands of delicious recipes, share your own creations, and
-          explore a world of culinary inspiration. Join our community today!
+            Discover thousands of delicious recipes, share your own creations,
+            and explore a world of culinary inspiration. Join our community
+            today!
           </Text>
         </VStack>
 
@@ -159,7 +160,12 @@ function Sitemap() {
             <FaPinterest size={20} color="black" />
           </Link>
           {/* Add Sitemap link here */}
-          <Link href="/site-map" fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+          <Link
+            href="/site-map"
+            fontSize="sm"
+            color="black.400"
+            _hover={{ color: "orange.500" }}
+          >
             Sitemap
           </Link>
         </HStack>

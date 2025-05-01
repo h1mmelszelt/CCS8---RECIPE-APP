@@ -180,7 +180,7 @@ function Navbar({ transparent }) {
             {/* Site Map Menu Item */}
             <MenuItem
               as={Link}
-              to="/sitemap"
+              to="/site-map"
               color="black"
               _hover={{ bg: "#F9F9F9" }}
               fontWeight="semibold"
