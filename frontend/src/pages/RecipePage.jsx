@@ -1,3 +1,4 @@
+import { FaStar } from "react-icons/fa";
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -23,6 +24,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 const RecipePage = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [relatedRecipes, setRelatedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const location = useLocation();
@@ -55,7 +57,8 @@ const RecipePage = () => {
         const { data } = await axios.get(
           `http://localhost:5000/api/recipes/${recipeId}`
         );
-        setRecipe(data.data);
+        setRecipe(data.data.recipe); // Set recipe details
+        setReviews(data.data.reviews); // Set reviews
 
         const relatedResponse = await axios.get(
           `http://localhost:5000/api/recipes/related/${recipeId}`
@@ -85,9 +88,12 @@ const RecipePage = () => {
   }
 
   // Render breadcrumbs, limiting to only one recipe (the current one)
-  const breadcrumbs = (location.state && location.state.breadcrumbs)
-    ? location.state.breadcrumbs.filter(crumb => !crumb.path.startsWith('/recipes/'))
-    : [{ label: "Home", path: "/home" }];
+  const breadcrumbs =
+    location.state && location.state.breadcrumbs
+      ? location.state.breadcrumbs.filter(
+          (crumb) => !crumb.path.startsWith("/recipes/")
+        )
+      : [{ label: "Home", path: "/home" }];
 
   window.scrollTo(0, 0);
   if (!recipe) return <Text>Loading...</Text>;
@@ -99,11 +105,17 @@ const RecipePage = () => {
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
-              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              <Link
+                to={crumb.path}
+                style={{ color: "#FD660B", textDecoration: "underline" }}
+              >
+                {crumb.label}
+              </Link>
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
-          {breadcrumbs.length > 0 && " > "}{recipe.name}
+          {breadcrumbs.length > 0 && " > "}
+          {recipe.name}
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
@@ -112,11 +124,17 @@ const RecipePage = () => {
             <Text fontSize="sm" color="gray.500">
               {breadcrumbs.map((crumb, idx) => (
                 <span key={crumb.path}>
-                  <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                  <Link
+                    to={crumb.path}
+                    style={{ color: "#FD660B", textDecoration: "underline" }}
+                  >
+                    {crumb.label}
+                  </Link>
                   {idx < breadcrumbs.length - 1 && " > "}
                 </span>
               ))}
-              {breadcrumbs.length > 0 && " > "}{recipe.name}
+              {breadcrumbs.length > 0 && " > "}
+              {recipe.name}
             </Text>
           </Box>
           {/* Left Section */}
@@ -130,12 +148,49 @@ const RecipePage = () => {
                 src={recipe.user_id?.avatar}
                 name={recipe.user_id?.name}
               />
-              <Text fontSize="md" color="gray.600">
-                {recipe.user_id?.name || "Unknown Author"}
-              </Text>
-              <Text fontSize="md" color="orange.500">
-                {recipe.rating || "N/A"} ★
-              </Text>
+              <HStack spacing={2} align="center">
+                <Link
+                  to={`/profile/${recipe.user_id?._id}`}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  <Text fontWeight="bold" fontSize="md" color="#FD660B">
+                    {recipe.user_id?.name || "Unknown Author"}
+                  </Text>
+                </Link>
+                <HStack spacing={1}>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <FaStar
+                      key={index}
+                      size={15} // Adjust the size of the star
+                      color={
+                        index <
+                        (reviews.length > 0
+                          ? Math.round(
+                              reviews.reduce((sum, r) => sum + r.rating, 0) /
+                                reviews.length
+                            )
+                          : 0)
+                          ? "#FD660B" // Orange for filled stars
+                          : "#D3D3D3" // Gray for empty stars
+                      }
+                    />
+                  ))}
+                </HStack>
+                <Text fontSize="md" color="gray.600">
+                  {reviews.length > 0
+                    ? (
+                        reviews.reduce((sum, r) => sum + r.rating, 0) /
+                        reviews.length
+                      ).toFixed(1)
+                    : "0.0"}{" "}
+                  ({reviews.length})
+                </Text>
+              </HStack>
+              <VStack align="start" spacing={0}>
+                <Text fontSize="sm" color="gray.500">
+                  Posted on: {new Date(recipe.createdAt).toLocaleDateString()}
+                </Text>
+              </VStack>
             </HStack>
 
             {/* Recipe Image */}
@@ -275,71 +330,54 @@ const RecipePage = () => {
               <Text fontSize="lg" fontWeight="bold" mb={4}>
                 Comments
               </Text>
-              <VStack align="stretch" spacing={6}>
-                {/* Example Comment */}
-                <Box>
-                  <HStack align="start" spacing={4}>
-                    <Avatar
-                      src="/images/avatar1.jpg"
-                      name="Username"
-                      size="md"
-                    />
-                    <Box>
-                      <Text fontWeight="bold">&lt;Username&gt;</Text>
-                      <Text fontSize="sm" color="gray.500">
-                        &lt;Time since comment&gt;
-                      </Text>
-                      <Text mt={2}>&lt;Comment&gt;</Text>
-                      <HStack spacing={4} mt={2}>
-                        <Button size="xs" variant="ghost">
-                          Reply
-                        </Button>
-                        <Text fontSize="sm" color="gray.500">
-                          69
-                        </Text>
+              <Divider mb={6} borderColor="gray.300" />
+              {reviews.length === 0 ? (
+                <Text fontSize="md" color="gray.500">
+                  0 comments. Be the first to comment!
+                </Text>
+              ) : (
+                <VStack align="stretch" spacing={6}>
+                  {reviews.map((review) => (
+                    <Box key={review._id}>
+                      <HStack align="start" spacing={4}>
+                        <Avatar
+                          src={review.user_id?.avatar}
+                          name={review.user_id?.name}
+                          size="md"
+                        />
+                        <Box>
+                          <Link
+                            to={`/profile/${review.user_id?._id}`}
+                            style={{
+                              color: "#FD660B",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            <Text fontWeight="bold">
+                              {review.user_id?.name}
+                            </Text>
+                          </Link>
+                          <Text fontSize="sm" color="gray.500">
+                            {new Date(review.createdAt).toLocaleDateString()}
+                          </Text>
+                          <Text mt={2}>{review.text}</Text>
+                          <HStack spacing={1} mt={2}>
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <FaStar
+                                key={index}
+                                size={15} // Adjust the size of the star
+                                color={
+                                  index < review.rating ? "#FD660B" : "#D3D3D3"
+                                } // Orange for filled stars, gray for empty stars
+                              />
+                            ))}
+                          </HStack>
+                        </Box>
                       </HStack>
                     </Box>
-                  </HStack>
-                </Box>
-
-                {/* Another Example Comment */}
-                <Box>
-                  <HStack align="start" spacing={4}>
-                    <Avatar
-                      src="/images/avatar2.jpg"
-                      name="Username"
-                      size="md"
-                    />
-                    <Box>
-                      <Text fontWeight="bold">Username</Text>
-                      <Text fontSize="sm" color="gray.500">
-                        &lt;Time since comment&gt;
-                      </Text>
-                      <Text mt={2}>&lt;Comment&gt;</Text>
-                      <HStack spacing={4} mt={2}>
-                        <Button size="xs" variant="ghost">
-                          Reply
-                        </Button>
-                        <Text fontSize="sm" color="gray.500">
-                          21
-                        </Text>
-                      </HStack>
-                    </Box>
-                  </HStack>
-                </Box>
-              </VStack>
-
-              {/* Load More Comments */}
-              <Button
-                mt={6}
-                colorScheme="orange"
-                variant="outline"
-                size="sm"
-                mx="auto"
-                display="block"
-              >
-                Load more comments
-              </Button>
+                  ))}
+                </VStack>
+              )}
             </Box>
           </GridItem>
 
@@ -356,9 +394,7 @@ const RecipePage = () => {
                     key={relatedRecipe._id}
                     to={`/recipes/${relatedRecipe._id}`}
                     state={{
-                      breadcrumbs: [
-                        ...breadcrumbs
-                      ]
+                      breadcrumbs: [...breadcrumbs],
                     }}
                     style={{ textDecoration: "none" }}
                   >
@@ -434,9 +470,7 @@ const RecipePage = () => {
                     key={recipe._id}
                     to={`/recipes/${recipe._id}`}
                     state={{
-                      breadcrumbs: [
-                        ...breadcrumbs
-                      ]
+                      breadcrumbs: [...breadcrumbs],
                     }}
                     style={{ textDecoration: "none" }}
                   >
