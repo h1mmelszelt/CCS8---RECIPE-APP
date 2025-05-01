@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   Box,
   Flex,
@@ -18,17 +18,14 @@ import {
   FaInstagram,
   FaPinterest,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 
-const userId = localStorage.getItem("userId");
 const sitemapLinks = [
   {
     heading: "Explore",
     links: [
       { label: "Home", href: "/home" },
       { label: "Recipes", href: "/search" },
-      { label: "Share Recipe", href: "/create", },
+      { label: "Share Recipe", href: "/create" },
       { label: "Get Started", href: "/" },
       { label: "Notifications", href: "/notifications" },
     ],
@@ -45,10 +42,12 @@ const sitemapLinks = [
   {
     heading: "Account",
     links: [
+        
       { label: "My Profile", href: "/me" },
-      { label: "Settings", href: null }, // We'll set href dynamically
-      { label: "Advanced Settings", href: `/advanced-settings/${userId}` },
-      { label: "Notification Settings", href: `/notification-settings/${userId}` },
+      { label: "Settings", href: "/settings" },
+      { label: "Advanced Settings", href: "/advanced-settings" },
+      { label: "Notification Settings", href: "/notification-settings" },
+      
       { label: "Login", href: "/login" },
       { label: "Register", href: "/register" },
     ],
@@ -66,26 +65,6 @@ const sitemapLinks = [
 ];
 
 export default function SitemapPage() {
-  const { isAuthenticated } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleProtectedClick = (e, href, sectionHeading, linkLabel) => {
-    if (sectionHeading === "Account" && linkLabel === "Settings" && !isAuthenticated) {
-      e.preventDefault();
-      navigate("/logged-out-settings");
-    } else {
-      e.preventDefault();
-      navigate("/login");
-    }
-  };
-
-  // Helper to determine if a link should be protected
-  const isProtectedLink = (sectionHeading, linkLabel) => {
-    if (sectionHeading === "Account" && linkLabel !== "Register" && linkLabel !== "Settings") return true;
-    if (linkLabel === "Share Recipe" || linkLabel === "Notifications") return true;
-    return false;
-  };
-
   return (
     <Box bg="gray.100" minH="100vh" py={12} px={{ base: 4, md: 20 }}>
       <Heading as="h1" size="xl" mb={8} textAlign="center">
@@ -98,46 +77,28 @@ export default function SitemapPage() {
         gap={{ base: 8, md: 20 }}
         align="flex-start"
       >
-        {sitemapLinks
-          .filter((section) => !section.auth || isAuthenticated)
-          .map((section) => (
-            <VStack align="start" spacing={2} key={section.heading} minW="180px">
-              <Text fontWeight="bold" fontSize="lg" mb={2}>
-                {section.heading}
-              </Text>
-              {section.links
-                .filter(
-                  (link, idx, arr) =>
-                    arr.findIndex((l) => l.href === link.href) === idx &&
-                    (!link.auth || isAuthenticated)
-                )
-                .map((link) => {
-                  // Dynamically set href for Settings
-                  let href = link.href;
-                  if (section.heading === "Account" && link.label === "Settings") {
-                    href = isAuthenticated
-                      ? `/settings/${userId}`
-                      : "/logged-out-settings";
-                  }
-                  return (
-                    <Link
-                      key={link.label}
-                      href={href}
-                      fontSize="md"
-                      color="black.600"
-                      _hover={{ color: "orange.500", textDecoration: "underline" }}
-                      onClick={
-                        isProtectedLink(section.heading, link.label) && !isAuthenticated
-                          ? (e) => handleProtectedClick(e, href, section.heading, link.label)
-                          : undefined
-                      }
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                })}
-            </VStack>
-          ))}
+        {sitemapLinks.map((section) => (
+          <VStack align="start" spacing={2} key={section.heading} minW="180px">
+            <Text fontWeight="bold" fontSize="lg" mb={2}>
+              {section.heading}
+            </Text>
+            {section.links
+              .filter((link, idx, arr) =>
+                arr.findIndex(l => l.href === link.href) === idx
+              )
+              .map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  fontSize="md"
+                  color="black.600"
+                  _hover={{ color: "orange.500", textDecoration: "underline" }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+          </VStack>
+        ))}
       </Flex>
       <Divider my={10} />
       <Flex
@@ -148,68 +109,69 @@ export default function SitemapPage() {
         gap={4}
       >
         <VStack align="start" spacing={4} maxW="300px">
-          <Text fontSize="2xl" fontWeight="bold">
-            Insane
-            <Text as="span" color="orange.500">
-              Recipe
-            </Text>
-          </Text>
-          <Text fontSize="sm" color="black.400">
-            Discover thousands of delicious recipes, share your own creations, and
-            explore a world of culinary inspiration. Join our community today!
-          </Text>
-        </VStack>
-        <VStack align="start" spacing={4}>
-          <Text fontSize="lg" fontWeight="bold">
-            Newsletter
-          </Text>
-          <Text fontSize="sm" color="black.400">
-            Subscribe to our newsletter to get more free tips
-          </Text>
-          <Flex as="form" gap={2} w="100%">
-            <Input
-              type="email"
-              placeholder="Enter Your Email"
-              bg="black.700"
-              borderRadius="md"
-              _placeholder={{ color: "black.400" }}
-              color="white"
-            />
-            <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
-              Subscribe
-            </Button>
-          </Flex>
-        </VStack>
-      </Flex>
-      <Divider my={6} borderColor="black.400" />
-      <Flex
-        justify="space-between"
-        align="center"
-        mt={10}
-        direction={{ base: "column", md: "row" }}
-        gap={4}
-      >
-        <Text fontSize="sm" color="black.400">
-          © 2023 RecipeLogo. All Right Reserved
-        </Text>
-        <HStack spacing={4}>
-          <Link href="#" isExternal>
-            <FaTiktok size={20} color="black" />
-          </Link>
-          <Link href="#" isExternal>
-            <FaTwitter size={20} color="black" />
-          </Link>
-          <Link href="#" isExternal>
-            <FaFacebook size={20} color="black" />
-          </Link>
-          <Link href="#" isExternal>
-            <FaInstagram size={20} color="black" />
-          </Link>
-          <Link href="#" isExternal>
-            <FaPinterest size={20} color="black" />
-          </Link>
-        </HStack>
-      </Flex>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    Insane
+                    <Text as="span" color="orange.500">
+                      Recipe
+                    </Text>
+                  </Text>
+                  <Text fontSize="sm" color="black.400">
+                  Discover thousands of delicious recipes, share your own creations, and
+                  explore a world of culinary inspiration. Join our community today!
+                  </Text>
+                </VStack>
+
+                <VStack align="start" spacing={4}>
+                          <Text fontSize="lg" fontWeight="bold">
+                            Newsletter
+                          </Text>
+                          <Text fontSize="sm" color="black.400">
+                            Subscribe to our newsletter to get more free tips
+                          </Text>
+                          <Flex as="form" gap={2} w="100%">
+                            <Input
+                              type="email"
+                              placeholder="Enter Your Email"
+                              bg="black.700"
+                              borderRadius="md"
+                              _placeholder={{ color: "black.400" }}
+                              color="white"
+                            />
+                            <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
+                              Subscribe
+                            </Button>
+                          </Flex>
+                        </VStack>
+                        </Flex>
+                        <Divider my={6} borderColor="black.400" />
+        <Flex
+                justify="space-between"
+                align="center"
+                mt={10}
+                direction={{ base: "column", md: "row" }}
+                gap={4}
+              >
+                <Text fontSize="sm" color="black.400">
+                  © 2023 RecipeLogo. All Right Reserved
+                </Text>
+                <HStack spacing={4}>
+                  <Link href="#" isExternal>
+                    <FaTiktok size={20} color="black" />
+                  </Link>
+                  <Link href="#" isExternal>
+                    <FaTwitter size={20} color="black" />
+                  </Link>
+                  <Link href="#" isExternal>
+                    <FaFacebook size={20} color="black" />
+                  </Link>
+                  <Link href="#" isExternal>
+                    <FaInstagram size={20} color="black" />
+                  </Link>
+                  <Link href="#" isExternal>
+                    <FaPinterest size={20} color="black" />
+                  </Link>
+                </HStack>
+              </Flex>
     </Box>
   );
 }

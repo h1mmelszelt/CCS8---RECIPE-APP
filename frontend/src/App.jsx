@@ -31,8 +31,6 @@ import SitemapPage from "./pages/SitemapPage";
 import LoggedOutSettings from "./pages/LoggedOutSettings";
 
 function App() {
-  const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
-  const profileOwnerId = "6803723a7cf02156db240351"; // Replace with the profile owner's ID (dynamic)
   const notifications = [
     {
       id: 1,

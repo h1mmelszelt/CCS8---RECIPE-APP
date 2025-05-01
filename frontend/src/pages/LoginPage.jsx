@@ -37,6 +37,12 @@ function LoginPage() {
         }
       );
 
+      // Clear any previous credentials before saving new ones
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("userId");
+
       // Save token to localStorage or sessionStorage based on Remember Me
       if (rememberMe) {
         localStorage.setItem("token", response.data.token);

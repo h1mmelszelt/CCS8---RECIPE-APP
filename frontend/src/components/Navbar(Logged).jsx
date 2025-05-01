@@ -42,7 +42,7 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const { setIsAuthenticated } = useContext(AuthContext);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
   const popupRef = useRef(null);
 
   const {
@@ -300,7 +300,7 @@ function Navbar() {
               )}
             </Box>
             {/* User Profile Icon */}
-            <Link to={`/profile/${userId}`}>
+            <Link to={userId ? `/profile/${userId}` : "/login"}>
               <IconButton
                 icon={<FiUser size={20} />}
                 aria-label="User Profile"
@@ -404,7 +404,7 @@ function Navbar() {
                 </Box>
               </Link>
               <Link
-                to={`/settings/${userId}`}
+                to={userId ? `/settings/${userId}` : "/login"}
                 onClick={onDrawerClose}
                 style={{ textDecoration: "none" }}
               >
