@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -17,8 +18,21 @@ import {
   FaTwitter,
   FaTiktok,
 } from "react-icons/fa";
+import { AuthContext } from "../context/AuthContext";
 
 function Sitemap() {
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleShareRecipe = (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate("/create");
+    }
+  };
+
   return (
     <Box bg="gray.200" py={10} px={{ base: 6, md: 20 }} color="black">
       <Flex
@@ -65,7 +79,8 @@ function Sitemap() {
               Recipes
             </Link>
             <Link
-              href="/create"
+              as="button"
+              onClick={handleShareRecipe}
               fontSize="sm"
               color="black.400"
               _hover={{ color: "white" }}

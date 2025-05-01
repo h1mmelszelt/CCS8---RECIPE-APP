@@ -21,6 +21,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -36,9 +37,14 @@ function LoginPage() {
         }
       );
 
-      // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.user.id);
+      // Save token to localStorage or sessionStorage based on Remember Me
+      if (rememberMe) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.user.id);
+      } else {
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("userId", response.data.user.id);
+      }
 
       setIsAuthenticated(true);
 
@@ -143,12 +149,19 @@ function LoginPage() {
                   mb={2}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleLogin();
+                    }
+                  }}
                 />
 
                 <Flex justify="space-between" align="center" mb={20}>
                   <Checkbox
                     colorScheme="white"
                     iconColor="orange"
+                    isChecked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     sx={{
                       "& .chakra-checkbox__control": {
                         bg: "white",
