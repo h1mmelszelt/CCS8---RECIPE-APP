@@ -1,4 +1,12 @@
-import { Box, Button, Image, Text, Grid, Divider } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Image,
+  Text,
+  Grid,
+  Divider,
+  Icon,
+} from "@chakra-ui/react";
 
 import BG_Home from "/images/homebg.jpg";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +16,7 @@ import jwtDecode from "jwt-decode";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import { getCompressedImageUrl } from "../utils/imageUtils";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
@@ -34,7 +43,9 @@ function HomePage() {
 
     const fetchPopularRecipes = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/recipes/popular");
+        const response = await axios.get(
+          "http://localhost:5000/api/recipes/popular"
+        );
         // The backend returns an array of objects with _id as the recipe object
         // and averageRating, totalReviews
         const popular = Array.isArray(response.data.data)
@@ -202,7 +213,10 @@ function HomePage() {
                     _hover={{ boxShadow: "lg" }}
                     role="group"
                   >
-                    <Box height={{ base: "120px", md: "200px" }} overflow="hidden">
+                    <Box
+                      height={{ base: "120px", md: "200px" }}
+                      overflow="hidden"
+                    >
                       <Image
                         src={getCompressedImageUrl(recipe.image)}
                         alt={recipe.name}
@@ -224,7 +238,10 @@ function HomePage() {
                     {/* Show average rating and total reviews */}
                     <Box textAlign="center" mb={2}>
                       <Text fontSize="sm" color="orange.500">
-                        ★ {recipe.averageRating ? recipe.averageRating.toFixed(1) : "N/A"}
+                        ★{" "}
+                        {recipe.averageRating
+                          ? recipe.averageRating.toFixed(1)
+                          : "N/A"}
                       </Text>
                       <Text fontSize="xs" color="gray.500">
                         {recipe.totalReviews || 0} reviews
@@ -275,7 +292,6 @@ function HomePage() {
                 Show More
               </Text>
             </Box>*/}
-            
           </Grid>
 
           <Divider borderColor="gray.400" my={8} />
@@ -308,59 +324,75 @@ function HomePage() {
                     style={{ textDecoration: "none" }} // Remove underline from the link
                   >
                     <Box
-                      bg="white"
-                      borderRadius="md"
-                      boxShadow="md"
+                      borderWidth="1px"
+                      borderColor="gray.300"
+                      borderStyle="solid"
+                      borderRadius="sm"
                       overflow="hidden"
-                      zIndex={2}
-                      position="relative"
-                      cursor="pointer" // Add pointer cursor to indicate clickability
-                      _hover={{ boxShadow: "lg" }} // Add hover effect
-                      role="group"
+                      cursor={"pointer"}
+                      bg="white"
+                      boxShadow="md"
+                      transition="0.3s ease"
+                      _hover={{
+                        boxShadow: "lg",
+                        transform: "scale(1.02)",
+                      }}
                     >
                       {/* Recipe Image */}
-                      <Box
-                        height={{ base: "120px", md: "200px" }}
-                        overflow="hidden"
-                      >
+                      <Box position="relative">
                         <Image
                           src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
-                          objectFit="cover"
+                          height="200px"
                           width="100%"
-                          height="100%"
+                          objectFit="cover"
                         />
+
+                        {/* Hover Overlay */}
+                        <Box
+                          position="absolute"
+                          top="0"
+                          left="0"
+                          right="0"
+                          bottom="0"
+                          bg="rgba(0, 0, 0, 0.8)"
+                          color="white"
+                          opacity="0"
+                          transition="opacity 0.3s ease"
+                          _hover={{ opacity: "1" }}
+                          display="flex"
+                          flexDirection="column"
+                          justifyContent="space-between"
+                          p={3}
+                        >
+                          {/* Three-Dot Menu */}
+                          <Box position="absolute" top="9px" right="15px">
+                            <Icon
+                              as={FiMoreHorizontal}
+                              boxSize={6}
+                              cursor="pointer"
+                            />
+                          </Box>
+
+                          {/* Description */}
+                          <Box textAlign="center" mt={12}>
+                            <Text fontSize="sm" noOfLines={3}>
+                              {recipe.description}
+                            </Text>
+                          </Box>
+                        </Box>
                       </Box>
-                      {/* Recipe Name */}
-                      <Text
-                        textAlign="center"
-                        fontSize={{ base: "14px", md: "16px" }}
-                        fontWeight="bold"
-                        color="black"
-                        mt={2}
-                        mb={2}
-                      >
-                        {recipe.name}
-                      </Text>
-                      {/* Hover Description */}
-                      <Box
-                        position="absolute"
-                        top="0"
-                        left="0"
-                        width="100%"
-                        height="100%"
-                        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-                        color="white"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        textAlign="center"
-                        opacity="0" // Initially hidden
-                        transition="opacity 0.3s ease-in-out" // Smooth transition
-                        _groupHover={{ opacity: "1" }} // Show on hover
-                      >
-                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                          {recipe.description || "No description available."}
+
+                      {/* Recipe Title */}
+                      <Box p={1}>
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="gray.800"
+                          noOfLines={1}
+                          textAlign="center"
+                        >
+                          {recipe.name}
                         </Text>
                       </Box>
                     </Box>
@@ -422,57 +454,75 @@ function HomePage() {
                     style={{ textDecoration: "none" }} // Remove underline from the link
                   >
                     <Box
-                      bg="white"
-                      borderRadius="md"
-                      boxShadow="md"
+                      borderWidth="1px"
+                      borderColor="gray.300"
+                      borderStyle="solid"
+                      borderRadius="sm"
                       overflow="hidden"
-                      zIndex={2}
-                      position="relative"
-                      cursor="pointer" // Add pointer cursor to indicate clickability
-                      _hover={{ boxShadow: "lg" }} // Add hover effect
-                      role="group"
+                      cursor={"pointer"}
+                      bg="white"
+                      boxShadow="md"
+                      transition="0.3s ease"
+                      _hover={{
+                        boxShadow: "lg",
+                        transform: "scale(1.02)",
+                      }}
                     >
-                      <Box
-                        height={{ base: "120px", md: "200px" }}
-                        overflow="hidden"
-                      >
+                      {/* Recipe Image */}
+                      <Box position="relative">
                         <Image
                           src={getCompressedImageUrl(recipe.image)}
                           alt={recipe.name}
-                          objectFit="cover"
+                          height="200px"
                           width="100%"
-                          height="100%"
+                          objectFit="cover"
                         />
+
+                        {/* Hover Overlay */}
+                        <Box
+                          position="absolute"
+                          top="0"
+                          left="0"
+                          right="0"
+                          bottom="0"
+                          bg="rgba(0, 0, 0, 0.8)"
+                          color="white"
+                          opacity="0"
+                          transition="opacity 0.3s ease"
+                          _hover={{ opacity: "1" }}
+                          display="flex"
+                          flexDirection="column"
+                          justifyContent="space-between"
+                          p={3}
+                        >
+                          {/* Three-Dot Menu */}
+                          <Box position="absolute" top="9px" right="15px">
+                            <Icon
+                              as={FiMoreHorizontal}
+                              boxSize={6}
+                              cursor="pointer"
+                            />
+                          </Box>
+
+                          {/* Description */}
+                          <Box textAlign="center" mt={12}>
+                            <Text fontSize="sm" noOfLines={3}>
+                              {recipe.description}
+                            </Text>
+                          </Box>
+                        </Box>
                       </Box>
-                      <Text
-                        textAlign="center"
-                        fontSize={{ base: "14px", md: "16px" }}
-                        fontWeight="bold"
-                        color="black"
-                        mt={2}
-                        mb={2}
-                      >
-                        {recipe.name}
-                      </Text>
-                      {/* Hover Description */}
-                      <Box
-                        position="absolute"
-                        top="0"
-                        left="0"
-                        width="100%"
-                        height="100%"
-                        bg="rgba(0, 0, 0, 0.6)" // Semi-transparent black background
-                        color="white"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        textAlign="center"
-                        opacity="0" // Initially hidden
-                        transition="opacity 0.3s ease-in-out" // Smooth transition
-                        _groupHover={{ opacity: "1" }} // Show on hover
-                      >
-                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                          {recipe.description || "No description available."}
+
+                      {/* Recipe Title */}
+                      <Box p={1}>
+                        <Text
+                          fontSize="lg"
+                          fontWeight="bold"
+                          color="gray.800"
+                          noOfLines={1}
+                          textAlign="center"
+                        >
+                          {recipe.name}
                         </Text>
                       </Box>
                     </Box>

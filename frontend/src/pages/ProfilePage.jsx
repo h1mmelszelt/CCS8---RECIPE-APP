@@ -134,35 +134,6 @@ const ProfilePage = ({ isOwner }) => {
                         {recipe.description}
                       </Text>
                     </Box>
-
-                    {/* Author and Rating */}
-                    <HStack justify="space-between" align="center">
-                      <HStack spacing={2}>
-                        <Avatar
-                          size="sm"
-                          src={userData.avatar}
-                          name={userData.name}
-                        />
-                        <Text fontSize="sm" fontWeight="bold">
-                          {userData.name}
-                        </Text>
-                      </HStack>
-                      <HStack spacing={1} align="center">
-                        <Icon as={FaStar} color="orange.400" boxSize={4} />
-                        <Text
-                          fontSize="sm"
-                          fontWeight="bold"
-                          color="orange.400"
-                        >
-                          {(recipe.averageRating || 0).toFixed(1)}
-                          {/* Display rating with one decimal */}
-                        </Text>
-                        <Text fontSize="sm" color="gray.500">
-                          ({recipe.totalReviews || 0}){" "}
-                          {/* Display number of reviews */}
-                        </Text>
-                      </HStack>
-                    </HStack>
                   </Box>
                 </Box>
 
@@ -185,6 +156,35 @@ const ProfilePage = ({ isOwner }) => {
       )}
     </Box>
   );
+
+  /*{/* Author and Rating }
+  <HStack justify="space-between" align="center">
+  <HStack spacing={2}>
+    <Avatar
+      size="sm"
+      src={userData.avatar}
+      name={userData.name}
+    />
+    <Text fontSize="sm" fontWeight="bold">
+      {userData.name}
+    </Text>
+  </HStack>
+  <HStack spacing={1} align="center">
+    <Icon as={FaStar} color="orange.400" boxSize={4} />
+    <Text
+      fontSize="sm"
+      fontWeight="bold"
+      color="orange.400"
+    >
+      {(recipe.averageRating || 0).toFixed(1)}
+      {/* Display rating with one decimal }
+    </Text>
+    <Text fontSize="sm" color="gray.500">
+      ({recipe.totalReviews || 0}){" "}
+      {/* Display number of reviews }
+    </Text>
+  </HStack>
+</HStack> */
 
   const renderBookmarkCards = () => (
     <Box>
@@ -240,50 +240,12 @@ const ProfilePage = ({ isOwner }) => {
                     justifyContent="space-between"
                     p={3}
                   >
-                    {/* Three-Dot Menu */}
-                    <Box position="absolute" top="9px" right="15px">
-                      <Icon
-                        as={FiMoreHorizontal}
-                        boxSize={6}
-                        cursor="pointer"
-                      />
-                    </Box>
-
                     {/* Description */}
                     <Box textAlign="center" mt={12}>
                       <Text fontSize="sm" noOfLines={3}>
                         {bookmark.description || "No description available."}
                       </Text>
                     </Box>
-
-                    {/* Author and Rating */}
-                    {bookmark.user && (
-                      <HStack justify="space-between" align="center">
-                        <HStack spacing={2}>
-                          <Avatar
-                            size="sm"
-                            src={bookmark.user.avatar || ""}
-                            name={bookmark.user.name || "Unknown User"}
-                          />
-                          <Text fontSize="sm" fontWeight="bold">
-                            {bookmark.user.name || "Unknown User"}
-                          </Text>
-                        </HStack>
-                        <HStack spacing={1} align="center">
-                          <Icon as={FaStar} color="orange.400" boxSize={4} />
-                          <Text
-                            fontSize="sm"
-                            fontWeight="bold"
-                            color="orange.400"
-                          >
-                            {(bookmark.rating || 0).toFixed(1)}
-                          </Text>
-                          <Text fontSize="sm" color="gray.500">
-                            ({bookmark.totalReviews || 0})
-                          </Text>
-                        </HStack>
-                      </HStack>
-                    )}
                   </Box>
                 </Box>
 
@@ -296,7 +258,7 @@ const ProfilePage = ({ isOwner }) => {
                     noOfLines={1}
                     textAlign="center"
                   >
-                    {bookmark.title}
+                    {bookmark.name}
                   </Text>
                 </Box>
               </Box>
