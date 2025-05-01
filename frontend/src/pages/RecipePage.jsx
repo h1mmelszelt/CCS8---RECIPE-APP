@@ -67,6 +67,7 @@ const RecipePage = () => {
     fetchRecipe();
   }, [recipeId]);
 
+  window.scrollTo(0, 0);
   if (!recipe) return <Text>Loading...</Text>;
 
   return (
@@ -386,7 +387,7 @@ const RecipePage = () => {
                 trendingRecipes.map((recipe) => (
                   <Link
                     key={recipe._id}
-                    to={`/recipe/${recipe._id}`}
+                    to={`/recipes/${recipe._id}`}
                     style={{ textDecoration: "none" }}
                   >
                     <HStack
