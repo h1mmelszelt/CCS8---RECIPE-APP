@@ -124,7 +124,7 @@ function SearchPage() {
       color="black"
       pb={{ base: "60px", md: "0" }}
     >
-      <Image
+     {/* <Image
         src={BG_Image}
         position="absolute"
         top="0"
@@ -135,7 +135,7 @@ function SearchPage() {
         zIndex={0}
         opacity={1}
         display={{ base: "none", md: "block" }} // Hide on smaller screens, show on medium and larger screens
-      />
+      /> */}
 
       <Box // Mobile Search Bar
         display={{ base: "flex", md: "none" }} // Show only on smaller screens
@@ -177,6 +177,7 @@ function SearchPage() {
           width={{ base: "100%", md: "350px" }} // Adjust width for desktop
           gap={3}
           ml={{ base: 0, md: 2 }} // Add margin for desktop
+          mt={7}
         >
           <VStack
             spacing={4}

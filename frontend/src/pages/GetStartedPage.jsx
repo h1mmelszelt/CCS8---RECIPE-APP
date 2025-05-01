@@ -36,7 +36,7 @@ function GetStartedPage() {
 
   window.scrollTo(0, 0);
   return (
-    <Box position="relative" minH="100vh" overflow="hidden">
+    <Box position="relative" minH="100vh" overflow="hidden" bg="white">
       <Box position="relative" zIndex={999}></Box>
 
       {/* Decorative Backgrounds */}
