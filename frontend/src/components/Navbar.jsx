@@ -29,6 +29,12 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Adjust the path if necessary
 
 function Navbar({ transparent }) {
+
+  localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("userId"); // Remove userId from localStorage
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
+    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
+    
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,

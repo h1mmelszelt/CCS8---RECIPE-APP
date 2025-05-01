@@ -54,6 +54,9 @@ function Navbar() {
   const handleLogout = () => {
     console.log("Logout triggered");
     localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("userId"); // Remove userId from localStorage
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
+    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
     setIsAuthenticated(false); // Update authentication state
     navigate("/login"); // Redirect to login page
   };

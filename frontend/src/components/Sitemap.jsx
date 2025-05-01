@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -23,6 +23,7 @@ import { AuthContext } from "../context/AuthContext";
 function Sitemap() {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
   const handleShareRecipe = (e) => {
     e.preventDefault();
@@ -30,6 +31,15 @@ function Sitemap() {
       navigate("/login");
     } else {
       navigate("/create");
+    }
+  };
+
+  const handleAccountLink = (path) => (e) => {
+    e.preventDefault();
+    if (!userId) {
+      navigate("/login");
+    } else {
+      navigate(`/${path}/${userId}`);
     }
   };
 
@@ -62,28 +72,22 @@ function Sitemap() {
             <Text fontSize="lg" fontWeight="bold">
               Explore
             </Text>
-            <Link
-              href="/home"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Home
-            </Link>
-            <Link
-              href="/search"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Recipes
-            </Link>
+            <RouterLink to="/home">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Home
+              </Text>
+            </RouterLink>
+            <RouterLink to="/search">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Recipes
+              </Text>
+            </RouterLink>
             <Link
               as="button"
               onClick={handleShareRecipe}
               fontSize="sm"
               color="black.400"
-              _hover={{ color: "white" }}
+              _hover={{ color: "orange.500" }}
             >
               Share Recipe
             </Link>
@@ -93,30 +97,21 @@ function Sitemap() {
             <Text fontSize="lg" fontWeight="bold">
               Helpful links
             </Text>
-            <Link
-              href="/faq"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              FAQ
-            </Link>
-            <Link
-              href="/about-us"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact-us"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Contact
-            </Link>
+            <RouterLink to="/faq">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                FAQ
+              </Text>
+            </RouterLink>
+            <RouterLink to="/about-us">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                About Us
+              </Text>
+            </RouterLink>
+            <RouterLink to="/contact-us">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Contact
+              </Text>
+            </RouterLink>
           </VStack>
         </Flex>
 
@@ -159,30 +154,27 @@ function Sitemap() {
           © 2023 RecipeLogo. All Right Reserved
         </Text>
         <HStack spacing={4}>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaTiktok size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaTwitter size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaFacebook size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaInstagram size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaPinterest size={20} color="black" />
           </Link>
           {/* Add Sitemap link here */}
-          <Link
-            href="/site-map"
-            fontSize="sm"
-            color="black.400"
-            _hover={{ color: "orange.500" }}
-          >
-            Sitemap
-          </Link>
+          <RouterLink to="/site-map">
+            <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+              Sitemap
+            </Text>
+          </RouterLink>
         </HStack>
       </Flex>
     </Box>
