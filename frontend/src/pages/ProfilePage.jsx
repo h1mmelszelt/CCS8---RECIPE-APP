@@ -19,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { FaStar, FaCog } from "react-icons/fa";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
@@ -37,6 +37,7 @@ const ProfilePage = ({ isOwner }) => {
   const [reviews, setReviews] = useState([]);
   const avatarSize = useBreakpointValue({ base: "lg", md: "xl" });
   const { id: userId } = useParams();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,6 +98,12 @@ const ProfilePage = ({ isOwner }) => {
   </HStack>
 </HStack> */
 
+  // Breadcrumbs logic (similar to RecipePage)
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Profile", path: location.pathname + location.search },
+  ];
+
   const renderRecipeCards = () => (
     <Box>
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
@@ -129,7 +136,16 @@ const ProfilePage = ({ isOwner }) => {
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) => (
-            <Link to={`/recipes/${recipe._id}`} key={recipe._id}>
+            <Link
+              to={`/recipes/${recipe._id}`}
+              state={{
+                breadcrumbs: [
+                  { label: "Home", path: "/home" },
+                  { label: "Profile", path: location.pathname + location.search },
+                ],
+              }}
+              key={recipe._id}
+            >
               <RecipeCard recipe={recipe} />
             </Link>
           ))}
@@ -170,7 +186,16 @@ const ProfilePage = ({ isOwner }) => {
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) => (
-            <Link to={`/recipes/${bookmark._id}`} key={bookmark._id}>
+            <Link
+              to={`/recipes/${bookmark._id}`}
+              state={{
+                breadcrumbs: [
+                  { label: "Home", path: "/home" },
+                  { label: "Profile", path: location.pathname + location.search },
+                ],
+              }}
+              key={bookmark._id}
+            >
               <RecipeCard recipe={bookmark} />
             </Link>
           ))}
@@ -235,6 +260,15 @@ const ProfilePage = ({ isOwner }) => {
                     Commented on:{" "}
                     <Link
                       to={`/recipes/${review.recipe_id?._id}`}
+                      state={{
+                        breadcrumbs: [
+                          { label: "Home", path: "/home" },
+                          {
+                            label: "Profile",
+                            path: location.pathname + location.search,
+                          },
+                        ],
+                      }}
                       style={{
                         color: "#ED8936", // Orange color
                         fontWeight: "bold", // Bold text
@@ -301,95 +335,108 @@ const ProfilePage = ({ isOwner }) => {
   if (!userData) return <Text>Loading...</Text>;
 
   return (
-    <Flex
-      justify="center"
-      align="center"
-      bg="gray.100"
-      minH="100vh"
-      px={4}
-      py={8} // Add vertical padding for uniform spacing
-    >
-      <Box
-        w={{ base: "100%", md: "80%", lg: "60%" }}
-        bg="white"
-        borderRadius="md"
-        boxShadow="md"
-        overflow="hidden"
-      >
-        {/* Profile Header */}
-        <Box
-          bg="orange.100"
-          borderBottom="1px solid #d1cece"
-          px={6}
-          py={8}
-          textAlign="center"
-        >
-          <Avatar
-            size="2xl"
-            name={userData?.name}
-            src={userData?.avatar}
-            mb={4}
-            border="4px solid white"
-          />
-          <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-            {userData?.name}
-          </Text>
-          <Text fontSize="sm" color="gray.500" mb={2}>
-            @{userData?.username}
-          </Text>
-          <Text fontSize="md" color="gray.700" mb={4}>
-            Will cook for compliments. Will eat for survival. Chomp chomp.
-          </Text>
-          <Text fontSize="sm" color="gray.500">
-            Joined: April 2025
-          </Text>
-          {isOwner && (
-            <Link to={`/settings/${userId}`}>
-              <Button
-                leftIcon={<FaCog />}
-                colorScheme="orange"
-                variant="solid"
-                size="sm"
-                mt={4}
-              >
-                Account Settings
-              </Button>
-            </Link>
-          )}
-        </Box>
-
-        {/* Tabs Navigation */}
-        <Box bg="white" borderBottom="1px solid #c5c5c5">
-          <Flex direction="row" justify="center" px={4} py={0}>
-            {tabs
-              .filter((tab) => isOwner || tab.key !== "bookmarks")
-              .map((tab) => (
-                <Box
-                  key={tab.key}
-                  textAlign="center"
-                  py={2}
-                  px={6}
-                  cursor="pointer"
-                  fontWeight="bold"
-                  color={activeTab === tab.key ? "orange.500" : "gray.700"}
-                  bg={activeTab === tab.key ? "#FFF0E1" : "white"}
-                  borderBottom={
-                    activeTab === tab.key ? "3px solid orange" : "none"
-                  }
-                  onClick={() => setActiveTab(tab.key)}
-                >
-                  {tab.label}
-                </Box>
-              ))}
-          </Flex>
-        </Box>
-
-        {/* Tab Content */}
-        <Box bg="white" px={6} py={8}>
-          {tabContent[activeTab]}
-        </Box>
+    <>
+      {/* Breadcrumbs at the top of the page */}
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
       </Box>
-    </Flex>
+      <Flex
+        justify="center"
+        align="center"
+        bg="gray.100"
+        minH="100vh"
+        px={4}
+        py={8} // Add vertical padding for uniform spacing
+      >
+        <Box
+          w={{ base: "100%", md: "80%", lg: "60%" }}
+          bg="white"
+          borderRadius="md"
+          boxShadow="md"
+          overflow="hidden"
+        >
+          {/* Profile Header */}
+          <Box
+            bg="orange.100"
+            borderBottom="1px solid #d1cece"
+            px={6}
+            py={8}
+            textAlign="center"
+          >
+            <Avatar
+              size="2xl"
+              name={userData?.name}
+              src={userData?.avatar}
+              mb={4}
+              border="4px solid white"
+            />
+            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+              {userData?.name}
+            </Text>
+            <Text fontSize="sm" color="gray.500" mb={2}>
+              @{userData?.username}
+            </Text>
+            <Text fontSize="md" color="gray.700" mb={4}>
+              Will cook for compliments. Will eat for survival. Chomp chomp.
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              Joined: April 2025
+            </Text>
+            {isOwner && (
+              <Link to={`/settings/${userId}`}>
+                <Button
+                  leftIcon={<FaCog />}
+                  colorScheme="orange"
+                  variant="solid"
+                  size="sm"
+                  mt={4}
+                >
+                  Account Settings
+                </Button>
+              </Link>
+            )}
+          </Box>
+
+          {/* Tabs Navigation */}
+          <Box bg="white" borderBottom="1px solid #c5c5c5">
+            <Flex direction="row" justify="center" px={4} py={0}>
+              {tabs
+                .filter((tab) => isOwner || tab.key !== "bookmarks")
+                .map((tab) => (
+                  <Box
+                    key={tab.key}
+                    textAlign="center"
+                    py={2}
+                    px={6}
+                    cursor="pointer"
+                    fontWeight="bold"
+                    color={activeTab === tab.key ? "orange.500" : "gray.700"}
+                    bg={activeTab === tab.key ? "#FFF0E1" : "white"}
+                    borderBottom={
+                      activeTab === tab.key ? "3px solid orange" : "none"
+                    }
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </Box>
+                ))}
+            </Flex>
+          </Box>
+
+          {/* Tab Content */}
+          <Box bg="white" px={6} py={8}>
+            {tabContent[activeTab]}
+          </Box>
+        </Box>
+      </Flex>
+    </>
   );
 };
 

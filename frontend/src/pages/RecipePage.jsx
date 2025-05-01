@@ -18,13 +18,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const RecipePage = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [relatedRecipes, setRelatedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchTrendingRecipes = async () => {
@@ -67,6 +68,27 @@ const RecipePage = () => {
     fetchRecipe();
   }, [recipeId]);
 
+  // Determine previous page for breadcrumbs
+  let prevLabel = "Home";
+  let prevPath = "/home";
+  if (location.state && location.state.from) {
+    if (location.state.from.includes("/search")) {
+      prevLabel = "Search";
+      prevPath = location.state.from;
+    } else if (location.state.from.includes("/profile")) {
+      prevLabel = "Profile";
+      prevPath = location.state.from;
+    } else if (location.state.from.includes("/notifications")) {
+      prevLabel = "Notifications";
+      prevPath = location.state.from;
+    } // Add more as needed
+  }
+
+  // Render breadcrumbs, limiting to only one recipe (the current one)
+  const breadcrumbs = (location.state && location.state.breadcrumbs)
+    ? location.state.breadcrumbs.filter(crumb => !crumb.path.startsWith('/recipes/'))
+    : [{ label: "Home", path: "/home" }];
+
   window.scrollTo(0, 0);
   if (!recipe) return <Text>Loading...</Text>;
 
@@ -75,10 +97,28 @@ const RecipePage = () => {
       <Box maxW="1200px" mx="auto" p={6}>
         {/* Breadcrumb */}
         <Text fontSize="sm" color="gray.500" mb={4}>
-          Home &gt; {recipe.name}
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+          {breadcrumbs.length > 0 && " > "}{recipe.name}
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
+          {/* Breadcrumbs for mobile/side/top display */}
+          <Box display={{ base: "block", md: "none" }} mb={4}>
+            <Text fontSize="sm" color="gray.500">
+              {breadcrumbs.map((crumb, idx) => (
+                <span key={crumb.path}>
+                  <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                  {idx < breadcrumbs.length - 1 && " > "}
+                </span>
+              ))}
+              {breadcrumbs.length > 0 && " > "}{recipe.name}
+            </Text>
+          </Box>
           {/* Left Section */}
           <GridItem>
             {/* Recipe Header */}
@@ -315,6 +355,11 @@ const RecipePage = () => {
                   <Link
                     key={relatedRecipe._id}
                     to={`/recipes/${relatedRecipe._id}`}
+                    state={{
+                      breadcrumbs: [
+                        ...breadcrumbs
+                      ]
+                    }}
                     style={{ textDecoration: "none" }}
                   >
                     <HStack
@@ -388,6 +433,11 @@ const RecipePage = () => {
                   <Link
                     key={recipe._id}
                     to={`/recipes/${recipe._id}`}
+                    state={{
+                      breadcrumbs: [
+                        ...breadcrumbs
+                      ]
+                    }}
                     style={{ textDecoration: "none" }}
                   >
                     <HStack

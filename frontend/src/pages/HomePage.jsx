@@ -11,7 +11,7 @@ import {
 import RecipeCard from "../components/RecipeCard";
 
 import BG_Home from "/images/homebg.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
@@ -27,6 +27,7 @@ function HomePage() {
   const [createLoading, setCreateLoading] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize navigate
+  const location = useLocation();
   const snackLimit = 4;
 
   // Fetch recipes from the backend
@@ -201,6 +202,7 @@ function HomePage() {
               popularRecipes.map((recipe) => (
                 <Link
                   to={`/recipes/${recipe._id}`}
+                  state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
                   key={recipe._id}
                   style={{ textDecoration: "none" }}
                 >
@@ -322,6 +324,7 @@ function HomePage() {
                 .map((recipe) => (
                   <Link
                     to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
                     key={recipe._id}
                     style={{ textDecoration: "none" }} // Remove underline from the link
                   >
@@ -330,7 +333,11 @@ function HomePage() {
                 ))
             )}
             {/* Show More Card */}
-            <Link to="/search?filter=snack" style={{ textDecoration: "none" }}>
+            <Link
+              to="/search?filter=snack"
+              state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+              style={{ textDecoration: "none" }}
+            >
               <Box
                 bg="gray.100"
                 borderRadius="md"
@@ -380,6 +387,7 @@ function HomePage() {
                 .map((recipe) => (
                   <Link
                     to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
                     key={recipe._id}
                     style={{ textDecoration: "none" }} // Remove underline from the link
                   >
@@ -391,6 +399,7 @@ function HomePage() {
             {/* Show More Card */}
             <Link
               to="/search?filter=filipino"
+              state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
               style={{ textDecoration: "none" }}
             >
               <Box

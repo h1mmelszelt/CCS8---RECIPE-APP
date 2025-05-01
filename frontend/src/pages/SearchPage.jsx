@@ -33,6 +33,12 @@ function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
 
+  // Breadcrumbs for SearchPage
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Search", path: "/search" },
+  ];
+
   // Fetch recipes based on search query
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -124,18 +130,17 @@ function SearchPage() {
       color="black"
       pb={{ base: "60px", md: "0" }}
     >
-     {/* <Image
-        src={BG_Image}
-        position="absolute"
-        top="0"
-        left="75%"
-        transform="translateX(-50%)"
-        width={{ base: "0", md: "60vw" }} // Hide on smaller screens by setting width to 0
-        maxW="none"
-        zIndex={0}
-        opacity={1}
-        display={{ base: "none", md: "block" }} // Hide on smaller screens, show on medium and larger screens
-      /> */}
+      {/* Breadcrumbs at the top of the page */}
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
+      </Box>
 
       <Box // Mobile Search Bar
         display={{ base: "flex", md: "none" }} // Show only on smaller screens
@@ -279,6 +284,12 @@ function SearchPage() {
                 {filteredRecipes.map((recipe) => (
                   <Link
                     to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                    state={{
+                      breadcrumbs: [
+                        { label: "Home", path: "/home" },
+                        { label: "Search", path: "/search" }
+                      ]
+                    }}
                     key={recipe._id}
                     style={{ textDecoration: "none" }} // Remove underline from the link
                   >

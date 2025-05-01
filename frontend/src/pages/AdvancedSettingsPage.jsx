@@ -13,14 +13,22 @@ import {
 
 import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import BG_Image from "/images/11.png";
 import { useThemeToggle } from "../components/ThemeProvider"; // Import the theme toggle hook
 
 const AdvancedSettingsPage = () => {
   const { id: userId } = useParams(); // Get userId from URL
+  const location = useLocation();
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
   const toggleTheme = useThemeToggle();
+
+  // Breadcrumbs for Advanced Settings Page (stop at Settings)
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Profile", path: `/profile/${userId}` },
+    { label: "Settings", path: `/settings/${userId}` },
+  ];
 
   return (
     <Box
@@ -29,6 +37,18 @@ const AdvancedSettingsPage = () => {
       overflow="hidden"
       pb={{ base: "60px", md: "0" }}
     >
+      {/* Breadcrumbs at the top of the page */}
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
+      </Box>
+
       <Box position="relative" zIndex={2}></Box>
 
       {/* Background Images */}
