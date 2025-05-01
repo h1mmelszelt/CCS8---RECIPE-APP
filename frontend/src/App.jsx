@@ -73,7 +73,7 @@ function App() {
               path="/profile/:id"
               element={<ProfilePage isOwner={true} />}
             />
-            <Route path="/me/:id" element={<MePage />} />
+            <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/settings/:id" element={<SettingsPage />} />
             <Route path="/logged-out-settings" element={<LoggedOutSettings />} />

@@ -6,10 +6,12 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
   Button,
   VStack,
   HStack,
@@ -17,6 +19,7 @@ import {
   Divider,
   Link as ChakraLink,
   useBreakpointValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { SearchIcon, BellIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
@@ -34,6 +37,8 @@ function Navbar() {
   const { setIsAuthenticated } = useContext(AuthContext);
   const userId = localStorage.getItem("userId");
 
+  const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } =
+  useDisclosure();
   // Logout function
   const handleLogout = () => {
     console.log("Logout triggered");
@@ -264,104 +269,56 @@ function Navbar() {
               />
             </Link>
 
-            {/* Menu */}
-            <Menu>
-              <MenuButton
-                as={Button}
-                _active={{ bg: "white" }}
-                bg="transparent"
-                colorScheme="gray"
-              >
-                <HamburgerIcon boxSize={9} color="#FD660B" />
-              </MenuButton>
-              <MenuList bg="white" border="1px solid #E2E8F0" p={0}>
-                {/* Home Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/home"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }} // Slight hover effect
-                  fontWeight="semibold" // Semi-bold text
-                  fontSize="sm"
-                  py={3} // Consistent padding
-                >
-                  Home
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />{" "}
-                {/* Gray line separator */}
-                {/* About Us Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/about-us"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  About Us
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Contact Us Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/contact-us"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Contact Us
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Site Map Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/site-map"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Site Map
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* FAQ Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/faq"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  FAQ
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Settings Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to={`/settings/${userId}`}
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout} color="red">
-                  Logout
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-              </MenuList>
-            </Menu>
+            {/* Hamburger Icon for Drawer */} {/* Drawer Trigger */}
+            <IconButton
+              icon={<HamburgerIcon boxSize={8} />}
+              aria-label="Open Menu"
+              onClick={onDrawerOpen}
+              bg="transparent"
+              color="#FD660B"
+              _hover={{ bg: "gray.100" }}
+            />
           </Flex>
         </Flex>
       </Box>
+
+                   {/* Drawer */}
+      <Drawer
+        isOpen={isDrawerOpen}
+        placement="right"
+        onClose={onDrawerClose}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerBody>
+            <Flex direction="column" gap={4}>
+              <Link to="/home" onClick={onDrawerClose}>
+                Home
+              </Link>
+              <Link to="/about-us" onClick={onDrawerClose}>
+                About Us
+              </Link>
+              <Link to="/contact-us" onClick={onDrawerClose}>
+                Contact Us
+              </Link>
+              <Link to="/site-map" onClick={onDrawerClose}>
+                Site Map
+              </Link>
+              <Link to="/faq" onClick={onDrawerClose}>
+                FAQ
+              </Link>
+              <Link to={`/settings/${userId}`} onClick={onDrawerClose}>
+                Settings
+              </Link>
+              <Button onClick={handleLogout} colorScheme="red">
+                Logout
+              </Button>
+            </Flex>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
 
       {/* Navbar for smaller screens ------------------------------------------------*/}
       <Box
