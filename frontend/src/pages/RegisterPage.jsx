@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -11,6 +12,12 @@ import {
 import cooking from "/images/AdobeStock guy cooking.jpeg";
 
 function RegisterPage() {
+
+    useEffect(() => {
+      // Scroll to the top of the page when the component mounts
+      window.scrollTo(0, 0);
+    }, []); 
+  
   return (
     <>
       <Flex
