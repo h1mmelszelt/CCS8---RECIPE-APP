@@ -27,6 +27,7 @@ const RecipePage = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const toast = useToast(); // Initialize toast
+  const [commentText, setCommentText] = useState("");
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -57,6 +58,7 @@ const RecipePage = () => {
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
@@ -170,6 +172,101 @@ const RecipePage = () => {
     }
   };
 
+  const handleCommentSubmit = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit a comment.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/login");
+      return;
+    }
+
+    const userId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User ID not found. Please log in again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/login");
+      return;
+    }
+
+    // Check if the user has already reviewed the recipe
+    const hasReviewed = reviews.some((review) => review.user_id === userId);
+    if (hasReviewed) {
+      toast({
+        title: "Already Reviewed",
+        description: "You have already reviewed this recipe.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const commentData = {
+      user_id: userId,
+      rating: 5, // Replace with actual rating input if applicable
+      text: commentText, // Replace with the state holding the comment text
+    };
+
+    try {
+      await axios.post(
+        `http://localhost:5000/api/reviews/${recipeId}`,
+        commentData
+      );
+
+      // Show success toast
+      toast({
+        title: "Comment Submitted",
+        description: "Your comment has been successfully posted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Fetch updated comments
+      const { data } = await axios.get(
+        `http://localhost:5000/api/reviews/${recipeId}`
+      );
+      setReviews(data); // Update the reviews state
+      setCommentText(""); // Clear the comment input
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+
+      // Check for duplicate review error
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.error === "User has already reviewed this recipe"
+      ) {
+        toast({
+          title: "Already Reviewed",
+          description: "You have already reviewed this recipe.",
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        // Generic error toast
+        toast({
+          title: "Error",
+          description: "Failed to submit your comment. Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    }
+  };
   // Determine previous page for breadcrumbs
   let prevLabel = "Home";
   let prevPath = "/home";
@@ -194,7 +291,6 @@ const RecipePage = () => {
         )
       : [{ label: "Home", path: "/home" }];
 
-  window.scrollTo(0, 0);
   if (!recipe) return <Text>Loading...</Text>;
 
   return (
@@ -214,7 +310,7 @@ const RecipePage = () => {
             </span>
           ))}
           {breadcrumbs.length > 0 && " > "}
-          <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
+          {recipe.name}
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
@@ -233,7 +329,7 @@ const RecipePage = () => {
                 </span>
               ))}
               {breadcrumbs.length > 0 && " > "}
-              <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
+              {recipe.name}
             </Text>
           </Box>
           {/* Left Section */}
@@ -413,7 +509,13 @@ const RecipePage = () => {
                 p={4}
                 mb={4}
               >
-                <Input placeholder="Add Comment..." variant="unstyled" mb={2} />
+                <Input
+                  placeholder="Add Comment..."
+                  value={commentText} // Controlled input
+                  onChange={(e) => setCommentText(e.target.value)} // Update state
+                  variant="unstyled"
+                  mb={2}
+                />
                 <HStack justify="space-between">
                   <HStack spacing={2}>
                     <Button size="sm" variant="ghost">
@@ -429,7 +531,12 @@ const RecipePage = () => {
                       😊
                     </Button>
                   </HStack>
-                  <Button colorScheme="orange" size="sm">
+                  <Button
+                    colorScheme="orange"
+                    size="sm"
+                    onClick={handleCommentSubmit} // Call the submit function
+                    isDisabled={!commentText.trim()} // Disable if input is empty
+                  >
                     Submit
                   </Button>
                 </HStack>
@@ -439,7 +546,7 @@ const RecipePage = () => {
             {/* Comments Section */}
             <Box>
               <Text fontSize="lg" fontWeight="bold" mb={4}>
-                {reviews.length} Comments
+                {reviews.length} {reviews.length === 1 ? "Comment" : "Comments"}
               </Text>
               <Divider mb={6} borderColor="gray.300" />
               {reviews.length === 0 ? (
@@ -476,10 +583,10 @@ const RecipePage = () => {
                             {Array.from({ length: 5 }).map((_, index) => (
                               <FaStar
                                 key={index}
-                                size={15} // Adjust the size of the star
+                                size={15}
                                 color={
                                   index < review.rating ? "#FD660B" : "#D3D3D3"
-                                } // Orange for filled stars, gray for empty stars
+                                }
                               />
                             ))}
                           </HStack>
