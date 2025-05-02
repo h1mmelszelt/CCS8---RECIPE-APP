@@ -84,37 +84,53 @@ function SearchPage() {
     }
   };
 
+  // Helper function to normalize singular/plural forms
+  function normalizeWord(word) {
+    if (!word) return '';
+    let w = word.toLowerCase();
+    if (w.endsWith('ies')) return w.slice(0, -3) + 'y'; // e.g. berries -> berry
+    if (w.endsWith('es')) return w.slice(0, -2); // e.g. tomatoes -> tomato
+    if (w.endsWith('s')) return w.slice(0, -1); // e.g. carrots -> carrot
+    return w;
+  }
+
   // Define handleApplyFilters
   const handleApplyFilters = (appliedFilters) => {
     console.log("Filters applied:", appliedFilters);
 
-    // Filter recipes based on the applied filters
+    // Filter recipes based on the applied filters (tags or ingredients)
     const filtered = recipes.filter((recipe) => {
-      // Check if the recipe matches all applied filters
       return appliedFilters.every((filter) => {
-        // Example: Check if the recipe's tags include the filter
-        return (
-          recipe.tags &&
-          recipe.tags
-            .map((tag) => tag.toLowerCase())
-            .includes(filter.toLowerCase())
-        );
+        const filterNorm = normalizeWord(filter);
+        const tagsMatch = recipe.tags && recipe.tags.some((tag) => {
+          const tagNorm = normalizeWord(tag);
+          return tagNorm.includes(filterNorm) || filterNorm.includes(tagNorm);
+        });
+        const ingredientsMatch = recipe.ingredients && recipe.ingredients.some((ingredient) => {
+          const ingNorm = normalizeWord(ingredient);
+          return ingNorm.includes(filterNorm) || filterNorm.includes(ingNorm);
+        });
+        return tagsMatch || ingredientsMatch;
       });
     });
 
-    // Update the filteredRecipes state with the filtered results
     setFilteredRecipes(filtered);
   };
 
   // Update the filtered recipes when the filter query parameter changes
   useEffect(() => {
     if (filter) {
+      const filterNorm = normalizeWord(filter);
       const filtered = recipes.filter(
         (recipe) =>
-          recipe.tags &&
-          recipe.tags
-            .map((tag) => tag.toLowerCase())
-            .includes(filter.toLowerCase())
+          (recipe.tags && recipe.tags.some((tag) => {
+            const tagNorm = normalizeWord(tag);
+            return tagNorm.includes(filterNorm) || filterNorm.includes(tagNorm);
+          })) ||
+          (recipe.ingredients && recipe.ingredients.some((ingredient) => {
+            const ingNorm = normalizeWord(ingredient);
+            return ingNorm.includes(filterNorm) || filterNorm.includes(ingNorm);
+          }))
       );
       setFilteredRecipes(filtered);
     } else {
