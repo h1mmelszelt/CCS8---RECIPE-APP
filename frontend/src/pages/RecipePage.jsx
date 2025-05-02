@@ -300,38 +300,19 @@ const RecipePage = () => {
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
-              <Link
-                to={crumb.path}
-                style={{ color: "#FD660B", textDecoration: "underline" }}
-              >
-                {crumb.label}
-              </Link>
+              {idx === breadcrumbs.length - 1 ? (
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              ) : (
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
           {breadcrumbs.length > 0 && " > "}
-          {recipe.name}
+          <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
-          {/* Breadcrumbs for mobile/side/top display */}
-          <Box display={{ base: "block", md: "none" }} mb={4}>
-            <Text fontSize="sm" color="gray.500">
-              {breadcrumbs.map((crumb, idx) => (
-                <span key={crumb.path}>
-                  <Link
-                    to={crumb.path}
-                    style={{ color: "#FD660B", textDecoration: "underline" }}
-                  >
-                    {crumb.label}
-                  </Link>
-                  {idx < breadcrumbs.length - 1 && " > "}
-                </span>
-              ))}
-              {breadcrumbs.length > 0 && " > "}
-              {recipe.name}
-            </Text>
-          </Box>
           {/* Left Section */}
           <GridItem>
             {/* Recipe Header */}
