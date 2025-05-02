@@ -88,7 +88,11 @@ const ProfileSettingsPage = () => {
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
-              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              {idx === breadcrumbs.length - 1 ? (
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+              ) : (
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}

@@ -214,7 +214,7 @@ const RecipePage = () => {
             </span>
           ))}
           {breadcrumbs.length > 0 && " > "}
-          {recipe.name}
+          <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
@@ -233,7 +233,7 @@ const RecipePage = () => {
                 </span>
               ))}
               {breadcrumbs.length > 0 && " > "}
-              {recipe.name}
+              <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
             </Text>
           </Box>
           {/* Left Section */}
