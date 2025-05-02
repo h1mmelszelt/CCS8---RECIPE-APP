@@ -56,6 +56,8 @@ function Navbar({ transparent }) {
   const handleSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`); // Navigate to SearchPage with query
+    } else {
+      navigate("/search"); // Show all recipes if query is blank
     }
   };
 
