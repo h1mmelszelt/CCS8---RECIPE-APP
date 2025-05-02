@@ -13,8 +13,17 @@ import {
   Image,
 } from "@chakra-ui/react";
 import faqImage from "/images/chef asking VideoHive.jpg"; // Replace with your image path
+import { useEffect } from "react";
+
+
 
 const FAQPage = () => {
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
+  
   const faqs = [
     {
       question: "Is it free to use the site?",

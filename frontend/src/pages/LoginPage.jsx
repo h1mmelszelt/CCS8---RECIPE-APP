@@ -14,7 +14,7 @@ import cooking from "/images/AdobeStock guy cooking.jpeg";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function LoginPage() {
@@ -25,6 +25,12 @@ function LoginPage() {
   const toast = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
+
+  
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []); 
 
   const handleLogin = async () => {
     setLoading(true);
