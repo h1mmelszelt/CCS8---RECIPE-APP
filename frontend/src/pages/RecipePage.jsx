@@ -15,9 +15,14 @@ import {
   GridItem,
   Input,
   useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { FiMoreHorizontal } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
@@ -33,6 +38,8 @@ const RecipePage = () => {
   const [reviews, setReviews] = useState([]);
   const [hoveredRating, setHoveredRating] = useState(0); // Track hovered star
   const [selectedRating, setSelectedRating] = useState(0); // Track selected rating
+  const loggedInUserId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
   const [relatedRecipes, setRelatedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
@@ -283,6 +290,69 @@ const RecipePage = () => {
       }
     }
   };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${commentId}`);
+      toast({
+        title: "Comment Deleted",
+        description: "Your comment has been successfully deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      // Refresh the comments list
+      const { data } = await axios.get(
+        `http://localhost:5000/api/reviews/${recipeId}`
+      );
+      setReviews(data);
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the comment. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleShareComment = (commentId) => {
+    const commentUrl = `${window.location.href}#comment-${commentId}`;
+    const commentText = reviews.find(
+      (review) => review._id === commentId
+    )?.text;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Check out this comment!",
+          text: commentText || "Check out this comment on the recipe!",
+          url: commentUrl,
+        })
+
+        .catch((error) => {
+          console.error("Error sharing comment:", error);
+          toast({
+            title: "Error",
+            description: "Failed to share the comment. Please try again.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        });
+    } else {
+      toast({
+        title: "Sharing not supported",
+        description: "Your browser does not support the share feature.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   // Determine previous page for breadcrumbs
   let prevLabel = "Home";
   let prevPath = "/home";
@@ -317,15 +387,27 @@ const RecipePage = () => {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
           {breadcrumbs.length > 0 && " > "}
-          <span style={{ color: "#FD660B", fontWeight: "bold" }}>{recipe.name}</span>
+          <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+            {recipe.name}
+          </span>
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
@@ -552,51 +634,103 @@ const RecipePage = () => {
               <Text fontSize="lg" fontWeight="bold" mb={4}>
                 {reviews.length} {reviews.length === 1 ? "Comment" : "Comments"}
               </Text>
-              <Divider mb={6} borderColor="gray.300" />
+              <Divider mb={10} borderColor="gray.500" />
               {reviews.length === 0 ? (
                 <Text fontSize="md" color="gray.500">
                   Be the first to comment!
                 </Text>
               ) : (
                 <VStack align="stretch" spacing={6}>
-                  {reviews.map((review) => (
-                    <Box key={review._id}>
-                      <HStack align="start" spacing={4}>
-                        <Avatar
-                          src={review.user_id?.avatar}
-                          name={review.user_id?.name}
-                          size="md"
-                        />
-                        <Box>
-                          <Link
-                            to={`/profile/${review.user_id?._id}`}
-                            style={{
-                              color: "#FD660B",
-                              textDecoration: "underline",
-                            }}
-                          >
-                            <Text fontWeight="bold">
-                              {review.user_id?.name}
-                            </Text>
-                          </Link>
-                          <Text fontSize="sm" color="gray.500">
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </Text>
-                          <Text mt={2}>{review.text}</Text>
-                          <HStack spacing={1} mt={2}>
-                            {Array.from({ length: 5 }).map((_, index) => (
-                              <FaStar
-                                key={index}
-                                size={15}
-                                color={
-                                  index < review.rating ? "#FD660B" : "#D3D3D3"
-                                }
-                              />
-                            ))}
-                          </HStack>
-                        </Box>
-                      </HStack>
-                    </Box>
+                  {reviews.map((review, index) => (
+                    <React.Fragment key={review._id}>
+                      <Box>
+                        <HStack align="start" spacing={4}>
+                          <Avatar
+                            src={review.user_id?.avatar}
+                            name={review.user_id?.name}
+                            size="md"
+                          />
+                          <Box flex="1">
+                            <HStack justify="space-between">
+                              <Box>
+                                <Link
+                                  to={`/profile/${review.user_id?._id}`}
+                                  style={{
+                                    color: "#FD660B",
+                                    textDecoration: "underline",
+                                  }}
+                                >
+                                  <Text fontWeight="bold">
+                                    {review.user_id?.name}
+                                  </Text>
+                                </Link>
+                                <Text fontSize="sm" color="gray.500">
+                                  {new Date(
+                                    review.createdAt
+                                  ).toLocaleDateString()}
+                                </Text>
+                                <HStack spacing={1} mt={2}>
+                                  {Array.from({ length: 5 }).map((_, index) => (
+                                    <FaStar
+                                      key={index}
+                                      size={15}
+                                      color={
+                                        index < review.rating
+                                          ? "#FD660B"
+                                          : "#D3D3D3"
+                                      }
+                                    />
+                                  ))}
+                                </HStack>
+                              </Box>
+                              {/* Three-dot menu */}
+                              <Menu>
+                                <MenuButton
+                                  as={Button}
+                                  size="sm"
+                                  variant="ghost"
+                                  _hover={{
+                                    bg: "gray.300",
+                                    color: "gray.300",
+                                  }}
+                                >
+                                  <Box
+                                    as={FiMoreHorizontal}
+                                    size="20px"
+                                    color="gray.800"
+                                    _hover={{ color: "gray.800" }}
+                                  />
+                                </MenuButton>
+                                <MenuList>
+                                  {review.user_id?._id === loggedInUserId && (
+                                    <MenuItem
+                                      onClick={() =>
+                                        handleDeleteComment(review._id)
+                                      }
+                                      color="red.500"
+                                    >
+                                      Delete
+                                    </MenuItem>
+                                  )}
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleShareComment(review._id)
+                                    } // Call the share handler
+                                  >
+                                    Share
+                                  </MenuItem>
+                                </MenuList>
+                              </Menu>
+                            </HStack>
+                            <Text mt={2}>{review.text}</Text>
+                          </Box>
+                        </HStack>
+                      </Box>
+                      {/* Add a divider after each comment except the last one */}
+                      {index < reviews.length - 1 && (
+                        <Divider borderColor="gray.400" />
+                      )}
+                    </React.Fragment>
                   ))}
                 </VStack>
               )}
