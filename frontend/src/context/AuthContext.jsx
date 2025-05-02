@@ -3,52 +3,31 @@ import jwtDecode from "jwt-decode";
 
 export const AuthContext = createContext();
 
+// Helper to get initial auth state
+const getInitialAuth = () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (!token) return false;
+  try {
+    const decoded = jwtDecode(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp > currentTime;
+  } catch {
+    return false;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Define the checkAuthStatus function
-  /*const checkAuthStatus = () => {
-    const token = localStorage.getItem("token");
-    console.log("Token in localStorage:", token);
-    
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        console.log("Decoded token:", decoded);
-        const currentTime = Date.now() / 1000;
-        console.log("Current time:", currentTime, "Token expiry:", decoded.exp);
-
-        if (decoded.exp < currentTime) {
-          // Token has expired
-          console.log("Token has expired");
-          localStorage.removeItem("token");
-          setIsAuthenticated(false);
-        } else {
-          // Token is valid
-          console.log("Token is valid");
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error("Invalid token:", error);
-        localStorage.removeItem("token");
-        setIsAuthenticated(false);
-      }
-    } else {
-    console.log("No token found");
-      setIsAuthenticated(false);
-    }
-  };*/
+  const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuth);
 
   const checkAuthStatus = async () => {
-    const token = localStorage.getItem("token");
-    
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode(token);
         const currentTime = Math.floor(Date.now() / 1000);
-  
         if (decoded.exp < currentTime) {
           localStorage.removeItem("token");
+          sessionStorage.removeItem("token");
           setIsAuthenticated(false);
         } else {
           setIsAuthenticated(true);
@@ -56,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error("Auth error:", error);
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         setIsAuthenticated(false);
       }
     } else {
