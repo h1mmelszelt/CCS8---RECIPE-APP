@@ -31,6 +31,9 @@ const RecipePage = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [hoveredRating, setHoveredRating] = useState(0); // Track hovered star
+  const [selectedRating, setSelectedRating] = useState(0); // Track selected rating
+
   const [relatedRecipes, setRelatedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const location = useLocation();
@@ -212,10 +215,22 @@ const RecipePage = () => {
       return;
     }
 
+    // Ensure a rating is selected
+    if (selectedRating === 0) {
+      toast({
+        title: "No Rating Selected",
+        description: "Please select a rating before submitting your comment.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const commentData = {
       user_id: userId,
-      rating: 5, // Replace with actual rating input if applicable
-      text: commentText, // Replace with the state holding the comment text
+      rating: selectedRating, // Include the selected rating
+      text: commentText, // Include the comment text
     };
 
     try {
@@ -239,6 +254,7 @@ const RecipePage = () => {
       );
       setReviews(data); // Update the reviews state
       setCommentText(""); // Clear the comment input
+      setSelectedRating(0); // Reset the selected rating
     } catch (error) {
       console.error("Error submitting comment:", error);
 
@@ -491,10 +507,17 @@ const RecipePage = () => {
                   <Text
                     key={index}
                     fontSize="2xl"
-                    color={index < 3 ? "orange.500" : "gray.300"} // Example: 3 stars selected
+                    color={
+                      index < (hoveredRating || selectedRating)
+                        ? "orange.500"
+                        : "gray.300"
+                    } // Fill stars based on hover or selected rating
                     cursor="pointer"
+                    onMouseEnter={() => setHoveredRating(index + 1)} // Set hovered rating
+                    onMouseLeave={() => setHoveredRating(0)} // Reset hovered rating
+                    onClick={() => setSelectedRating(index + 1)} // Set selected rating
                   >
-                    ★
+                    <FaStar />
                   </Text>
                 ))}
               </HStack>
