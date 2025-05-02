@@ -2,6 +2,7 @@ import ReviewCard from "../components/ReviewCard";
 
 import RecipeCard from "../components/RecipeCard";
 import React, { useState, useEffect } from "react";
+
 import {
   Box,
   Flex,
@@ -29,7 +30,7 @@ const tabs = [
   { key: "reviews", label: "Reviews" },
 ];
 
-const ProfilePage = ({ isOwner }) => {
+const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("created");
   const [userData, setUserData] = useState(null);
   const [createdRecipes, setCreatedRecipes] = useState([]);
@@ -38,6 +39,10 @@ const ProfilePage = ({ isOwner }) => {
   const avatarSize = useBreakpointValue({ base: "lg", md: "xl" });
   const { id: userId } = useParams();
   const location = useLocation();
+  const loggedInUserId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Get the logged-in user's ID
+
+  const isOwner = userId === loggedInUserId; // Calculate isOwner here
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -69,35 +74,6 @@ const ProfilePage = ({ isOwner }) => {
     fetchUserData();
   }, [userId]);
 
-  /*{/* Author and Rating }
-  <HStack justify="space-between" align="center">
-  <HStack spacing={2}>
-    <Avatar
-      size="sm"
-      src={userData.avatar}
-      name={userData.name}
-    />
-    <Text fontSize="sm" fontWeight="bold">
-      {userData.name}
-    </Text>
-  </HStack>
-  <HStack spacing={1} align="center">
-    <Icon as={FaStar} color="orange.400" boxSize={4} />
-    <Text
-      fontSize="sm"
-      fontWeight="bold"
-      color="orange.400"
-    >
-      {(recipe.averageRating || 0).toFixed(1)}
-      {/* Display rating with one decimal }
-    </Text>
-    <Text fontSize="sm" color="gray.500">
-      ({recipe.totalReviews || 0}){" "}
-      {/* Display number of reviews }
-    </Text>
-  </HStack>
-</HStack> */
-
   // Breadcrumbs logic (similar to RecipePage)
   const breadcrumbs = [
     { label: "Home", path: "/home" },
@@ -117,9 +93,9 @@ const ProfilePage = ({ isOwner }) => {
           p={6}
           textAlign="center"
           bg="white"
-          minH="300px" // Set minimum height
-          minW="100%" // Set minimum width to fill the container
-          display="flex" // Center content vertically and horizontally
+          minH="300px"
+          minW="100%"
+          display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
@@ -141,7 +117,10 @@ const ProfilePage = ({ isOwner }) => {
               state={{
                 breadcrumbs: [
                   { label: "Home", path: "/home" },
-                  { label: "Profile", path: location.pathname + location.search },
+                  {
+                    label: "Profile",
+                    path: location.pathname + location.search,
+                  },
                 ],
               }}
               key={recipe._id}
@@ -167,9 +146,9 @@ const ProfilePage = ({ isOwner }) => {
           p={6}
           textAlign="center"
           bg="white"
-          minH="300px" // Set minimum height
-          minW="100%" // Set minimum width to fill the container
-          display="flex" // Center content vertically and horizontally
+          minH="300px"
+          minW="100%"
+          display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
@@ -191,7 +170,10 @@ const ProfilePage = ({ isOwner }) => {
               state={{
                 breadcrumbs: [
                   { label: "Home", path: "/home" },
-                  { label: "Profile", path: location.pathname + location.search },
+                  {
+                    label: "Profile",
+                    path: location.pathname + location.search,
+                  },
                 ],
               }}
               key={bookmark._id}
@@ -219,9 +201,9 @@ const ProfilePage = ({ isOwner }) => {
           p={6}
           textAlign="center"
           bg="white"
-          minH="300px" // Set minimum height
-          minW="100%" // Set minimum width to fill the container
-          display="flex" // Center content vertically and horizontally
+          minH="300px"
+          minW="100%"
+          display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
@@ -246,16 +228,15 @@ const ProfilePage = ({ isOwner }) => {
               boxShadow="sm"
               borderColor={"gray.200"}
               borderWidth={"1px"}
-              borderLeft="4px solid #A3E635" // Lime green border
+              borderLeft="4px solid #A3E635"
               position="relative"
-              transition="0.3s ease" // Smooth transition for hover effect
+              transition="0.3s ease"
               _hover={{
-                boxShadow: "0 0 1px 2px #A3E635", // Green glow effect
+                boxShadow: "0 0 1px 2px #A3E635",
               }}
             >
               <HStack align="start">
                 <VStack align="start" spacing={2} w="100%">
-                  {/* Recipe Name */}
                   <Text fontSize="sm">
                     Commented on:{" "}
                     <Link
@@ -270,18 +251,16 @@ const ProfilePage = ({ isOwner }) => {
                         ],
                       }}
                       style={{
-                        color: "#ED8936", // Orange color
-                        fontWeight: "bold", // Bold text
-                        textDecoration: "underline", // Underline the text
+                        color: "#ED8936",
+                        fontWeight: "bold",
+                        textDecoration: "underline",
                       }}
-                      onMouseEnter={(e) => (e.target.style.color = "#C05621")} // Darker orange on hover
-                      onMouseLeave={(e) => (e.target.style.color = "#ED8936")} // Reset to original color
+                      onMouseEnter={(e) => (e.target.style.color = "#C05621")}
+                      onMouseLeave={(e) => (e.target.style.color = "#ED8936")}
                     >
                       {review.recipe_id?.name || "Unknown Recipe"}
                     </Link>
                   </Text>
-
-                  {/* Review Text */}
                   <Box
                     fontStyle="italic"
                     borderLeft="2px solid #E2E8F0"
@@ -290,8 +269,6 @@ const ProfilePage = ({ isOwner }) => {
                   >
                     <Text>{review.text}</Text>
                   </Box>
-
-                  {/* Rating */}
                   <Text fontSize="sm" color="green.500" fontWeight="medium">
                     Rating:{" "}
                     {[...Array(5)].map((_, i) => (
@@ -305,8 +282,6 @@ const ProfilePage = ({ isOwner }) => {
                     ({review.rating}/5)
                   </Text>
                 </VStack>
-
-                {/* More Options Button */}
                 <IconButton
                   icon={<FiMoreHorizontal />}
                   size="sm"
@@ -314,8 +289,6 @@ const ProfilePage = ({ isOwner }) => {
                   aria-label="More options"
                 />
               </HStack>
-
-              {/* Date */}
               <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
                 Posted on: {new Date(review.createdAt).toLocaleDateString()}
               </Text>
@@ -336,12 +309,16 @@ const ProfilePage = ({ isOwner }) => {
 
   return (
     <>
-      {/* Breadcrumbs at the top of the page */}
       <Box maxW="1200px" mx="auto" px={6} pt={6}>
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
-              <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              <Link
+                to={crumb.path}
+                style={{ color: "#FD660B", textDecoration: "underline" }}
+              >
+                {crumb.label}
+              </Link>
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
@@ -353,7 +330,7 @@ const ProfilePage = ({ isOwner }) => {
         bg="gray.100"
         minH="100vh"
         px={4}
-        py={8} // Add vertical padding for uniform spacing
+        py={8}
       >
         <Box
           w={{ base: "100%", md: "80%", lg: "60%" }}
@@ -362,7 +339,6 @@ const ProfilePage = ({ isOwner }) => {
           boxShadow="md"
           overflow="hidden"
         >
-          {/* Profile Header */}
           <Box
             bg="orange.100"
             borderBottom="1px solid #d1cece"
@@ -403,8 +379,6 @@ const ProfilePage = ({ isOwner }) => {
               </Link>
             )}
           </Box>
-
-          {/* Tabs Navigation */}
           <Box bg="white" borderBottom="1px solid #c5c5c5">
             <Flex direction="row" justify="center" px={4} py={0}>
               {tabs
@@ -429,8 +403,6 @@ const ProfilePage = ({ isOwner }) => {
                 ))}
             </Flex>
           </Box>
-
-          {/* Tab Content */}
           <Box bg="white" px={6} py={8}>
             {tabContent[activeTab]}
           </Box>
