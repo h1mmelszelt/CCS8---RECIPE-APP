@@ -35,6 +35,18 @@ function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
 
+    // Clear the query parameter on page refresh
+    useEffect(() => {
+      if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+        // Remove 'query' from the URL
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("query")) {
+          params.delete("query");
+          window.history.replaceState({}, '', `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`);
+        }
+      }
+    }, []);
+
   // Breadcrumbs for SearchPage
   const breadcrumbs = [
     { label: "Home", path: "/home" },
@@ -86,63 +98,41 @@ function SearchPage() {
     }
   };
 
-  // Helper function to normalize singular/plural forms
-  function normalizeWord(word) {
-    if (!word) return "";
-    let w = word.toLowerCase();
-    if (w.endsWith("ies")) return w.slice(0, -3) + "y"; // e.g. berries -> berry
-    if (w.endsWith("es")) return w.slice(0, -2); // e.g. tomatoes -> tomato
-    if (w.endsWith("s")) return w.slice(0, -1); // e.g. carrots -> carrot
-    return w;
-  }
-
   // Define handleApplyFilters
   const handleApplyFilters = (appliedFilters) => {
-    console.log("Filters applied:", appliedFilters);
-
-    // Filter recipes based on the applied filters (tags or ingredients)
+    // Only consider filters with length >= 2 (ignore single letters/syllables)
+    const validFilters = appliedFilters.filter(f => f.trim().length >= 2);
+    if (appliedFilters.length > 0 && validFilters.length === 0) {
+      // If user entered only short filters, show no recipes
+      setFilteredRecipes([]);
+      return;
+    }
+    if (validFilters.length === 0) {
+      setFilteredRecipes(recipes);
+      return;
+    }
+    // Filter recipes based on the valid filters
     const filtered = recipes.filter((recipe) => {
-      return appliedFilters.every((filter) => {
-        const filterNorm = normalizeWord(filter);
-        const tagsMatch =
-          recipe.tags &&
-          recipe.tags.some((tag) => {
-            const tagNorm = normalizeWord(tag);
-            return tagNorm.includes(filterNorm) || filterNorm.includes(tagNorm);
-          });
-        const ingredientsMatch =
-          recipe.ingredients &&
-          recipe.ingredients.some((ingredient) => {
-            const ingNorm = normalizeWord(ingredient);
-            return ingNorm.includes(filterNorm) || filterNorm.includes(ingNorm);
-          });
-        return tagsMatch || ingredientsMatch;
+      return validFilters.every((filter) => {
+        const filterLower = filter.toLowerCase();
+        // Only match ingredient/tag if the filter is a full word in the ingredient/tag (not just substring)
+        const hasTag = recipe.tags && recipe.tags.some((tag) => tag.toLowerCase() === filterLower);
+        const hasIngredient = recipe.ingredients && recipe.ingredients.some((ingredient) => ingredient.toLowerCase().split(/\s|,|\./).includes(filterLower));
+        return hasTag || hasIngredient;
       });
     });
-
     setFilteredRecipes(filtered);
   };
 
   // Update the filtered recipes when the filter query parameter changes
   useEffect(() => {
     if (filter) {
-      const filterNorm = normalizeWord(filter);
       const filtered = recipes.filter(
         (recipe) =>
-          (recipe.tags &&
-            recipe.tags.some((tag) => {
-              const tagNorm = normalizeWord(tag);
-              return (
-                tagNorm.includes(filterNorm) || filterNorm.includes(tagNorm)
-              );
-            })) ||
-          (recipe.ingredients &&
-            recipe.ingredients.some((ingredient) => {
-              const ingNorm = normalizeWord(ingredient);
-              return (
-                ingNorm.includes(filterNorm) || filterNorm.includes(ingNorm)
-              );
-            }))
+          recipe.tags &&
+          recipe.tags
+            .map((tag) => tag.toLowerCase())
+            .includes(filter.toLowerCase())
       );
       setFilteredRecipes(filtered);
     } else {
