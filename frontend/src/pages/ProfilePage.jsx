@@ -37,31 +37,37 @@ const ProfilePage = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [reviews, setReviews] = useState([]);
   const avatarSize = useBreakpointValue({ base: "lg", md: "xl" });
-  const { id: userId } = useParams();
+  const { id: userId } = useParams(); // Get the userId from the URL
   const location = useLocation();
   const loggedInUserId =
     localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Get the logged-in user's ID
 
-  const isOwner = userId === loggedInUserId; // Calculate isOwner here
+  const isOwner = userId === loggedInUserId; // Determine if the profile belongs to the logged-in user
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        // Fetch the profile data of the user being visited
         const { data } = await axios.get(
           `http://localhost:5000/api/users/${userId}`
         );
         setUserData(data);
 
+        // Fetch recipes created by the user
         const recipesResponse = await axios.get(
           `http://localhost:5000/api/recipes/user/${userId}`
         );
         setCreatedRecipes(recipesResponse.data.data);
 
-        const bookmarksResponse = await axios.get(
-          `http://localhost:5000/api/users/bookmarks/${userId}`
-        );
-        setBookmarks(bookmarksResponse.data.data);
+        // Fetch bookmarks only if the profile belongs to the logged-in user
+        if (isOwner) {
+          const bookmarksResponse = await axios.get(
+            `http://localhost:5000/api/users/bookmarks/${userId}`
+          );
+          setBookmarks(bookmarksResponse.data.data);
+        }
 
+        // Fetch reviews written by the user
         const reviewsResponse = await axios.get(
           `http://localhost:5000/api/reviews/user/${userId}`
         );
@@ -72,7 +78,7 @@ const ProfilePage = () => {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, isOwner]); // Re-run the effect when userId or isOwner changes
 
   // Breadcrumbs logic (similar to RecipePage)
   const breadcrumbs = [
@@ -88,7 +94,7 @@ const ProfilePage = () => {
       <Divider borderColor="orange.300" mb={4} />
       {createdRecipes.length === 0 ? (
         <Box
-          border="2px dashed#f3c575"
+          border="2px dashed #f3c575"
           borderRadius="md"
           p={6}
           textAlign="center"
@@ -141,7 +147,7 @@ const ProfilePage = () => {
       <Divider borderColor="orange.300" mb={4} />
       {bookmarks.length === 0 ? (
         <Box
-          border="2px dashed#f3c575"
+          border="2px dashed #f3c575"
           borderRadius="md"
           p={6}
           textAlign="center"
@@ -196,7 +202,7 @@ const ProfilePage = () => {
       <Divider borderColor="orange.300" mb={4} />
       {reviews.length === 0 ? (
         <Box
-          border="2px dashed#f3c575"
+          border="2px dashed #f3c575"
           borderRadius="md"
           p={6}
           textAlign="center"

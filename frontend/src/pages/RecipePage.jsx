@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Box,
   Image,
@@ -14,14 +14,19 @@ import {
   Grid,
   GridItem,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const RecipePage = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const toast = useToast(); // Initialize toast
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -70,6 +75,100 @@ const RecipePage = () => {
     };
     fetchRecipe();
   }, [recipeId]);
+
+  // Handler for bookmarking the recipe
+  const handleBookmark = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to bookmark this recipe.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/login");
+      return;
+    }
+
+    const userId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User ID not found. Please log in again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/users/bookmarks",
+        {
+          userId,
+          recipeId,
+        }
+      );
+
+      // Check if the recipe was already bookmarked
+      if (response.data.message === "Recipe already bookmarked") {
+        toast({
+          title: "Already Bookmarked",
+          description: "This recipe is already in your bookmarks.",
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Recipe Bookmarked!",
+          description: `${recipe.name} has been added to your bookmarks.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error bookmarking recipe:", error);
+      toast({
+        title: "Error",
+        description: "Failed to bookmark the recipe. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handler for printing the recipe
+  const handlePrint = () => {
+    window.print(); // Opens the browser's print dialog
+  };
+
+  // Handler for sharing the recipe
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: recipe.name,
+          text: `Check out this recipe: ${recipe.name}`,
+          url: window.location.href,
+        })
+        .then(() => console.log("Recipe shared successfully"))
+        .catch((error) => console.error("Error sharing recipe:", error));
+    } else {
+      toast({
+        title: "Sharing not supported",
+        description: "Your browser does not support the share feature.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   // Determine previous page for breadcrumbs
   let prevLabel = "Home";
@@ -210,13 +309,25 @@ const RecipePage = () => {
                 {recipe.description}
               </Text>
               <HStack spacing={4}>
-                <Button colorScheme="orange" variant="outline">
+                <Button
+                  colorScheme="orange"
+                  variant="outline"
+                  onClick={handlePrint}
+                >
                   Print Recipe
                 </Button>
-                <Button colorScheme="orange" variant="outline">
+                <Button
+                  colorScheme="orange"
+                  variant="outline"
+                  onClick={handleShare}
+                >
                   Share Recipe
                 </Button>
-                <Button colorScheme="orange" variant="outline">
+                <Button
+                  colorScheme="orange"
+                  variant="outline"
+                  onClick={handleBookmark}
+                >
                   Add to Bookmarks
                 </Button>
               </HStack>
@@ -328,12 +439,12 @@ const RecipePage = () => {
             {/* Comments Section */}
             <Box>
               <Text fontSize="lg" fontWeight="bold" mb={4}>
-                Comments
+                {reviews.length} Comments
               </Text>
               <Divider mb={6} borderColor="gray.300" />
               {reviews.length === 0 ? (
                 <Text fontSize="md" color="gray.500">
-                  0 comments. Be the first to comment!
+                  Be the first to comment!
                 </Text>
               ) : (
                 <VStack align="stretch" spacing={6}>

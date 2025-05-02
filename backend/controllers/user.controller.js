@@ -155,6 +155,13 @@ export const addBookmark = async (req, res) => {
   const { userId, recipeId } = req.body;
 
   try {
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -162,11 +169,10 @@ export const addBookmark = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Check if the recipe is already bookmarked
     if (user.bookmarks.includes(recipeId)) {
       return res
-        .status(400)
-        .json({ success: false, message: "Recipe already bookmarked" });
+        .status(200)
+        .json({ success: true, message: "Recipe already bookmarked" });
     }
 
     user.bookmarks.push(recipeId);
