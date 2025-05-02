@@ -7,6 +7,7 @@ import {
   deleteUser,
   loginUser,
   addBookmark,
+  removeBookmark, // <-- add import
   getBookmarks,
 } from "../controllers/user.controller.js";
 
@@ -19,6 +20,7 @@ router.get("/:id", getUserById); //no postman req yet
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.post("/bookmarks", addBookmark);
+router.delete("/bookmarks/:userId/:recipeId", removeBookmark); // <-- add route
 router.get("/bookmarks/:id", getBookmarks);
 
 export default router;

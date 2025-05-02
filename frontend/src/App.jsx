@@ -29,6 +29,7 @@ import SignInRequired from "./pages/SignInRequired";
 import { AuthProvider } from "./context/AuthContext";
 import SitemapPage from "./pages/SitemapPage";
 import LoggedOutSettings from "./pages/LoggedOutSettings";
+import EditRecipePage from "./pages/EditRecipePage";
 
 function App() {
   const notifications = [
@@ -92,6 +93,7 @@ function App() {
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/recipes/:recipeId" element={<RecipePage />} />
+            <Route path="/edit/:recipeId" element={<EditRecipePage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/sign-in-required" element={<SignInRequired />} />

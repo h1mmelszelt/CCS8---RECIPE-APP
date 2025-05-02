@@ -25,6 +25,8 @@ import axios from "axios";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
 import { getCompressedImageUrl } from "../utils/imageUtils";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { FiBookmark, FiShare2, FiPrinter } from "react-icons/fi";
 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
@@ -44,6 +46,59 @@ const RecipePage = () => {
   const [relatedRecipes, setRelatedRecipes] = useState([]);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const location = useLocation();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // State for editing a review in the comments section
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editReviewText, setEditReviewText] = useState("");
+  const [editReviewRating, setEditReviewRating] = useState(0);
+
+  // Start editing a review
+  const handleEditReview = (review) => {
+    setEditingReviewId(review._id);
+    setEditReviewText(review.text || "");
+    setEditReviewRating(review.rating);
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setEditReviewText("");
+    setEditReviewRating(0);
+  };
+
+  // Save edited review
+  const handleSaveEdit = async (reviewId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/reviews/${reviewId}`, {
+        rating: editReviewRating,
+        text: editReviewText,
+      });
+      setReviews((prev) =>
+        prev.map((r) =>
+          r._id === reviewId
+            ? { ...r, rating: editReviewRating, text: editReviewText }
+            : r
+        )
+      );
+      handleCancelEdit();
+      toast({
+        title: "Review Updated",
+        description: "Your review has been updated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to update review",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchTrendingRecipes = async () => {
@@ -86,6 +141,26 @@ const RecipePage = () => {
       }
     };
     fetchRecipe();
+  }, [recipeId]);
+
+  // Check if recipe is bookmarked by the user
+  useEffect(() => {
+    const checkBookmark = async () => {
+      const userId =
+        localStorage.getItem("userId") || sessionStorage.getItem("userId");
+      if (!userId) return;
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/users/bookmarks/${userId}`
+        );
+        if (res.data && res.data.data) {
+          setIsBookmarked(res.data.data.some((b) => b._id === recipeId));
+        }
+      } catch (err) {
+        setIsBookmarked(false);
+      }
+    };
+    if (recipeId) checkBookmark();
   }, [recipeId]);
 
   // Handler for bookmarking the recipe
@@ -143,11 +218,52 @@ const RecipePage = () => {
           isClosable: true,
         });
       }
+      setIsBookmarked(true);
     } catch (error) {
       console.error("Error bookmarking recipe:", error);
       toast({
         title: "Error",
         description: "Failed to bookmark the recipe. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handler for removing bookmark
+  const handleRemoveBookmark = async () => {
+    const confirmed = window.confirm("Are you sure you want to remove this recipe from your bookmarks?");
+    if (!confirmed) return;
+    const userId = String(localStorage.getItem("userId") || sessionStorage.getItem("userId"));
+    const recipeIdStr = String(recipeId);
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User ID not found. Please log in again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/login");
+      return;
+    }
+    try {
+      await axios.delete(`http://localhost:5000/api/users/bookmarks/${userId}/${recipeIdStr}`);
+      toast({
+        title: "Bookmark Removed!",
+        description: `${recipe.name} has been removed from your bookmarks.`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      // Refresh bookmark state
+      setIsBookmarked(false);
+    } catch (error) {
+      console.error("Error removing bookmark:", error?.response || error);
+      toast({
+        title: "Error",
+        description: "Failed to remove bookmark. Please try again.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -292,6 +408,8 @@ const RecipePage = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this review? This action cannot be undone.");
+    if (!confirmed) return;
     try {
       await axios.delete(`http://localhost:5000/api/reviews/${commentId}`);
       toast({
@@ -485,6 +603,7 @@ const RecipePage = () => {
               </Text>
               <HStack spacing={4}>
                 <Button
+                  leftIcon={<FiPrinter />}
                   colorScheme="orange"
                   variant="outline"
                   onClick={handlePrint}
@@ -492,19 +611,75 @@ const RecipePage = () => {
                   Print Recipe
                 </Button>
                 <Button
+                  leftIcon={<FiShare2 />}
                   colorScheme="orange"
                   variant="outline"
                   onClick={handleShare}
                 >
                   Share Recipe
                 </Button>
-                <Button
-                  colorScheme="orange"
-                  variant="outline"
-                  onClick={handleBookmark}
-                >
-                  Add to Bookmarks
-                </Button>
+                {isBookmarked ? (
+                  <Button
+                    leftIcon={<FiBookmark />}
+                    colorScheme="orange"
+                    variant="solid"
+                    onClick={handleRemoveBookmark}
+                  >
+                    Remove from Bookmarks
+                  </Button>
+                ) : (
+                  <Button
+                    leftIcon={<FiBookmark />}
+                    colorScheme="orange"
+                    variant="outline"
+                    onClick={handleBookmark}
+                  >
+                    Add to Bookmarks
+                  </Button>
+                )}
+                {/* Edit button for recipe owner */}
+                {recipe.user_id?._id === loggedInUserId && (
+                  <>
+                    <Button
+                      leftIcon={<EditIcon />}
+                      colorScheme="blue"
+                      variant="outline"
+                      onClick={() => navigate(`/edit/${recipe._id}`)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      leftIcon={<DeleteIcon />}
+                      colorScheme="red"
+                      variant="outline"
+                      onClick={async () => {
+                        if (window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.")) {
+                          try {
+                            await axios.delete(`http://localhost:5000/api/recipes/${recipe._id}`);
+                            toast({
+                              title: "Recipe deleted",
+                              description: "Your recipe has been deleted.",
+                              status: "success",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                            navigate(`/profile/${loggedInUserId}`);
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to delete the recipe. Please try again.",
+                              status: "error",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          }
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
               </HStack>
               <HStack spacing={8}>
                 <Text fontSize="md" color="gray.600">
@@ -602,21 +777,7 @@ const RecipePage = () => {
                   variant="unstyled"
                   mb={2}
                 />
-                <HStack justify="space-between">
-                  <HStack spacing={2}>
-                    <Button size="sm" variant="ghost">
-                      <b>B</b>
-                    </Button>
-                    <Button size="sm" variant="ghost">
-                      <i>I</i>
-                    </Button>
-                    <Button size="sm" variant="ghost">
-                      <u>U</u>
-                    </Button>
-                    <Button size="sm" variant="ghost">
-                      😊
-                    </Button>
-                  </HStack>
+                <HStack justify="flex-end">
                   <Button
                     colorScheme="orange"
                     size="sm"
@@ -703,26 +864,64 @@ const RecipePage = () => {
                                 </MenuButton>
                                 <MenuList>
                                   {review.user_id?._id === loggedInUserId && (
-                                    <MenuItem
-                                      onClick={() =>
-                                        handleDeleteComment(review._id)
-                                      }
-                                      color="red.500"
-                                    >
-                                      Delete
-                                    </MenuItem>
+                                    <>
+                                      <MenuItem
+                                        icon={<EditIcon />} // Edit icon
+                                        onClick={() => handleEditReview(review)}
+                                        color="blue.500"
+                                      >
+                                        Edit
+                                      </MenuItem>
+                                      <MenuItem
+                                        icon={<DeleteIcon />} // Delete icon
+                                        onClick={() => handleDeleteComment(review._id)}
+                                        color="red.500"
+                                      >
+                                        Delete
+                                      </MenuItem>
+                                    </>
                                   )}
                                   <MenuItem
-                                    onClick={() =>
-                                      handleShareComment(review._id)
-                                    } // Call the share handler
+                                    icon={<FiShare2 />} // Share icon
+                                    onClick={() => handleShareComment(review._id)}
                                   >
                                     Share
                                   </MenuItem>
                                 </MenuList>
                               </Menu>
                             </HStack>
-                            <Text mt={2}>{review.text}</Text>
+                            {editingReviewId === review._id ? (
+                              <Box mt={2} mb={2}>
+                                <Text fontSize="sm" mb={1} color="gray.600">Edit your review:</Text>
+                                <HStack spacing={1} mb={2}>
+                                  {[...Array(5)].map((_, i) => (
+                                    <FaStar
+                                      key={i}
+                                      size={20}
+                                      color={i < editReviewRating ? "#FD660B" : "#D3D3D3"}
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => setEditReviewRating(i + 1)}
+                                    />
+                                  ))}
+                                </HStack>
+                                <Input
+                                  value={editReviewText}
+                                  onChange={e => setEditReviewText(e.target.value)}
+                                  placeholder="Edit your review..."
+                                  mb={2}
+                                />
+                                <HStack>
+                                  <Button size="xs" colorScheme="green" onClick={() => handleSaveEdit(review._id)}>
+                                    Save
+                                  </Button>
+                                  <Button size="xs" variant="outline" onClick={handleCancelEdit}>
+                                    Cancel
+                                  </Button>
+                                </HStack>
+                              </Box>
+                            ) : (
+                              <Text mt={2}>{review.text}</Text>
+                            )}
                           </Box>
                         </HStack>
                       </Box>

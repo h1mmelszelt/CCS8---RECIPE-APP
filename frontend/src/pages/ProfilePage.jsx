@@ -17,12 +17,18 @@ import {
   Divider,
   IconButton,
   Button,
+  useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { FaStar, FaCog } from "react-icons/fa";
 import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getCompressedImageUrl } from "../utils/imageUtils";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 const tabs = [
   { key: "created", label: "Recipes Created" },
@@ -43,6 +49,13 @@ const ProfilePage = () => {
     localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Get the logged-in user's ID
 
   const isOwner = userId === loggedInUserId; // Determine if the profile belongs to the logged-in user
+
+  // State for editing reviews
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editReviewText, setEditReviewText] = useState("");
+  const [editReviewRating, setEditReviewRating] = useState(0);
+
+  const toast = useToast();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -79,6 +92,128 @@ const ProfilePage = () => {
 
     fetchUserData();
   }, [userId, isOwner]); // Re-run the effect when userId or isOwner changes
+
+  // Remove bookmark handler for profile page
+  const handleRemoveBookmark = async (recipeId) => {
+    const confirmed = window.confirm("Are you sure you want to remove this recipe from your bookmarks?");
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/users/bookmarks/${userId}/${recipeId}`);
+      setBookmarks((prev) => prev.filter((b) => b._id !== recipeId));
+      toast({
+        title: "Bookmark Removed",
+        description: "The recipe has been removed from your bookmarks.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to remove bookmark",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Remove review handler for profile page
+  const handleRemoveReview = async (reviewId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this review? This action cannot be undone.");
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      toast({
+        title: "Review Deleted",
+        description: "Your review has been deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete review",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Remove recipe handler for profile page
+  const handleRemoveRecipe = async (recipeId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.");
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/recipes/${recipeId}`);
+      setCreatedRecipes((prev) => prev.filter((r) => r._id !== recipeId));
+      toast({
+        title: "Recipe Deleted",
+        description: "Your recipe has been deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete recipe",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Start editing a review
+  const handleEditReview = (review) => {
+    setEditingReviewId(review._id);
+    setEditReviewText(review.text || "");
+    setEditReviewRating(review.rating);
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setEditReviewText("");
+    setEditReviewRating(0);
+  };
+
+  // Save edited review
+  const handleSaveEdit = async (reviewId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/reviews/${reviewId}`, {
+        rating: editReviewRating,
+        text: editReviewText,
+      });
+      setReviews((prev) =>
+        prev.map((r) =>
+          r._id === reviewId
+            ? { ...r, rating: editReviewRating, text: editReviewText }
+            : r
+        )
+      );
+      handleCancelEdit();
+      toast({
+        title: "Review Updated",
+        description: "Your review has been updated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to update review",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   // Breadcrumbs logic (similar to RecipePage)
   const breadcrumbs = [
@@ -118,21 +253,54 @@ const ProfilePage = () => {
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) => (
-            <Link
-              to={`/recipes/${recipe._id}`}
-              state={{
-                breadcrumbs: [
-                  { label: "Home", path: "/home" },
-                  {
-                    label: "Profile",
-                    path: location.pathname + location.search,
-                  },
-                ],
-              }}
-              key={recipe._id}
-            >
-              <RecipeCard recipe={recipe} />
-            </Link>
+            <Box key={recipe._id} position="relative">
+              <Link
+                to={`/recipes/${recipe._id}`}
+                state={{
+                  breadcrumbs: [
+                    { label: "Home", path: "/home" },
+                    {
+                      label: "Profile",
+                      path: location.pathname + location.search,
+                    },
+                  ],
+                }}
+                style={{ display: "block" }}
+              >
+                <RecipeCard recipe={recipe} />
+              </Link>
+              {isOwner && (
+                <Menu>
+                  <MenuButton
+                    as={IconButton}
+                    icon={<FiMoreHorizontal />}
+                    size="xs"
+                    variant="ghost"
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    zIndex={2}
+                    aria-label="Options"
+                  />
+                  <MenuList>
+                    <MenuItem
+                      icon={<EditIcon />} // Add edit icon
+                      color="blue.500"
+                      onClick={() => window.location.href = `/edit/${recipe._id}`}
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      icon={<DeleteIcon />} // Add delete icon
+                      color="red.500"
+                      onClick={() => handleRemoveRecipe(recipe._id)}
+                    >
+                      Delete
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              )}
+            </Box>
           ))}
         </SimpleGrid>
       )}
@@ -171,21 +339,37 @@ const ProfilePage = () => {
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) => (
-            <Link
-              to={`/recipes/${bookmark._id}`}
-              state={{
-                breadcrumbs: [
-                  { label: "Home", path: "/home" },
-                  {
-                    label: "Profile",
-                    path: location.pathname + location.search,
-                  },
-                ],
-              }}
-              key={bookmark._id}
-            >
-              <RecipeCard recipe={bookmark} />
-            </Link>
+            <Box key={bookmark._id} position="relative">
+              <Link
+                to={`/recipes/${bookmark._id}`}
+                state={{
+                  breadcrumbs: [
+                    { label: "Home", path: "/home" },
+                    {
+                      label: "Profile",
+                      path: location.pathname + location.search,
+                    },
+                  ],
+                }}
+                style={{ display: "block" }}
+              >
+                <RecipeCard recipe={bookmark} />
+              </Link>
+              {isOwner && (
+                <Button
+                  size="xs"
+                  colorScheme="orange"
+                  variant="outline"
+                  position="absolute"
+                  top={2}
+                  right={2}
+                  zIndex={2}
+                  onClick={() => handleRemoveBookmark(bookmark._id)}
+                >
+                  Remove
+                </Button>
+              )}
+            </Box>
           ))}
         </SimpleGrid>
       )}
@@ -267,33 +451,94 @@ const ProfilePage = () => {
                       {review.recipe_id?.name || "Unknown Recipe"}
                     </Link>
                   </Text>
-                  <Box
-                    fontStyle="italic"
-                    borderLeft="2px solid #E2E8F0"
-                    pl={3}
-                    color="gray.700"
-                  >
-                    <Text>{review.text}</Text>
-                  </Box>
-                  <Text fontSize="sm" color="green.500" fontWeight="medium">
-                    Rating:{" "}
-                    {[...Array(5)].map((_, i) => (
-                      <Icon
-                        as={FaStar}
-                        key={i}
-                        color={i < review.rating ? "orange.400" : "gray.300"}
-                        fontSize="sm"
-                      />
-                    ))}{" "}
-                    ({review.rating}/5)
-                  </Text>
+                  {editingReviewId === review._id ? (
+                    <>
+                      <Box mb={2}>
+                        <Text fontSize="sm" mb={1} color="gray.600">Edit your review:</Text>
+                        <HStack spacing={1} mb={2}>
+                          {[...Array(5)].map((_, i) => (
+                            <Icon
+                              as={FaStar}
+                              key={i}
+                              color={i < editReviewRating ? "orange.400" : "gray.300"}
+                              fontSize="lg"
+                              cursor="pointer"
+                              onClick={() => setEditReviewRating(i + 1)}
+                            />
+                          ))}
+                        </HStack>
+                        <textarea
+                          value={editReviewText}
+                          onChange={e => setEditReviewText(e.target.value)}
+                          rows={3}
+                          style={{ width: "100%", borderRadius: 6, border: "1px solid #E2E8F0", padding: 6 }}
+                        />
+                      </Box>
+                      <HStack>
+                        <Button size="xs" colorScheme="green" onClick={() => handleSaveEdit(review._id)}>
+                          Save
+                        </Button>
+                        <Button size="xs" variant="outline" onClick={handleCancelEdit}>
+                          Cancel
+                        </Button>
+                      </HStack>
+                    </>
+                  ) : (
+                    <>
+                      <Box
+                        fontStyle="italic"
+                        borderLeft="2px solid #E2E8F0"
+                        pl={3}
+                        color="gray.700"
+                      >
+                        <Text>{review.text}</Text>
+                      </Box>
+                      <Text fontSize="sm" color="green.500" fontWeight="medium">
+                        Rating:{" "}
+                        {[...Array(5)].map((_, i) => (
+                          <Icon
+                            as={FaStar}
+                            key={i}
+                            color={i < review.rating ? "orange.400" : "gray.300"}
+                            fontSize="sm"
+                          />
+                        ))}{" "}
+                        ({review.rating}/5)
+                      </Text>
+                    </>
+                  )}
                 </VStack>
-                <IconButton
-                  icon={<FiMoreHorizontal />}
-                  size="sm"
-                  variant="ghost"
-                  aria-label="More options"
-                />
+                {isOwner && (
+                  <Box minW="40px" textAlign="right">
+                    {editingReviewId !== review._id ? (
+                      <Menu>
+                        <MenuButton
+                          as={IconButton}
+                          icon={<FiMoreHorizontal />}
+                          size="xs"
+                          variant="ghost"
+                          aria-label="Options"
+                        />
+                        <MenuList>
+                          <MenuItem
+                            icon={<EditIcon />}
+                            onClick={() => handleEditReview(review)}
+                            color="blue.500"
+                          >
+                            Edit
+                          </MenuItem>
+                          <MenuItem
+                            icon={<DeleteIcon />}
+                            onClick={() => handleRemoveReview(review._id)}
+                            color="red.500"
+                          >
+                            Delete
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    ) : null}
+                  </Box>
+                )}
               </HStack>
               <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
                 Posted on: {new Date(review.createdAt).toLocaleDateString()}

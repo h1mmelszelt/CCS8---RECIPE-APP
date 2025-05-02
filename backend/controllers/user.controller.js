@@ -187,6 +187,30 @@ export const addBookmark = async (req, res) => {
   }
 };
 
+// Remove a recipe from bookmarks
+export const removeBookmark = async (req, res) => {
+  let { userId, recipeId } = req.params;
+  try {
+    userId = String(userId);
+    recipeId = String(recipeId);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    const bookmarkIds = user.bookmarks.map(id => String(id));
+    const recipeIndex = bookmarkIds.indexOf(recipeId);
+    if (recipeIndex === -1) {
+      return res.status(404).json({ success: false, message: "Bookmark not found" });
+    }
+    user.bookmarks.splice(recipeIndex, 1);
+    await user.save();
+    res.status(200).json({ success: true, message: "Bookmark removed successfully" });
+  } catch (error) {
+    console.error("Error removing bookmark:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 // Get all bookmarks for a user
 export const getBookmarks = async (req, res) => {
   const { id } = req.params; // Use 'id' instead of 'userId'
