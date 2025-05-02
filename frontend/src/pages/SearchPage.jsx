@@ -16,7 +16,8 @@ import Filters from "../components/Filters";
 import BG_Image from "/images/11.png"; // Adjust the path as necessary
 import axios from "axios";
 import { FiMoreHorizontal } from "react-icons/fi";
-
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // Import your AuthContext
 import { Link, useLocation } from "react-router-dom";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getCompressedImageUrl } from "../utils/imageUtils";
@@ -25,6 +26,7 @@ function SearchPage() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const filter = queryParams.get("filter");
+  const { isAuthenticated } = useContext(AuthContext); // Get authentication status
 
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -152,9 +154,16 @@ function SearchPage() {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                  {crumb.label}
+                </span>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
@@ -229,28 +238,56 @@ function SearchPage() {
               textAlign="center"
               p={4}
             >
-              <Box fontWeight="bold" fontSize="24px" mb={2}>
-                Don’t lose that perfect recipe!
-              </Box>
-              <Box fontSize="sm" mb={4}>
-                Found something delicious? Sign up for free to save it before
-                you scroll away!
-              </Box>
-              <Input
-                placeholder="Email"
-                size="sm"
-                mb={2}
-                borderRadius="md"
-                bg="white"
-              />
-              <Button
-                bg="#97C33A"
-                size="sm"
-                width="100%"
-                _hover={{ bg: "#7da52f" }}
-              >
-                Sign Up
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Box fontWeight="bold" fontSize="24px" mb={2}>
+                    Subscribe to Our Newsletter!
+                  </Box>
+                  <Box fontSize="sm" mb={4}>
+                    Stay updated with the latest recipes and cooking tips.
+                  </Box>
+                  <Input
+                    placeholder="Enter your email"
+                    size="sm"
+                    mb={2}
+                    borderRadius="md"
+                    bg="white"
+                  />
+                  <Button
+                    bg="#97C33A"
+                    size="sm"
+                    width="100%"
+                    _hover={{ bg: "#7da52f" }}
+                  >
+                    Subscribe
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Box fontWeight="bold" fontSize="24px" mb={2}>
+                    Don’t lose that perfect recipe!
+                  </Box>
+                  <Box fontSize="sm" mb={4}>
+                    Found something delicious? Sign up for free to save it
+                    before you scroll away!
+                  </Box>
+                  <Input
+                    placeholder="Email"
+                    size="sm"
+                    mb={2}
+                    borderRadius="md"
+                    bg="white"
+                  />
+                  <Button
+                    bg="#97C33A"
+                    size="sm"
+                    width="100%"
+                    _hover={{ bg: "#7da52f" }}
+                  >
+                    Sign Up
+                  </Button>
+                </>
+              )}
             </Box>
           </VStack>
         </Box>
@@ -307,8 +344,8 @@ function SearchPage() {
                     state={{
                       breadcrumbs: [
                         { label: "Home", path: "/home" },
-                        { label: "Search", path: "/search" }
-                      ]
+                        { label: "Search", path: "/search" },
+                      ],
                     }}
                     key={recipe._id}
                     style={{ textDecoration: "none" }} // Remove underline from the link
