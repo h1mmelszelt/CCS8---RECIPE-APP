@@ -17,6 +17,9 @@ import axios from "axios";
 
 import BG_Image from "/images/11.png";
 
+// Define the isValidPath function at the top of the file
+const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+
 const ProfileSettingsPage = () => {
   const { id: userId } = useParams(); // Get userId from URL
   const [userData, setUserData] = useState({

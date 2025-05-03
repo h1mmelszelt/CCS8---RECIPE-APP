@@ -229,8 +229,7 @@ const ProfilePage = () => {
   const breadcrumbs = [
     { label: "Home", path: "/home" },
     { label: "Profile", path: `/profile/${userId}` },
-    { label: "Settings", path: `/settings/${userId}` },
-  ].filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:'));
+  ];
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (ProfilePage) - All recipe/bookmark/settings links must be valid
