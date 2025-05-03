@@ -151,7 +151,7 @@ function Navbar() {
             <Tooltip label="Go to BiteBook Home page">
               <Flex alignItems="center">
                 <Image
-                  src="/images/bitebook.png" // Path to your logo image
+                  src="frontend/public/images/bitebook.png" // Path to your logo image
                   alt="BiteBook Logo"
                   boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
                   objectFit="contain" // Ensure the image fits within the box
