@@ -16,7 +16,7 @@ import { Link, useLocation, useParams } from "react-router-dom"; // Import Link 
 import BG_Image from "/images/11.png";
 
 const NotificationSettingsPage = () => {
-  const { id: userId } = useParams();
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
   const location = useLocation();
   // Breadcrumbs for Notification Settings Page (stop at Settings)
   const breadcrumbs = [

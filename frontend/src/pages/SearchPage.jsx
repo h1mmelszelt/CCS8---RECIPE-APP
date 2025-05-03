@@ -22,6 +22,10 @@ import { Link, useLocation } from "react-router-dom";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
+// Define the isValidPath function at the top of the file
+const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+
+
 function SearchPage() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

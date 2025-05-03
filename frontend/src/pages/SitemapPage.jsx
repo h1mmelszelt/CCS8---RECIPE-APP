@@ -22,7 +22,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function SitemapPage() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
   const handleAccountLink = (path) => (e) => {
     e.preventDefault();
     if (!userId) {

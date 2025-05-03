@@ -181,7 +181,7 @@ const RecipePage = () => {
     }
 
     const userId =
-      localStorage.getItem("userId") || sessionStorage.getItem("userId");
+      localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
     if (!userId) {
       toast({
         title: "Error",

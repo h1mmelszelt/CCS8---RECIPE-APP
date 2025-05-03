@@ -48,7 +48,7 @@ const ProfilePage = () => {
   const { id: userId } = useParams(); // Get the userId from the URL
   const location = useLocation();
   const loggedInUserId =
-    localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Get the logged-in user's ID
+    localStorage.getItem("userId") || sessionStorage.getItem("userId") || null; // Get the logged-in user's ID
 
   const isOwner = userId === loggedInUserId; // Determine if the profile belongs to the logged-in user
 

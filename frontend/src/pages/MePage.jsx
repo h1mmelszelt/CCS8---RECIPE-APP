@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { FaUserCog, FaSignOutAlt, FaStar, FaUser } from "react-icons/fa";
 
 function MePage() {
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (MePage) - All profile/settings links must be valid
