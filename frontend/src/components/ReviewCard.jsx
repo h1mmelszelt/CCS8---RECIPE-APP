@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Text,
@@ -7,11 +7,19 @@ import {
   VStack,
   Icon,
   IconButton,
+  Button,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
 
 const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
+  const [showPopup, setShowPopup] = useState(false); // State to toggle popup
+
+  const handleTogglePopup = (e) => {
+    e.stopPropagation(); // Prevent click propagation
+    setShowPopup((prev) => !prev);
+  };
+
   return (
     <Box
       bg="white"
@@ -32,8 +40,12 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
           {/* Recipe Name */}
           <Text fontSize="sm">
             Commented on:{" "}
-            <Link color="orange.500" fontWeight="semibold">
-              {recipeName}
+            <Link
+              color="orange.500"
+              fontWeight="semibold"
+              href={`/recipes/${review.recipe_id?._id}`}
+            >
+              {review.recipe_id?.name || "Unknown Recipe"}
             </Link>
           </Text>
 
@@ -44,7 +56,7 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
             pl={3}
             color="gray.700"
           >
-            <Text>{reviewText}</Text>
+            <Text>{review.text}</Text>
           </Box>
 
           {/* Rating */}
@@ -54,26 +66,49 @@ const ReviewCard = ({ recipeName, reviewText, rating, date }) => {
               <Icon
                 as={FaStar}
                 key={i}
-                color={i < rating ? "green.400" : "gray.300"}
+                color={i < review.rating ? "green.400" : "gray.300"}
                 fontSize="sm"
               />
             ))}{" "}
-            ({rating}/5)
+            ({review.rating}/5)
           </Text>
         </VStack>
 
         {/* More Options Button */}
-        <IconButton
-          icon={<FiMoreHorizontal />}
-          size="sm"
-          variant="ghost"
-          aria-label="More options"
-        />
+        <Box position="relative">
+          <IconButton
+            icon={<FiMoreHorizontal />}
+            size="sm"
+            variant="ghost"
+            aria-label="More options"
+            onClick={handleTogglePopup}
+          />
+          {showPopup && (
+            <Box
+              position="absolute"
+              top="30px"
+              right="0"
+              bg="white"
+              borderRadius="md"
+              boxShadow="md"
+              p={2}
+              zIndex="10"
+            >
+              <Button
+                size="sm"
+                colorScheme="red"
+                onClick={() => alert("Delete action triggered!")}
+              >
+                Delete
+              </Button>
+            </Box>
+          )}
+        </Box>
       </HStack>
 
       {/* Date */}
       <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
-        Posted on: {date}
+        Posted on: {new Date(review.createdAt).toLocaleDateString()}
       </Text>
     </Box>
   );

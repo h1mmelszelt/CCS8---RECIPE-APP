@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -17,8 +18,31 @@ import {
   FaTwitter,
   FaTiktok,
 } from "react-icons/fa";
+import { AuthContext } from "../context/AuthContext";
 
 function Sitemap() {
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+
+  const handleShareRecipe = (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+      navigate("/create");
+    }
+  };
+
+  const handleAccountLink = (path) => (e) => {
+    e.preventDefault();
+    if (!userId) {
+      navigate("/login");
+    } else {
+      navigate(`/${path}/${userId}`);
+    }
+  };
+
   return (
     <Box bg="gray.200" py={10} px={{ base: 6, md: 20 }} color="black">
       <Flex
@@ -36,8 +60,9 @@ function Sitemap() {
             </Text>
           </Text>
           <Text fontSize="sm" color="black.400">
-          Discover thousands of delicious recipes, share your own creations, and
-          explore a world of culinary inspiration. Join our community today!
+            Discover thousands of delicious recipes, share your own creations,
+            and explore a world of culinary inspiration. Join our community
+            today!
           </Text>
         </VStack>
 
@@ -47,27 +72,22 @@ function Sitemap() {
             <Text fontSize="lg" fontWeight="bold">
               Explore
             </Text>
+            <RouterLink to="/home">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Home
+              </Text>
+            </RouterLink>
+            <RouterLink to="/search">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Recipes
+              </Text>
+            </RouterLink>
             <Link
-              href="/home"
+              as="button"
+              onClick={handleShareRecipe}
               fontSize="sm"
               color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Home
-            </Link>
-            <Link
-              href="/search"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Recipes
-            </Link>
-            <Link
-              href="/create"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
+              _hover={{ color: "orange.500" }}
             >
               Share Recipe
             </Link>
@@ -77,30 +97,21 @@ function Sitemap() {
             <Text fontSize="lg" fontWeight="bold">
               Helpful links
             </Text>
-            <Link
-              href="/faq"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              FAQ
-            </Link>
-            <Link
-              href="/about-us"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact-us"
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "white" }}
-            >
-              Contact
-            </Link>
+            <RouterLink to="/faq">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                FAQ
+              </Text>
+            </RouterLink>
+            <RouterLink to="/about-us">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                About Us
+              </Text>
+            </RouterLink>
+            <RouterLink to="/contact-us">
+              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                Contact
+              </Text>
+            </RouterLink>
           </VStack>
         </Flex>
 
@@ -121,7 +132,7 @@ function Sitemap() {
               _placeholder={{ color: "black.400" }}
               color="white"
             />
-            <Button bg="red.500" color="white" _hover={{ bg: "red.600" }}>
+            <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
               Subscribe
             </Button>
           </Flex>
@@ -143,21 +154,27 @@ function Sitemap() {
           © 2023 RecipeLogo. All Right Reserved
         </Text>
         <HStack spacing={4}>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaTiktok size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaTwitter size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaFacebook size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaInstagram size={20} color="black" />
           </Link>
-          <Link href="#" isExternal>
+          <Link href="#" isExternal _hover={{ color: "orange.500" }}>
             <FaPinterest size={20} color="black" />
           </Link>
+          {/* Add Sitemap link here */}
+          <RouterLink to="/site-map">
+            <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+              Sitemap
+            </Text>
+          </RouterLink>
         </HStack>
       </Flex>
     </Box>

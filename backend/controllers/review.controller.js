@@ -106,3 +106,24 @@ export const deleteReview = async (req, res) => {
     res.status(500).json({ error: "Failed to delete review" });
   }
 };
+
+export const getReviewsByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const reviews = await Review.find({ user_id: userId })
+      .populate("recipe_id", "name") // Include recipe details (e.g., name)
+      .sort({ createdAt: -1 }); // Sort by most recent
+
+    if (!reviews || reviews.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No reviews found for this user" });
+    }
+
+    res.status(200).json({ success: true, data: reviews });
+  } catch (err) {
+    console.error("Error fetching reviews by user ID:", err.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

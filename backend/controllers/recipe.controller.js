@@ -97,7 +97,7 @@ export const getPopularRecipes = async (req, res) => {
 
     const results = await Recipe.populate(popular, { path: "_id" });
 
-    res.status(200).json(results);
+    res.status(200).json({ success: true, data: results });
   } catch (err) {
     console.error("Error fetching popular recipes:", err);
     res.status(500).json({ error: "Failed to get popular recipes" });
@@ -105,14 +105,16 @@ export const getPopularRecipes = async (req, res) => {
 };
 
 export const getUserRecipes = async (req, res) => {
-  const userId = req.params.userId;
+  const id = req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
+  console.log("Received userId:", id);
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ success: false, message: "Invalid User ID" });
   }
 
   try {
-    const recipes = await Recipe.find({ user_id: userId });
+    const recipes = await Recipe.find({ user_id: id });
     res.status(200).json({ success: true, data: recipes });
   } catch (error) {
     console.error("Error fetching user's recipes:", error.message);
@@ -128,14 +130,21 @@ export const getRecipeById = async (req, res) => {
   }
 
   try {
-    const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id)
+      .populate("user_id", "name avatar") // Populate author details
+      .lean();
 
     if (!recipe) {
       return res
         .status(404)
         .json({ success: false, message: "Recipe not found" });
     }
-    res.status(200).json({ success: true, data: recipe });
+
+    const reviews = await Review.find({ recipe_id: id })
+      .populate("user_id", "name avatar") // Populate reviewer details
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: { recipe, reviews } });
   } catch (error) {
     console.error("Error fetching recipe by ID:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -146,7 +155,9 @@ export const getRelatedRecipes = async (req, res) => {
   const { id } = req.params; // Get the current recipe ID
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ success: false, message: "Invalid Recipe ID" });
+    return res
+      .status(404)
+      .json({ success: false, message: "Invalid Recipe ID" });
   }
 
   try {
@@ -154,7 +165,9 @@ export const getRelatedRecipes = async (req, res) => {
     const currentRecipe = await Recipe.findById(id);
 
     if (!currentRecipe) {
-      return res.status(404).json({ success: false, message: "Recipe not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
     }
 
     const tags = currentRecipe.tags;

@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
       required: true, // Name is optional
       trim: true,
     },
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Recipe", // Reference to the Recipe model
+      },
+    ],
   },
   {
     // Mongoose adds createdAt and updatedAt timestamps automatically

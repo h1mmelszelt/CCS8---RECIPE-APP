@@ -10,17 +10,26 @@ import {
   VStack,
   Icon,
 } from "@chakra-ui/react";
-import Navbar from "../components/Navbar(Logged)";
+
 import { useState } from "react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import BG_Image from "/images/11.png";
 import { useThemeToggle } from "../components/ThemeProvider"; // Import the theme toggle hook
 
 const AdvancedSettingsPage = () => {
+  const { id: userId } = useParams(); // Get userId from URL
+  const location = useLocation();
   const [activeSetting, setActiveSetting] = useState("Advanced Settings");
-  const toggleTheme = useThemeToggle(); 
-  
+  const toggleTheme = useThemeToggle();
+
+  // Breadcrumbs for Advanced Settings Page (stop at Settings)
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Profile", path: `/profile/${userId}` },
+    { label: "Settings", path: `/settings/${userId}` },
+  ];
+
   return (
     <Box
       position="relative"
@@ -28,10 +37,23 @@ const AdvancedSettingsPage = () => {
       overflow="hidden"
       pb={{ base: "60px", md: "0" }}
     >
-      {/* Navbar */}
-      <Box position="relative" zIndex={2}>
-        <Navbar />
+      {/* Breadcrumbs at the top of the page */}
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              {idx === breadcrumbs.length - 1 ? (
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+              ) : (
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              )}
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
       </Box>
+
+      <Box position="relative" zIndex={2}></Box>
 
       {/* Background Images */}
       <Image
@@ -85,16 +107,16 @@ const AdvancedSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: "/settings" },
+              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}` },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: "/notification-settings",
+                link: `/notification-settings/${userId}`,
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: "/advanced-settings",
+                link: `/advanced-settings/${userId}`,
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
@@ -204,7 +226,7 @@ const AdvancedSettingsPage = () => {
               <Text fontSize="16px" fontWeight="medium" color="black">
                 Dark Mode
               </Text>
-              <Switch colorScheme="green" size="lg" onChange={toggleTheme}/>
+              <Switch colorScheme="green" size="lg" onChange={toggleTheme} />
             </Flex>
           </Box>
 

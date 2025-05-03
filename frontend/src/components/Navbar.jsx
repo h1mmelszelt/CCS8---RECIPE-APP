@@ -8,10 +8,12 @@ import {
   InputRightElement,
   IconButton,
   Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
   useDisclosure,
   AlertDialog,
   AlertDialogOverlay,
@@ -19,27 +21,56 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Switch,
+  Select, 
 } from "@chakra-ui/react";
 import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useNavigate
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // Adjust the path if necessary
 
 function Navbar({ transparent }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
-  const isAuthenticated = false;
 
+    localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("userId"); // Remove userId from localStorage
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
+    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
+    
+    const {
+      isOpen: isDrawerOpen,
+      onOpen: onDrawerOpen,
+      onClose: onDrawerClose,
+    } = useDisclosure();
+    const {
+      isOpen: isSettingsDrawerOpen,
+      onOpen: onSettingsDrawerOpen,
+      onClose: onSettingsDrawerClose,
+    } = useDisclosure();
+    const {
+      isOpen: isAlertOpen,
+      onOpen: onAlertOpen,
+      onClose: onAlertClose,
+    } = useDisclosure();
+
+  const cancelRef = useRef();
+  const btnRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation();
+  
   const handleSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`); // Navigate to SearchPage with query
+    } else {
+      navigate("/search"); // Show all recipes if query is blank
     }
   };
 
   const handleProtectedRoute = (path) => {
-    if (!isAuthenticated) {
-      navigate("/sign-in-required"); // Redirect to the SignInRequired page
+    if (!isAuthenticated && path !== "/home") {
+      navigate("/login"); // Redirect to the login page for protected routes
     } else {
       navigate(path); // Navigate to the intended path
     }
@@ -124,106 +155,98 @@ function Navbar({ transparent }) {
           </Button>
         </Flex>
 
-        {/* Hamburger Menu */}
-        <Menu>
-          <MenuButton
-            ml="5"
-            as={Button}
-            _active={{ bg: "white" }}
-            bg="transparent"
-            colorScheme="gray"
-            display={{ base: "none", md: "flex" }} // Show only on smaller screens
-          >
-            <HamburgerIcon boxSize={9} color="#FD660B" />
-          </MenuButton>
-          <MenuList bg="white" border="1px solid #E2E8F0" p={0}>
-            {/* Home Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/home"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }} // Slight hover effect
-              fontWeight="semibold" // Semi-bold text
-              fontSize="sm"
-              py={3} // Consistent padding
-            >
-              Home
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" /> {/* Gray line separator */}
-            {/* About Us Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/about-us"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold"
-              fontSize="sm"
-              py={3}
-            >
-              About Us
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" />
-            {/* Contact Us Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/contact-us"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold"
-              fontSize="sm"
-              py={3}
-            >
-              Contact Us
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" />
-            {/* Site Map Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/sitemap"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold"
-              fontSize="sm"
-              py={3}
-            >
-              Site Map
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" />
-            {/* FAQ Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/faq"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold"
-              fontSize="sm"
-              py={3}
-            >
-              FAQ
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" />
-            {/* Settings Menu Item */}
-            <MenuItem
-              as={Link}
-              to="/settings"
-              color="black"
-              _hover={{ bg: "#F9F9F9" }}
-              fontWeight="semibold"
-              fontSize="sm"
-              py={3}
-            >
-              Settings
-            </MenuItem>
-            <Box borderBottom="1px solid #E2E8F0" />
-          </MenuList>
-        </Menu>
+        {/* Drawer Trigger */}
+        <IconButton
+          ref={btnRef}
+          icon={<HamburgerIcon boxSize={8}/>}
+          aria-label="Open Menu"
+          onClick={onDrawerOpen}
+          display={{ base: "none", md: "flex" }}
+          bg="transparent"
+          color="#FD660B"
+          _hover={{ bg: "gray.100" }}
+          mr="4"
+        />
       </Flex>
+
+      {/* Drawer */}
+      <Drawer
+        isOpen={isDrawerOpen}
+        placement="right"
+        onClose={onDrawerClose}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Menu</DrawerHeader>
+
+          <DrawerBody>
+            <Flex direction="column" gap={4}>
+              <Link to="/home" onClick={onDrawerClose}>
+                Home
+              </Link>
+              <Link to="/about-us" onClick={onDrawerClose}>
+                About Us
+              </Link>
+              <Link to="/contact-us" onClick={onDrawerClose}>
+                Contact Us
+              </Link>
+              <Link to="/site-map" onClick={onDrawerClose}>
+                Site Map
+              </Link>
+              <Link to="/faq" onClick={onDrawerClose}>
+                FAQ
+              </Link>
+              <Text
+    onClick={onSettingsDrawerOpen} // Open the settings drawer on click
+    cursor="pointer" // Make the text look clickable
+    _hover={{ textDecoration: "underline" }} // Optional: Add hover effect
+  >
+    Settings
+  </Text>
+            </Flex>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Settings Drawer */}
+      <Drawer
+        isOpen={isSettingsDrawerOpen}
+        placement="right"
+        onClose={onSettingsDrawerClose}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Settings</DrawerHeader>
+
+          <DrawerBody>
+          <Flex direction="column" gap={6}>
+        {/* Theme Dark Mode */}
+        <Flex justify="space-between" align="center">
+          <Text>Theme Dark Mode</Text>
+          <Switch
+            colorScheme="teal"
+            size="lg"
+            onChange={(e) => {
+              // Handle dark mode toggle logic here
+              const isDarkMode = e.target.checked;
+              console.log("Dark Mode:", isDarkMode);
+            }}
+          />
+        </Flex>
+      </Flex>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
 
       {/* AlertDialog for "Please Sign In" */}
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isAlertOpen}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={onAlertClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -234,7 +257,7 @@ function Navbar({ transparent }) {
               You need to sign in to access your profile.
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onAlertClose}>
                 Close
               </Button>
             </AlertDialogFooter>

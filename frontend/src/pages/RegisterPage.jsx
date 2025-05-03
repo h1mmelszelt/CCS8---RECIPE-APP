@@ -1,11 +1,25 @@
-import Navbar from "../components/Navbar";
-import { Box, Flex, Text, Input, Button, Link, VStack, Image } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import {
+  Box,
+  Flex,
+  Text,
+  Input,
+  Button,
+  Link,
+  VStack,
+  Image,
+} from "@chakra-ui/react";
 import cooking from "/images/AdobeStock guy cooking.jpeg";
 
 function RegisterPage() {
+
+    useEffect(() => {
+      // Scroll to the top of the page when the component mounts
+      window.scrollTo(0, 0);
+    }, []); 
+  
   return (
     <>
-      <Navbar />
       <Flex
         minH="100vh"
         align="flex-start"
@@ -30,7 +44,10 @@ function RegisterPage() {
           <Box
             flex="1"
             p={8}
-            bg={{ base: "rgba(253, 228, 206, 0.9)", md: "rgba(253, 228, 206, 1)" }}
+            bg={{
+              base: "rgba(253, 228, 206, 0.9)",
+              md: "rgba(253, 228, 206, 1)",
+            }}
             borderRadius="lg"
           >
             <VStack align="start" spacing={2} mt={8}>
@@ -113,7 +130,14 @@ function RegisterPage() {
                 </Link>
               </Box>
 
-              <Text fontSize="sm" color="gray.600" mx="auto" textAlign="center" mt={4} mb={20}>
+              <Text
+                fontSize="sm"
+                color="gray.600"
+                mx="auto"
+                textAlign="center"
+                mt={4}
+                mb={20}
+              >
                 Already have an account?{" "}
                 <Link href="/login" color="#FD660B" fontWeight="bold">
                   Log in

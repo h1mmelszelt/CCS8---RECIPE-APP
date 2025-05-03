@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
+
 import {
   Box,
   Flex,
@@ -13,8 +13,17 @@ import {
   Image,
 } from "@chakra-ui/react";
 import faqImage from "/images/chef asking VideoHive.jpg"; // Replace with your image path
+import { useEffect } from "react";
+
+
 
 const FAQPage = () => {
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
+  
   const faqs = [
     {
       question: "Is it free to use the site?",
@@ -49,9 +58,6 @@ const FAQPage = () => {
 
   return (
     <Box bg="white" minH="100vh">
-      {/* Navbar */}
-      <Navbar transparent={false} />
-
       {/* Header Section */}
       <Box px={{ base: 4, md: 20 }} py={10}>
         <Flex direction={{ base: "column", md: "row" }} align="center" gap={10}>
@@ -88,10 +94,11 @@ const FAQPage = () => {
           </VStack>
 
           {/* Right Section - Image */}
-          <Box 
+          <Box
             flex="1"
-            ml={{ base: 0, md: 10 } }
-            display={{ base: "block", md: "block" }} >
+            ml={{ base: 0, md: 10 }}
+            display={{ base: "block", md: "block" }}
+          >
             <Image
               src={faqImage}
               alt="FAQ"

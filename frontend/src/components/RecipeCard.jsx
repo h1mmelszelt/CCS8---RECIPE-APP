@@ -1,48 +1,101 @@
-import React from "react";
-import {
-  Box,
-  Image,
-  Text,
-  Heading,
-  VStack,
-  Button,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Box, Image, Text, Icon, VStack, Button } from "@chakra-ui/react";
+import { FiMoreHorizontal } from "react-icons/fi";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
-const RecipeCard = ({ _id, title, image, description }) => {
+const RecipeCard = ({ recipe, loggedInUserId }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const isOwner = recipe.user_id === loggedInUserId; // Check if the recipe belongs to the logged-in user
+
+  const handleToggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
+
+  const handleEdit = () => {
+    console.log("Edit recipe:", recipe._id);
+    // Add navigation or logic for editing the recipe
+  };
+
+  const handleDelete = () => {
+    console.log("Delete recipe:", recipe._id);
+    // Add logic for deleting the recipe
+  };
+
+  const handleReport = () => {
+    console.log("Report recipe:", recipe._id);
+    // Add logic for reporting the recipe
+  };
+
+  const handleBookmark = () => {
+    console.log("Bookmark recipe:", recipe._id);
+    // Add logic for bookmarking the recipe
+  };
+
   return (
     <Box
       borderWidth="1px"
-      borderRadius="2xl"
+      _hover={{
+        boxShadow: "0 0 6px 1px #FD660B", // Add orange glow effect on hover
+      }}
+      borderColor="gray.300"
+      borderStyle="solid"
+      borderRadius="sm"
       overflow="hidden"
+      cursor="pointer"
       bg="white"
       boxShadow="md"
-      maxW="300px"
-      _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
-      transition="0.2s ease"
+      transition="0.4s ease"
+      position="relative"
     >
-      <Image
-        src={image}
-        alt={title}
-        height="200px"
-        width="100%"
-        objectFit="cover"
-      />
+      {/* Recipe Image */}
+      <Box position="relative">
+        <Image
+          src={getCompressedImageUrl(recipe.image)}
+          alt={recipe.name}
+          height="200px"
+          width="100%"
+          objectFit="cover"
+        />
 
-      <VStack align="start" spacing={2} p={4}>
-        <Heading size="md" color="#FD660B" noOfLines={1}>
-          {title}
-        </Heading>
-        <Text fontSize="sm" color="gray.600" noOfLines={2}>
-          {description}
+        {/* Hover Overlay */}
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          bg="rgba(0, 0, 0, 0.8)"
+          color="white"
+          opacity="0"
+          transition="opacity 0.3s ease"
+          _hover={{ opacity: "1" }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          p={3}
+        >
+          {/* Description */}
+          <Box textAlign="center" mt={12}>
+            <Text fontSize="sm" noOfLines={3}>
+              {recipe.description}
+            </Text>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Recipe Title */}
+      <Box p={1}>
+        <Text
+          fontSize="lg"
+          fontWeight="bold"
+          color="gray.800"
+          noOfLines={1}
+          textAlign="center"
+        >
+          {recipe.name}
         </Text>
-        <Link to={`/recipe/${_id}`}>
-          <Button size="sm" colorScheme="orange" variant="outline">
-            View Recipe
-          </Button>
-        </Link>
-      </VStack>
+      </Box>
     </Box>
   );
 };

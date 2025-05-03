@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import ReviewCard from "../components/ReviewCard";
+
+import RecipeCard from "../components/RecipeCard";
+import React, { useState, useEffect } from "react";
+
 import {
   Box,
   Flex,
@@ -12,13 +16,21 @@ import {
   Icon,
   Divider,
   IconButton,
+  Button,
+  useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  Tooltip,
+  CloseButton,
+  MenuItem,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
-import Navbar from "../components/Navbar(Logged)";
-import { FaStar, FaEdit } from "react-icons/fa"; // Add this import
-import RecipeCard from "../components/RecipeCard"; // Import RecipeCard
-import ReviewCard from "../components/ReviewCard"; // Import ReviewCard
-import { Link } from "react-router-dom";
+import { FaStar, FaCog } from "react-icons/fa";
+import { useParams, Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import { getCompressedImageUrl } from "../utils/imageUtils";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 const tabs = [
   { key: "created", label: "Recipes Created" },
@@ -26,310 +38,554 @@ const tabs = [
   { key: "reviews", label: "Reviews" },
 ];
 
-const exampleBookmarks = [
-  {
-    _id: "1",
-    title: "Sinigang na Baboy",
-    image: "/images/sinigang.jpg",
-    description: "A sour pork soup made with tamarind and various vegetables.",
-    user: {
-      name: "TopChef",
-      username: "@food_maker_123",
-      avatar: "/images/avatar1.jpg",
-    },
-    rating: 4.5,
-  },
-  {
-    _id: "2",
-    title: "Tapsilog",
-    image: "/images/tapsilog.jpg",
-    description:
-      "A dish with fried rice, egg, and beef tapa. Perfect for when I’m broke.",
-    user: {
-      name: "BasicChef",
-      username: "@food_enthusiast",
-      avatar: "/images/avatar2.jpg",
-    },
-    rating: 4.0,
-  },
-  {
-    _id: "3",
-    title: "Adobo",
-    image: "/images/adobo.jpg",
-    description:
-      "A classic Filipino stew made with chicken or pork braised in soy sauce and vinegar.",
-    user: {
-      name: "FakeChef",
-      username: "@food_hater_123",
-      avatar: "/images/avatar3.jpg",
-    },
-    rating: 5.0,
-  },
-];
-
-// Example data for recipes
-const exampleRecipes = [
-  {
-    _id: "1",
-    title: "Spaghetti Carbonara",
-    image: "/images/spaghetti.jpg",
-    description: "A classic Italian pasta dish.",
-  },
-  {
-    _id: "2",
-    title: "Chicken Curry",
-    image: "/images/curry.jpg",
-    description: "A flavorful and spicy curry.",
-  },
-  {
-    _id: "3",
-    title: "Vegan Salad",
-    image: "/images/salad.jpg",
-    description: "A healthy and refreshing salad.",
-  },
-];
-
-// Example data for reviews
-const exampleReviews = [
-  {
-    recipeName: "Spaghetti Carbonara",
-    reviewText: "Absolutely delicious! The best recipe I've tried.",
-    rating: 5,
-    date: "April 20, 2025",
-  },
-  {
-    recipeName: "Chicken Curry",
-    reviewText: "Very flavorful and easy to make. Highly recommend!",
-    rating: 4,
-    date: "April 18, 2025",
-  },
-  {
-    recipeName: "Vegan Salad",
-    reviewText: "Fresh and healthy. Perfect for a light lunch.",
-    rating: 4,
-    date: "April 15, 2025",
-  },
-];
-
-const renderRecipeCards = () => (
-  <Box>
-    {/* Title for Created Recipes Section */}
-    <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-      My Created Recipes
-    </Text>
-    <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
-    {/* Recipe Cards */}
-    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-      {exampleRecipes.map((recipe) => (
-        <Box
-          key={recipe._id}
-          borderWidth="1px"
-          borderRadius="lg"
-          overflow="hidden"
-          bg="white"
-          boxShadow="sm"
-          cursor={"pointer"}
-          transition="0.3s ease" // Smooth transition for hover effects
-          _hover={{
-            borderColor: "orange.200", // Add orange border on hover
-            boxShadow: "0 0 3px 1px orange", // Slight orange glow effect
-          }}
-        >
-          {/* Recipe Image */}
-          <Box position="relative">
-            <Image
-              src={recipe.image}
-              alt={recipe.title}
-              height="200px"
-              width="100%"
-              objectFit="cover"
-            />
-            <Box position="absolute" top="8px" right="8px">
-              <IconButton
-                icon={<FiMoreHorizontal />} // Three-dot menu icon
-                size="sm"
-                variant="ghost" // Transparent background
-                aria-label="More options"
-              />
-            </Box>
-          </Box>
-
-          {/* Recipe Details */}
-          <VStack align="start" spacing={2} p={4}>
-            <Text
-              fontSize="lg"
-              fontWeight="bold"
-              color="gray.800"
-              noOfLines={1}
-            >
-              {recipe.title}
-            </Text>
-            <Text fontSize="sm" color="gray.600" noOfLines={2}>
-              {recipe.description}
-            </Text>
-
-            {/* Placeholder for User Info */}
-            <HStack spacing={2} mt={2}>
-              <Avatar
-                size="sm"
-                src="/images/default-avatar.jpg" // Replace with actual user avatar if available
-                name="Your Name"
-              />
-              <VStack align="start" spacing={0}>
-                <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                  Your Name
-                </Text>
-                <Text fontSize="xs" color="gray.500">
-                  @your_username
-                </Text>
-              </VStack>
-            </HStack>
-
-            {/* Placeholder for Rating */}
-            <HStack spacing={1} mt={2}>
-              {[...Array(5)].map((_, i) => (
-                <Icon
-                  as={FaStar}
-                  key={i}
-                  color={i < 4 ? "orange.400" : "gray.300"} // Example rating of 4
-                  fontSize="sm"
-                />
-              ))}
-              <Text fontSize="sm" color="gray.600">
-                (4.0)
-              </Text>
-            </HStack>
-          </VStack>
-        </Box>
-      ))}
-    </SimpleGrid>
-  </Box>
-);
-
-// Render review cards dynamically
-const renderReviewCards = () => (
-  <Box>
-    {/* Title for Reviews Section */}
-    <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-      FoodLover’s Reviews & Comments
-    </Text>
-    <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
-    {/* Review Cards */}
-    <VStack spacing={4} align="stretch">
-      {exampleReviews.map((review, index) => (
-        <ReviewCard
-          key={index}
-          recipeName={review.recipeName}
-          reviewText={review.reviewText}
-          rating={review.rating}
-          date={review.date}
-        />
-      ))}
-    </VStack>
-  </Box>
-);
-
-const ProfilePage = ({ isOwner }) => {
+const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("created");
+  const [userData, setUserData] = useState(null);
+  const [createdRecipes, setCreatedRecipes] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const avatarSize = useBreakpointValue({ base: "lg", md: "xl" });
+  const { id: userId } = useParams(); // Get the userId from the URL
+  const location = useLocation();
+  const loggedInUserId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Get the logged-in user's ID
 
-  // Render bookmarks dynamically
+  const isOwner = userId === loggedInUserId; // Determine if the profile belongs to the logged-in user
+
+  // State for editing reviews
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [editReviewText, setEditReviewText] = useState("");
+  const [editReviewRating, setEditReviewRating] = useState(0);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Fetch the profile data of the user being visited
+        const { data } = await axios.get(
+          `http://localhost:5000/api/users/${userId}`
+        );
+        setUserData(data);
+
+        // Fetch recipes created by the user
+        const recipesResponse = await axios.get(
+          `http://localhost:5000/api/recipes/user/${userId}`
+        );
+        setCreatedRecipes(recipesResponse.data.data);
+
+        // Fetch bookmarks only if the profile belongs to the logged-in user
+        if (isOwner) {
+          const bookmarksResponse = await axios.get(
+            `http://localhost:5000/api/users/bookmarks/${userId}`
+          );
+          setBookmarks(bookmarksResponse.data.data);
+        }
+
+        // Fetch reviews written by the user
+        const reviewsResponse = await axios.get(
+          `http://localhost:5000/api/reviews/user/${userId}`
+        );
+        setReviews(reviewsResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [userId, isOwner]); // Re-run the effect when userId or isOwner changes
+
+  // Remove bookmark handler for profile page
+  const handleRemoveBookmark = async (recipeId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this recipe from your bookmarks?"
+    );
+    if (!confirmed) return;
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/users/bookmarks/${userId}/${recipeId}`
+      );
+      setBookmarks((prev) => prev.filter((b) => b._id !== recipeId));
+      toast({
+        title: "Bookmark Removed",
+        description: "The recipe has been removed from your bookmarks.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to remove bookmark",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Remove review handler for profile page
+  const handleRemoveReview = async (reviewId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this review? This action cannot be undone."
+    );
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      toast({
+        title: "Review Deleted",
+        description: "Your review has been deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete review",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Remove recipe handler for profile page
+  const handleRemoveRecipe = async (recipeId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this recipe? This action cannot be undone."
+    );
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/recipes/${recipeId}`);
+      setCreatedRecipes((prev) => prev.filter((r) => r._id !== recipeId));
+      toast({
+        title: "Recipe Deleted",
+        description: "Your recipe has been deleted.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete recipe",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Start editing a review
+  const handleEditReview = (review) => {
+    setEditingReviewId(review._id);
+    setEditReviewText(review.text || "");
+    setEditReviewRating(review.rating);
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setEditReviewText("");
+    setEditReviewRating(0);
+  };
+
+  // Save edited review
+  const handleSaveEdit = async (reviewId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/reviews/${reviewId}`, {
+        rating: editReviewRating,
+        text: editReviewText,
+      });
+      setReviews((prev) =>
+        prev.map((r) =>
+          r._id === reviewId
+            ? { ...r, rating: editReviewRating, text: editReviewText }
+            : r
+        )
+      );
+      handleCancelEdit();
+      toast({
+        title: "Review Updated",
+        description: "Your review has been updated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to update review",
+        description: "Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Breadcrumbs logic (similar to RecipePage)
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Profile", path: location.pathname + location.search },
+  ];
+
+  const renderRecipeCards = () => (
+    <Box>
+      <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+        {isOwner ? "My Created Recipes" : `${userData?.name}'s Created Recipes`}
+      </Text>
+      <Divider borderColor="orange.300" mb={4} />
+      {createdRecipes.length === 0 ? (
+        <Box
+          border="2px dashed #f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px"
+          minW="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't created any recipes yet."
+              : `${userData?.name} hasn't created any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
+      ) : (
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+          {createdRecipes.map((recipe) => (
+            <Box key={recipe._id} position="relative">
+              <Link
+                to={`/recipes/${recipe._id}`}
+                state={{
+                  breadcrumbs: [
+                    { label: "Home", path: "/home" },
+                    {
+                      label: "Profile",
+                      path: location.pathname + location.search,
+                    },
+                  ],
+                }}
+                style={{ display: "block" }}
+              >
+                <RecipeCard recipe={recipe} />
+              </Link>
+              {isOwner && (
+                <Menu>
+                  <Tooltip label="Options" aria-label="Options tooltip">
+                    <MenuButton
+                      as={IconButton}
+                      icon={<FiMoreHorizontal />}
+                      size="xs"
+                      variant="solid"
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      zIndex={2}
+                      aria-label="Options"
+                    />
+                  </Tooltip>
+                  <MenuList>
+                    <MenuItem
+                      icon={<EditIcon />} // Add edit icon
+                      color="blue.500"
+                      onClick={() =>
+                        (window.location.href = `/edit/${recipe._id}`)
+                      }
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      icon={<DeleteIcon />} // Add delete icon
+                      color="red.500"
+                      onClick={() => handleRemoveRecipe(recipe._id)}
+                    >
+                      Delete
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              )}
+            </Box>
+          ))}
+        </SimpleGrid>
+      )}
+    </Box>
+  );
+
   const renderBookmarkCards = () => (
     <Box>
-      {/* Title for Bookmarks Section */}
       <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-        My Bookmarks
+        {isOwner ? "My Bookmarks" : `${userData?.name}'s Bookmarks`}
       </Text>
-      <Divider borderColor="black.300" mb={4} /> {/* Divider Line */}
-      {/* Bookmark Cards */}
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-        {exampleBookmarks.map((bookmark) => (
-          <Box
-            key={bookmark._id}
-            borderWidth="1px"
-            borderRadius="lg"
-            overflow="hidden"
-            bg="white"
-            boxShadow="sm"
-            cursor={"pointer"}
-            transition="0.3s ease" // Smooth transition for hover effects
-            _hover={{
-              borderColor: "orange.200", // Add orange border on hover
-              boxShadow: "0 0 3px 1px orange", // Slight orange glow effect
-            }}
-          >
-            {/* Recipe Image */}
-            <Box position="relative">
-              <Image
-                src={bookmark.image}
-                alt={bookmark.title}
-                height="200px"
-                width="100%"
-                objectFit="cover"
-              />
-              <Box position="absolute" top="8px" right="8px">
-                <IconButton
-                  icon={<FiMoreHorizontal />}
-                  size="sm"
-                  variant="ghost"
-                  aria-label="More options"
-                />
-              </Box>
-            </Box>
-
-            {/* Recipe Details */}
-            <VStack align="start" spacing={2} p={4}>
-              <Text
-                fontSize="lg"
-                fontWeight="bold"
-                color="gray.800"
-                noOfLines={1}
+      <Divider borderColor="orange.300" mb={4} />
+      {bookmarks.length === 0 ? (
+        <Box
+          border="2px dashed #f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px"
+          minW="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't bookmarked any recipes yet."
+              : `${userData?.name} hasn't bookmarked any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
+      ) : (
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+          {bookmarks.map((bookmark) => (
+            <Box key={bookmark._id} position="relative">
+              <Link
+                to={`/recipes/${bookmark._id}`}
+                state={{
+                  breadcrumbs: [
+                    { label: "Home", path: "/home" },
+                    {
+                      label: "Profile",
+                      path: location.pathname + location.search,
+                    },
+                  ],
+                }}
+                style={{ display: "block" }}
               >
-                {bookmark.title}
-              </Text>
-              <Text fontSize="sm" color="gray.600" noOfLines={2}>
-                {bookmark.description}
-              </Text>
-
-              {/* User Info */}
-              <HStack spacing={2} mt={2}>
-                <Avatar
-                  size="sm"
-                  src={bookmark.user.avatar}
-                  name={bookmark.user.name}
-                />
-                <VStack align="start" spacing={0}>
-                  <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                    {bookmark.user.name}
-                  </Text>
-                  <Text fontSize="xs" color="gray.500">
-                    {bookmark.user.username}
-                  </Text>
-                </VStack>
-              </HStack>
-
-              {/* Rating */}
-              <HStack spacing={1} mt={2}>
-                {[...Array(5)].map((_, i) => (
-                  <Icon
-                    as={FaStar}
-                    key={i}
-                    color={
-                      i < Math.floor(bookmark.rating)
-                        ? "orange.400"
-                        : "gray.300"
-                    }
-                    fontSize="sm"
+                <RecipeCard recipe={bookmark} />
+              </Link>
+              {isOwner && (
+                <Tooltip
+                  label="Remove from Bookmarks"
+                  aria-label="Remove bookmark tooltip"
+                >
+                  <CloseButton
+                    size="xs"
+                    color="red.500"
+                    variant="solid"
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    zIndex={2}
+                    onClick={() => handleRemoveBookmark(bookmark._id)}
+                    _hover={{
+                      color: "white", // White font on hover
+                    }}
                   />
-                ))}
-                <Text fontSize="sm" color="gray.600">
-                  ({bookmark.rating.toFixed(1)})
-                </Text>
+                </Tooltip>
+              )}
+            </Box>
+          ))}
+        </SimpleGrid>
+      )}
+    </Box>
+  );
+
+  const renderReviewCards = () => (
+    <Box>
+      <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+        {isOwner
+          ? "My Reviews & Comments"
+          : `${userData?.name}'s Reviews & Comments`}
+      </Text>
+      <Divider borderColor="orange.300" mb={4} />
+      {reviews.length === 0 ? (
+        <Box
+          border="2px dashed #f3c575"
+          borderRadius="md"
+          p={6}
+          textAlign="center"
+          bg="white"
+          minH="300px"
+          minW="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Text fontSize="lg" fontWeight="bold" color="gray.500">
+            {isOwner
+              ? "You haven't commented on any recipes yet."
+              : `${userData?.name} hasn't commented on any recipes yet.`}
+          </Text>
+          <Text fontSize="sm" color="gray.400" mt={2}>
+            This page is starving for content!
+          </Text>
+        </Box>
+      ) : (
+        <VStack spacing={4} align="stretch">
+          {reviews.map((review, index) => (
+            <Box
+              key={index}
+              bg="white"
+              p={4}
+              borderRadius="lg"
+              boxShadow="sm"
+              borderColor={"gray.200"}
+              borderWidth={"1px"}
+              borderLeft="4px solid #A3E635"
+              position="relative"
+              transition="0.3s ease"
+              _hover={{
+                boxShadow: "0 0 1px 2px #A3E635",
+              }}
+            >
+              <HStack align="start">
+                <VStack align="start" spacing={2} w="100%">
+                  <Text fontSize="sm">
+                    Commented on:{" "}
+                    <Link
+                      to={`/recipes/${review.recipe_id?._id}`}
+                      state={{
+                        breadcrumbs: [
+                          { label: "Home", path: "/home" },
+                          {
+                            label: "Profile",
+                            path: location.pathname + location.search,
+                          },
+                        ],
+                      }}
+                      style={{
+                        color: "#ED8936",
+                        fontWeight: "bold",
+                        textDecoration: "underline",
+                      }}
+                      onMouseEnter={(e) => (e.target.style.color = "#C05621")}
+                      onMouseLeave={(e) => (e.target.style.color = "#ED8936")}
+                    >
+                      {review.recipe_id?.name || "Unknown Recipe"}
+                    </Link>
+                  </Text>
+                  {editingReviewId === review._id ? (
+                    <>
+                      <Box mb={2}>
+                        <Text fontSize="sm" mb={1} color="gray.600">
+                          Edit your review:
+                        </Text>
+                        <HStack spacing={1} mb={2}>
+                          {[...Array(5)].map((_, i) => (
+                            <Icon
+                              as={FaStar}
+                              key={i}
+                              color={
+                                i < editReviewRating ? "orange.400" : "gray.300"
+                              }
+                              fontSize="lg"
+                              cursor="pointer"
+                              onClick={() => setEditReviewRating(i + 1)}
+                            />
+                          ))}
+                        </HStack>
+                        <textarea
+                          value={editReviewText}
+                          onChange={(e) => setEditReviewText(e.target.value)}
+                          rows={3}
+                          style={{
+                            width: "100%",
+                            borderRadius: 6,
+                            border: "1px solid #E2E8F0",
+                            padding: 6,
+                          }}
+                        />
+                      </Box>
+                      <HStack>
+                        <Button
+                          size="xs"
+                          colorScheme="green"
+                          onClick={() => handleSaveEdit(review._id)}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="outline"
+                          onClick={handleCancelEdit}
+                        >
+                          Cancel
+                        </Button>
+                      </HStack>
+                    </>
+                  ) : (
+                    <>
+                      <Box
+                        fontStyle="italic"
+                        borderLeft="2px solid #E2E8F0"
+                        pl={3}
+                        color="gray.700"
+                      >
+                        <Text>{review.text}</Text>
+                      </Box>
+                      <Text fontSize="sm" color="green.500" fontWeight="medium">
+                        Rating:{" "}
+                        {[...Array(5)].map((_, i) => (
+                          <Icon
+                            as={FaStar}
+                            key={i}
+                            color={
+                              i < review.rating ? "orange.400" : "gray.300"
+                            }
+                            fontSize="sm"
+                          />
+                        ))}{" "}
+                        ({review.rating}/5)
+                      </Text>
+                    </>
+                  )}
+                </VStack>
+                {isOwner && (
+                  <Box minW="40px" textAlign="right">
+                    {editingReviewId !== review._id ? (
+                      <Menu>
+                        <MenuButton
+                          as={IconButton}
+                          icon={<FiMoreHorizontal />}
+                          size="xs"
+                          variant="ghost"
+                          aria-label="Options"
+                        />
+                        <MenuList>
+                          <MenuItem
+                            icon={<EditIcon />}
+                            onClick={() => handleEditReview(review)}
+                            color="blue.500"
+                          >
+                            Edit
+                          </MenuItem>
+                          <MenuItem
+                            icon={<DeleteIcon />}
+                            onClick={() => handleRemoveReview(review._id)}
+                            color="red.500"
+                          >
+                            Delete
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    ) : null}
+                  </Box>
+                )}
               </HStack>
-            </VStack>
-          </Box>
-        ))}
-      </SimpleGrid>
+              <Text fontSize="xs" color="gray.500" mt={2} textAlign="right">
+                Posted on: {new Date(review.createdAt).toLocaleDateString()}
+              </Text>
+            </Box>
+          ))}
+        </VStack>
+      )}
     </Box>
   );
 
@@ -339,164 +595,113 @@ const ProfilePage = ({ isOwner }) => {
     reviews: renderReviewCards(),
   };
 
+  if (!userData) return <Text>Loading...</Text>;
+
   return (
     <>
-      <Navbar />
-
-      {/* Profile Container */}
-      <Flex justify="center" pt={{ base: 4, md: 10 }} px={4}>
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              {idx === breadcrumbs.length - 1 ? (
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                  {crumb.label}
+                </span>
+              ) : (
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
+              )}
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
+      </Box>
+      <Flex
+        justify="center"
+        align="center"
+        bg="gray.100"
+        minH="100vh"
+        px={4}
+        py={8}
+      >
         <Box
-          w={{ base: "100%", md: "90%", lg: "900px" }}
+          w={{ base: "100%", md: "80%", lg: "60%" }}
+          bg="white"
           borderRadius="md"
+          boxShadow="md"
           overflow="hidden"
         >
-          {/* Top Banner */}
           <Box
-            bg="#FDE4CE"
-            border="1px solid #ED984D"
-            borderTopRadius="md"
-            px={{ base: 4, md: 6 }}
-            py={{ base: 6, md: 8 }}
-            position="relative" // Make the parent container relative
+            bg="orange.100"
+            borderBottom="1px solid #d1cece"
+            px={6}
+            py={8}
+            textAlign="center"
           >
-            <Flex
-              direction={{ base: "column", md: "row" }} // Stack vertically on small screens
-              align="center"
-              justify="space-between"
-              gap={6}
-            >
-              {/* Avatar and User Info */}
-              <Flex
-                direction={{ base: "column", md: "row" }} // Stack avatar and text vertically on small screens
-                align="center"
-                gap={4}
-                textAlign={{ base: "center", md: "left" }} // Center text on small screens
-              >
-                <Avatar size="xl" name="FoodLover" bg="blue.300" />
-                <VStack
-                  align={{ base: "center", md: "start" }}
-                  spacing={1}
-                  w="100%"
+            <Avatar
+              size="2xl"
+              name={userData?.name}
+              src={userData?.avatar}
+              mb={4}
+              border="4px solid white"
+            />
+            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+              {userData?.name}
+            </Text>
+            <Text fontSize="sm" color="gray.500" mb={2}>
+              @{userData?.username}
+            </Text>
+            <Text fontSize="md" color="gray.700" mb={4}>
+              Will cook for compliments. Will eat for survival. Chomp chomp.
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              Joined: April 2025
+            </Text>
+            {isOwner && (
+              <Link to={`/settings/${userId}`}>
+                <Button
+                  leftIcon={<FaCog />}
+                  colorScheme="orange"
+                  variant="solid"
+                  size="sm"
+                  mt={4}
                 >
-                  <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-                    FoodLover
-                  </Text>
-                  <Text fontSize="sm" color="gray.500">
-                    @food_enjoyer_123
-                  </Text>
-                  <Text fontSize="md" color="gray.700">
-                    Will cook for compliments. Will eat for survival. Chomp
-                    chomp.
-                  </Text>
-                  <Text fontSize="sm" color="gray.500">
-                    Joined: April 2025
-                  </Text>
-
-                  {/* Edit Profile Button */}
-                  {isOwner && (
-                    <Box
-                      position={useBreakpointValue({
-                        base: "static",
-                        md: "absolute",
-                      })} // Static for small screens, absolute for larger screens
-                      top={{ md: "16px" }} // Only apply top positioning for larger screens
-                      right={{ md: "16px" }} // Only apply right positioning for larger screens
-                      mt={{ base: 4, md: 0 }} // Add margin-top for spacing on small screens
-                      textAlign="center" // Center the button text
-                      w={{ base: "100%", md: "auto" }} // Full width on small screens, auto on larger screens
-                      display="flex" // Ensure the button is centered
-                      justifyContent="center" // Center the button horizontally
-                    >
-                      <Link to="/settings">
-                        <Box
-                          as="button"
-                          bg="#94C03B"
-                          color="white"
-                          px={4}
-                          py={2}
-                          borderRadius="full"
-                          fontSize="sm"
-                          fontWeight="bold"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          gap={2}
-                          _hover={{ bg: "#7A973F" }}
-                          _active={{ bg: "green.700" }}
-                        >
-                          <Icon as={FaEdit} boxSize={4} />
-                          Edit Profile
-                        </Box>
-                      </Link>
-                    </Box>
-                  )}
-                </VStack>
-              </Flex>
-            </Flex>
+                  Account Settings
+                </Button>
+              </Link>
+            )}
           </Box>
-
-          {/* Tabs */}
-          <Box bg="white" border="1px solid #c5c5c5" borderBottom="none">
-            <Flex
-              direction="row"
-              justify={useBreakpointValue({
-                base: "center", // Center tabs on smaller screens
-                md: "flex-start", // Align tabs to the left on medium and larger screens
-              })}
-              px={4}
-              py={0}
-              position="relative"
-            >
+          <Box bg="white" borderBottom="1px solid #c5c5c5">
+            <Flex direction="row" justify="center" px={4} py={0}>
               {tabs
-                .filter((tab) => isOwner || tab.key !== "bookmarks") // Hide bookmarks tab for non-owners
-                .map((tab) => {
-                  const isActive = activeTab === tab.key;
-                  return (
-                    <Box
-                      key={tab.key}
-                      textAlign="center"
-                      py={1}
-                      px={4}
-                      cursor="pointer"
-                      color={isActive ? "orange.500" : "gray.700"}
-                      bg={isActive ? "#FFF0E1" : "white"}
-                      position="relative"
-                      fontWeight="medium"
-                      _hover={{ bg: "#FFF0E1" }}
-                      onClick={() => setActiveTab(tab.key)}
-                    >
-                      {tab.label}
-                      {isActive && (
-                        <Box
-                          position="absolute"
-                          bottom="0"
-                          left="0"
-                          right="0"
-                          height="3px"
-                          bg="orange.500"
-                        />
-                      )}
-                    </Box>
-                  );
-                })}
+                .filter((tab) => isOwner || tab.key !== "bookmarks")
+                .map((tab) => (
+                  <Box
+                    key={tab.key}
+                    textAlign="center"
+                    py={2}
+                    px={6}
+                    cursor="pointer"
+                    fontWeight="bold"
+                    color={activeTab === tab.key ? "orange.500" : "gray.700"}
+                    bg={activeTab === tab.key ? "#FFF0E1" : "white"}
+                    borderBottom={
+                      activeTab === tab.key ? "3px solid orange" : "none"
+                    }
+                    onClick={() => setActiveTab(tab.key)}
+                  >
+                    {tab.label}
+                  </Box>
+                ))}
             </Flex>
           </Box>
-          {/* Divider Line */}
-          <Box borderBottom="1px solid #c5c5c5" />
-
-          {/* Content Area */}
-          <Box
-            bg="white"
-            border="1px solid #c5c5c5"
-            borderTop="none" // Remove the top border to align with the tabs
-            borderBottomRadius="md"
-            px={{ base: 4, md: 6 }}
-            py={{ base: 6, md: 8 }}
-            minH={{ base: "300px", md: "500px" }}
-          >
+          <Box bg="white" px={6} py={8}>
             {tabContent[activeTab]}
           </Box>
-          <Box mb={20} />
         </Box>
       </Flex>
     </>
