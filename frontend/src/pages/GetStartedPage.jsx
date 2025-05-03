@@ -1,34 +1,15 @@
 import { Box, Button, Image, Text, Flex, VStack, Grid } from "@chakra-ui/react";
 
-import BowlLeaf from "/images/BowlLeaf.png";
 import { motion } from "framer-motion";
-import BG_Image from "/images/11.png";
-import BG_Image2 from "/images/15.png";
 import Phone from "/images/phone.png";
 import Fabio from "/images/fabio.png";
 import RecipeCard from "../components/RecipeCard";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getCompressedImageUrl } from "../utils/imageUtils";
 import background from "/images/background.png";
 import { useMediaQuery } from "@chakra-ui/react"; // Import useMediaQuery
-
 const MotionText = motion(Text);
-
-// Helper to add Cloudinary compression params
-function getCompressedImageUrl(url) {
-  if (!url) return url;
-  // Check if it's a Cloudinary URL
-  if (url.includes("res.cloudinary.com")) {
-    // Insert transformation params after '/upload/'
-    return url.replace(
-      /\/upload\//,
-      "/upload/q_auto:eco,f_auto,w_400,h_300,c_fill/"
-    );
-  }
-  return url;
-}
 
 function GetStartedPage() {
   const [recipes, setRecipes] = useState([]);
@@ -93,14 +74,13 @@ function GetStartedPage() {
       window.removeEventListener("scroll", handleScroll); // Cleanup event listener
     };
   }, [isAutoScrolling]);
-  
+
   return (
-  
     <Box position="relative" minH="100vh" overflow="hidden" bg="white">
       <Box position="relative" zIndex={999}></Box>
 
-            {/* Pop-Up */}
-            {showPopup && (
+      {/* Pop-Up */}
+      {showPopup && (
         <Box
           position="fixed"
           top="95%"
@@ -121,7 +101,11 @@ function GetStartedPage() {
         </Box>
       )}
       {/* Video Background */}
-      <Box position="relative" width="100vw" height={{ base: "50vh", md: "100vh"}}>
+      <Box
+        position="relative"
+        width="100vw"
+        height={{ base: "50vh", md: "100vh" }}
+      >
         <video
           autoPlay
           loop
@@ -153,17 +137,17 @@ function GetStartedPage() {
           zIndex={1} // Ensure it appears below the image
         />
 
-  {/* Background Image */}
-  <Image
-    src={background}
-    width="100%"
-    height="100%"
-    objectFit="cover"
-    position="absolute"
-    top="0"
-    left="0"
-    zIndex={2} // Ensure it appears above the vignette
-  />
+        {/* Background Image */}
+        <Image
+          src={background}
+          width="100%"
+          height="100%"
+          objectFit="cover"
+          position="absolute"
+          top="0"
+          left="0"
+          zIndex={2} // Ensure it appears above the vignette
+        />
 
         {/* Centered Text */}
         <Box
@@ -195,7 +179,7 @@ function GetStartedPage() {
             fontSize={{ base: "13px", md: "18px" }}
             fontWeight="medium"
             color="black"
-            mt={{ base: 2, md: 4 }} 
+            mt={{ base: 2, md: 4 }}
           >
             Share your recipes, explore new ones, and connect with fellow food
             enthusiasts. Access more than{" "}
@@ -213,8 +197,18 @@ function GetStartedPage() {
           >
             <Link to="/register">SIGN UP</Link>
           </Button>
-          <Flex align="center" mt={{ base: 2, md: 4 }} justify="center" wrap="nowrap">
-            <Text fontSize={{ base: "12px", md: "16px" }} color="black" mr={2} whiteSpace="nowrap" >
+          <Flex
+            align="center"
+            mt={{ base: 2, md: 4 }}
+            justify="center"
+            wrap="nowrap"
+          >
+            <Text
+              fontSize={{ base: "12px", md: "16px" }}
+              color="black"
+              mr={2}
+              whiteSpace="nowrap"
+            >
               Already have an account?
             </Text>
             <MotionText
@@ -223,7 +217,7 @@ function GetStartedPage() {
               color="#FD660B"
               textDecoration="underline"
               cursor="pointer"
-              whiteSpace="nowrap" 
+              whiteSpace="nowrap"
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -232,54 +226,58 @@ function GetStartedPage() {
           </Flex>
 
           {/* Explore Recipes Section */}
-        <Box py={6}>
-          <Flex justify="space-between" align="center" px="10%" mt="10%" >
-            <Text fontWeight="bold" fontSize={{ base: "12px", md: "23px" }} wrap="nowrap">
-              Explore Recipes
-            </Text>
-
-            <MotionText
-              fontSize={{ base: "10px", md: "14px" }}
-              color="#FD660B"
-              textDecoration="underline"
-              fontWeight="medium"
-              cursor="pointer"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link to="/search">View More</Link>
-            </MotionText>
-          </Flex>
-          <Box px="5%" py={6}>
-            {loading ? (
-              <Text textAlign="center" fontSize="18px" color="gray.500">
-                Loading recipes...
-              </Text>
-            ) : recipes.length === 0 ? (
-              <Text textAlign="center" fontSize="18px" color="gray.500">
-                No recipes available at the moment. Please check back later!
-              </Text>
-            ) : (
-              <Grid
-                templateColumns={{
-                  base: "repeat(2, 1fr)",
-                  md: "repeat(4, 1fr)",
-                }}
-                gap={{ base: 4, md: 4 }}
+          <Box py={6}>
+            <Flex justify="space-between" align="center" px="10%" mt="10%">
+              <Text
+                fontWeight="bold"
+                fontSize={{ base: "12px", md: "23px" }}
+                wrap="nowrap"
               >
-                {recipes.slice(0, 4).map((recipe) => (
-                  <Link
-                    to={`/recipes/${recipe._id}`}
-                    key={recipe._id}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </Link>
-                ))}
-              </Grid>
-            )}
+                Explore Recipes
+              </Text>
+
+              <MotionText
+                fontSize={{ base: "10px", md: "14px" }}
+                color="#FD660B"
+                textDecoration="underline"
+                fontWeight="medium"
+                cursor="pointer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link to="/search">View More</Link>
+              </MotionText>
+            </Flex>
+            <Box px="5%" py={6}>
+              {loading ? (
+                <Text textAlign="center" fontSize="18px" color="gray.500">
+                  Loading recipes...
+                </Text>
+              ) : recipes.length === 0 ? (
+                <Text textAlign="center" fontSize="18px" color="gray.500">
+                  No recipes available at the moment. Please check back later!
+                </Text>
+              ) : (
+                <Grid
+                  templateColumns={{
+                    base: "repeat(2, 1fr)",
+                    md: "repeat(4, 1fr)",
+                  }}
+                  gap={{ base: 4, md: 4 }}
+                >
+                  {recipes.slice(0, 4).map((recipe) => (
+                    <Link
+                      to={`/recipes/${recipe._id}`}
+                      key={recipe._id}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <RecipeCard recipe={recipe} />
+                    </Link>
+                  ))}
+                </Grid>
+              )}
+            </Box>
           </Box>
-        </Box>
         </Box>
       </Box>
 
@@ -294,9 +292,7 @@ function GetStartedPage() {
             justify="center"
             px={{ base: 6, md: 20 }}
             zIndex={1}
-          >
-
-          </Flex>
+          ></Flex>
         </Box>
 
         {/* "Completely Free" Box */}
@@ -327,7 +323,12 @@ function GetStartedPage() {
                 boxSize={{ base: "60px", md: "80px", lg: "100px" }}
                 mb={2}
               />
-              <Text fontSize="20px" fontWeight="bold" color="#FD660B" zIndex={1}>
+              <Text
+                fontSize="20px"
+                fontWeight="bold"
+                color="#FD660B"
+                zIndex={1}
+              >
                 Completely Free
               </Text>
               <Text fontSize="16px" color="black" mt={2} zIndex={1}>
@@ -343,7 +344,12 @@ function GetStartedPage() {
                 boxSize={{ base: "60px", md: "80px", lg: "100px" }}
                 mb={2}
               />
-              <Text fontSize="20px" fontWeight="bold" color="#FD660B" zIndex={1}>
+              <Text
+                fontSize="20px"
+                fontWeight="bold"
+                color="#FD660B"
+                zIndex={1}
+              >
                 Safe Space
               </Text>
               <Text fontSize="16px" color="black" mt={2} zIndex={1}>
@@ -396,8 +402,6 @@ function GetStartedPage() {
             mx="auto"
           />
         </Box>
-
-        
       </Box>
     </Box>
   );

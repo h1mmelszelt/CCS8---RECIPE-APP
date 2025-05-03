@@ -42,7 +42,8 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const { setIsAuthenticated } = useContext(AuthContext);
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
   const popupRef = useRef(null);
 
   const {

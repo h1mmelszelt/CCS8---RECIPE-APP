@@ -12,12 +12,11 @@ import {
 import cooking from "/images/AdobeStock guy cooking.jpeg";
 
 function RegisterPage() {
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
 
-    useEffect(() => {
-      // Scroll to the top of the page when the component mounts
-      window.scrollTo(0, 0);
-    }, []); 
-  
   return (
     <>
       <Flex
@@ -30,6 +29,7 @@ function RegisterPage() {
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         pt={20}
+        pb={10} // Added padding-bottom for spacing
       >
         <Box
           borderRadius="lg"

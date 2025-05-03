@@ -26,11 +26,10 @@ function LoginPage() {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
 
-  
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
-  }, []); 
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);

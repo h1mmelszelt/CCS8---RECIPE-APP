@@ -93,7 +93,6 @@ function HomePage() {
       minH="100vh"
       color="black"
       pb={{ base: "60px", md: "0" }} // Adjust padding for mobile view
-      overflowY="scroll" // Allow vertical scrolling
       overflowX="hidden" // Disable horizontal movement
     >
       {/* Conditionally render the navbar */}
