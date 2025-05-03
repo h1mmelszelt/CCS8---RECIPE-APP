@@ -34,7 +34,7 @@ function MePage() {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/users/${storedUserId}`
+            `https://cs-test-z2vm.onrender.com/api/users/${storedUserId}`
           );
           setUserData({
             name: response.data.name,

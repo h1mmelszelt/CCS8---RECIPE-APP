@@ -29,7 +29,7 @@ const fetchAndSaveRecipes = async () => {
 
       // Post the recipe to your API
       const response = await axios.post(
-        "http://localhost:5000/api/recipes",
+        "https://cs-test-z2vm.onrender.com/api/recipes",
         newRecipe
       );
       console.log(`Saved: ${newRecipe.title} | Status: ${response.status}`);

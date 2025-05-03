@@ -35,17 +35,23 @@ function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query") || "";
 
-    // Clear the query parameter on page refresh
-    useEffect(() => {
-      if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
-        // Remove 'query' from the URL
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("query")) {
-          params.delete("query");
-          window.history.replaceState({}, '', `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`);
-        }
+  // Clear the query parameter on page refresh
+  useEffect(() => {
+    if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+      // Remove 'query' from the URL
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("query")) {
+        params.delete("query");
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}${
+            params.toString() ? "?" + params.toString() : ""
+          }`
+        );
       }
-    }, []);
+    }
+  }, []);
 
   // Breadcrumbs for SearchPage
   const breadcrumbs = [
@@ -62,7 +68,7 @@ function SearchPage() {
 
         if (query && query.trim() !== "") {
           const response = await axios.get(
-            `http://localhost:5000/api/recipes/search/${encodeURIComponent(
+            `https://cs-test-z2vm.onrender.com/api/recipes/search/${encodeURIComponent(
               query
             )}`
           );
@@ -70,7 +76,9 @@ function SearchPage() {
           setFilteredRecipes(response.data.data);
           setSearchQuery(query);
         } else {
-          const response = await axios.get("http://localhost:5000/api/recipes"); // Replace with your API endpoint
+          const response = await axios.get(
+            "https://cs-test-z2vm.onrender.com/api/recipes"
+          ); // Replace with your API endpoint
           setRecipes(response.data.data);
           setFilteredRecipes(response.data.data); // Initially, show all recipes
         }
@@ -101,7 +109,7 @@ function SearchPage() {
   // Define handleApplyFilters
   const handleApplyFilters = (appliedFilters) => {
     // Only consider filters with length >= 2 (ignore single letters/syllables)
-    const validFilters = appliedFilters.filter(f => f.trim().length >= 2);
+    const validFilters = appliedFilters.filter((f) => f.trim().length >= 2);
     if (appliedFilters.length > 0 && validFilters.length === 0) {
       // If user entered only short filters, show no recipes
       setFilteredRecipes([]);
@@ -116,8 +124,17 @@ function SearchPage() {
       return validFilters.every((filter) => {
         const filterLower = filter.toLowerCase();
         // Only match ingredient/tag if the filter is a full word in the ingredient/tag (not just substring)
-        const hasTag = recipe.tags && recipe.tags.some((tag) => tag.toLowerCase() === filterLower);
-        const hasIngredient = recipe.ingredients && recipe.ingredients.some((ingredient) => ingredient.toLowerCase().split(/\s|,|\./).includes(filterLower));
+        const hasTag =
+          recipe.tags &&
+          recipe.tags.some((tag) => tag.toLowerCase() === filterLower);
+        const hasIngredient =
+          recipe.ingredients &&
+          recipe.ingredients.some((ingredient) =>
+            ingredient
+              .toLowerCase()
+              .split(/\s|,|\./)
+              .includes(filterLower)
+          );
         return hasTag || hasIngredient;
       });
     });

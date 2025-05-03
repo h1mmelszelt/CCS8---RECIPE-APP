@@ -35,7 +35,7 @@ function LoginPage() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/login",
+        "https://cs-test-z2vm.onrender.com/api/users/login",
         {
           email,
           password,
