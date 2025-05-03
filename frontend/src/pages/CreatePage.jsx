@@ -10,6 +10,14 @@ import {
   IconButton,
   Flex,
   useToast,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Tag,
+  TagLabel,
+  TagCloseButton,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -23,6 +31,8 @@ function CreatePage() {
   const [instructions, setInstructions] = useState([""]);
   const [servings, setServings] = useState("");
   const [tags, setTags] = useState([""]);
+  const [ingredientInput, setIngredientInput] = useState("");
+  const [tagInput, setTagInput] = useState("");
   const toast = useToast(); // For user feedback
 
   const handleAddIngredient = () => setIngredients([...ingredients, ""]);
@@ -43,25 +53,36 @@ function CreatePage() {
     setInstructions(updated);
   };
 
-  const handleAddTag = () => setTags([...tags, ""]);
-  const handleRemoveTag = (index) =>
-    setTags(tags.filter((_, i) => i !== index));
-  const handleTagChange = (index, value) => {
-    const updated = [...tags];
-    updated[index] = value;
-    setTags(updated);
+  const handleAddItem = (input, setInput, list, setList) => {
+    if (input.trim() && !list.includes(input.trim())) {
+      setList((prev) => [
+        ...prev.filter((item) => item.trim() !== ""),
+        input.trim(),
+      ]); // Remove blank tags and add the new tag
+      setInput(""); // Clear the input field
+    }
+  };
+  const handleRemoveItem = (index, setList) => {
+    setList((prev) => prev.filter((_, i) => i !== index)); // Remove the item at the specified index
   };
 
   const handleSaveRecipe = async () => {
     // Validate form data
-    if (
-      !title ||
-      !image ||
-      !description ||
-      ingredients.length === 0 ||
-      instructions.length === 0 ||
-      tags.length === 0
-    ) {
+    const newInvalidFields = {
+      title: !title.trim(),
+      image: !image.trim(),
+      description: !description.trim(),
+      ingredients:
+        ingredients.length === 0 || ingredients.every((i) => !i.trim()),
+      instructions:
+        instructions.length === 0 || instructions.every((i) => !i.trim()),
+      tags: tags.length === 0 || tags.every((tag) => !tag.trim()),
+    };
+
+    setInvalidFields(newInvalidFields);
+
+    // Check if there are any invalid fields
+    if (Object.values(newInvalidFields).some((field) => field)) {
       toast({
         title: "Error",
         description: "Please fill in all required fields.",
@@ -76,10 +97,10 @@ function CreatePage() {
       name: title,
       image,
       description,
-      ingredients,
-      instructions,
+      ingredients: ingredients.filter((i) => i.trim()),
+      instructions: instructions.filter((i) => i.trim()),
       servingSize: servings,
-      tags,
+      tags: tags.filter((tag) => tag.trim()),
     };
 
     try {
@@ -101,7 +122,15 @@ function CreatePage() {
       setIngredients([""]);
       setInstructions([""]);
       setServings("");
-      setTags([""]);
+      setTags([]);
+      setInvalidFields({
+        title: false,
+        image: false,
+        description: false,
+        ingredients: false,
+        instructions: false,
+        tags: false,
+      });
     } catch (error) {
       console.error("Error saving recipe:", error);
       toast({
@@ -113,6 +142,15 @@ function CreatePage() {
       });
     }
   };
+
+  const [invalidFields, setInvalidFields] = useState({
+    title: false,
+    image: false,
+    description: false,
+    ingredients: false,
+    instructions: false,
+    tags: false,
+  });
 
   return (
     <Box
@@ -134,7 +172,7 @@ function CreatePage() {
           </Text>
           <VStack spacing={4} align="stretch">
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Recipe Title:
               </Text>
               <Input
@@ -142,11 +180,11 @@ function CreatePage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 border="1px solid"
-                borderColor="gray.300"
+                borderColor={invalidFields.title ? "red.500" : "gray.300"}
               />
             </Box>
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Recipe Image URL:
               </Text>
               <Input
@@ -154,60 +192,63 @@ function CreatePage() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 border="1px solid"
-                borderColor="gray.300"
+                borderColor={invalidFields.image ? "red.500" : "gray.300"}
               />
             </Box>
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Description:
               </Text>
               <Textarea
                 placeholder="What's your recipe about?"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                maxLength={120}
+                maxLength={400}
                 border="1px solid"
-                borderColor="gray.300"
+                borderColor={invalidFields.description ? "red.500" : "gray.300"}
               />
             </Box>
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Ingredients:
               </Text>
-              {ingredients.map((ingredient, index) => (
-                <HStack key={index} spacing={4} mb={2}>
-                  <Input
-                    placeholder="What are the ingredients?"
-                    value={ingredient}
-                    onChange={(e) =>
-                      handleIngredientChange(index, e.target.value)
-                    }
-                    border="1px solid"
-                    borderColor="gray.300"
-                  />
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    colorScheme="red"
-                    size="sm"
-                    onClick={() => handleRemoveIngredient(index)}
-                  />
-                </HStack>
-              ))}
-              <Button
-                leftIcon={<AddIcon />}
-                size="sm"
-                bg="white"
-                color="orange.500"
+              <Input
+                placeholder="Add an ingredient and press Enter"
+                value={ingredientInput}
+                onChange={(e) => setIngredientInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddItem(
+                      ingredientInput,
+                      setIngredientInput,
+                      ingredients,
+                      setIngredients
+                    );
+                  }
+                }}
                 border="1px solid"
-                borderColor="orange.300"
-                _hover={{ bg: "orange.300", color: "white" }}
-                onClick={handleAddIngredient}
-              >
-                Add Ingredients
-              </Button>
+                borderColor={invalidFields.ingredients ? "red.500" : "gray.300"}
+              />
+              <HStack spacing={2} mt={2} wrap="wrap">
+                {ingredients.map((ingredient, index) => (
+                  <Tag
+                    key={index}
+                    size="md"
+                    borderRadius="full"
+                    variant="solid"
+                    colorScheme="orange"
+                  >
+                    <TagLabel>{ingredient}</TagLabel>
+                    <TagCloseButton
+                      onClick={() => handleRemoveItem(index, setIngredients)}
+                    />
+                  </Tag>
+                ))}
+              </HStack>
             </Box>
+
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Instructions:
               </Text>
               {instructions.map((instruction, index) => (
@@ -219,7 +260,9 @@ function CreatePage() {
                       handleInstructionChange(index, e.target.value)
                     }
                     border="1px solid"
-                    borderColor="gray.300"
+                    borderColor={
+                      invalidFields.instructions ? "red.500" : "gray.300"
+                    }
                   />
                   <IconButton
                     icon={<DeleteIcon />}
@@ -243,50 +286,57 @@ function CreatePage() {
               </Button>
             </Box>
             <Box>
-              <Text fontWeight="medium" mb={2}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Servings:
               </Text>
-              <Input
-                placeholder="How many servings does this recipe make?"
-                value={servings}
-                onChange={(e) => setServings(e.target.value)}
-                border="1px solid"
-                borderColor="gray.300"
-              />
+              <NumberInput
+                value={servings || 1} // Default to 1 if servings is empty
+                min={1} // Prevent going below 1
+                onChange={(valueString) =>
+                  setServings(parseInt(valueString) || 1)
+                } // Update state
+                size="sm"
+                maxW="120px"
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
             </Box>
-            <Box>
-              <Text fontWeight="medium" mb={2}>
+            <Box mt={4}>
+              <Text fontWeight="bold" color="black" mb={2}>
                 Tags:
               </Text>
-              {tags.map((tag, index) => (
-                <HStack key={index} spacing={4} mb={2}>
-                  <Input
-                    placeholder="Keywords"
-                    value={tag}
-                    onChange={(e) => handleTagChange(index, e.target.value)}
-                    border="1px solid"
-                    borderColor="gray.300"
-                  />
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    colorScheme="red"
-                    size="sm"
-                    onClick={() => handleRemoveTag(index)}
-                  />
-                </HStack>
-              ))}
-              <Button
-                leftIcon={<AddIcon />}
-                size="sm"
-                bg="white"
-                color="orange.500"
+              <Input
+                placeholder="Add a tag and press Enter"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddItem(tagInput, setTagInput, tags, setTags);
+                  }
+                }}
                 border="1px solid"
-                borderColor="orange.300"
-                _hover={{ bg: "orange.300", color: "white" }}
-                onClick={handleAddTag}
-              >
-                Add Tags
-              </Button>
+                borderColor={invalidFields.tags ? "red.500" : "gray.300"}
+              />
+              <HStack spacing={2} mt={2} wrap="wrap">
+                {tags.map((tag, index) => (
+                  <Tag
+                    key={index}
+                    size="md"
+                    borderRadius="full"
+                    variant="solid"
+                    colorScheme="orange"
+                  >
+                    <TagLabel>{tag}</TagLabel>
+                    <TagCloseButton
+                      onClick={() => handleRemoveItem(index, setTags)}
+                    />
+                  </Tag>
+                ))}
+              </HStack>
             </Box>
             <Flex justify="flex-end">
               <Button colorScheme="orange" onClick={handleSaveRecipe}>
