@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon backend/server.js",
     "import-recipes": "node backend/scripts/importMealDBRecipes.js",
-    "build": "cd frontend && npm run build"
+    "build": "cd frontend && npm run build",
+    "postinstall": "cd frontend && npm install"
   },
   "type": "module",
   "keywords": [],
