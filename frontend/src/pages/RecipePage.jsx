@@ -480,29 +480,16 @@ const RecipePage = () => {
   if (location.state && location.state.from) {
     if (location.state.from.includes("/search")) {
       prevLabel = "Search";
-      prevPath = location.state.from;
-    } else if (location.state.from.includes("/profile")) {
-      prevLabel = "Profile";
-      prevPath = location.state.from;
-    } else if (location.state.from.includes("/notifications")) {
-      prevLabel = "Notifications";
-      prevPath = location.state.from;
-    } // Add more as needed
+      prevPath = "/search";
+    }
   }
 
-  // Render breadcrumbs, limiting to only one recipe (the current one)
-  const breadcrumbs =
-    location.state && location.state.breadcrumbs
-      ? location.state.breadcrumbs.filter(
-          (crumb) => !crumb.path.startsWith("/recipes/")
-        )
-      : [{ label: "Home", path: "/home" }];
-
-  // Defensive: never allow malformed dynamic routes in breadcrumbs
-  const safeBreadcrumbs = [
+  // Render breadcrumbs, ensuring proper hierarchy based on navigation source
+  const breadcrumbs = [
     { label: "Home", path: "/home" },
+    prevLabel === "Search" ? { label: "Search", path: prevPath } : null,
     recipe && recipe._id ? { label: recipe.name, path: `/recipes/${recipe._id}` } : null,
-  ].filter(Boolean).filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:'));
+  ].filter(Boolean);
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -517,14 +504,14 @@ const RecipePage = () => {
       <Box maxW="1200px" mx="auto" p={6}>
         {/* Breadcrumb */}
         <Text fontSize="sm" color="gray.500" mb={4}>
-          {safeBreadcrumbs.map((crumb, idx) => (
+          {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
-              {idx === safeBreadcrumbs.length - 1 ? (
+              {idx === breadcrumbs.length - 1 ? (
                 <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
               ) : (
                 <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
               )}
-              {idx < safeBreadcrumbs.length - 1 && " > "}
+              {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
         </Text>
@@ -954,11 +941,9 @@ const RecipePage = () => {
               {relatedRecipes.length > 0 ? (
                 relatedRecipes.map((relatedRecipe) => (
                   <Link
-                    key={relatedRecipe._id}
                     to={`/recipes/${relatedRecipe._id}`}
-                    state={{
-                      breadcrumbs: [...safeBreadcrumbs],
-                    }}
+                    state={{ from: location.state?.from || "/home" }}
+                    key={relatedRecipe._id}
                     style={{ textDecoration: "none" }}
                   >
                     <HStack
@@ -1033,7 +1018,7 @@ const RecipePage = () => {
                     key={recipe._id}
                     to={`/recipes/${recipe._id}`}
                     state={{
-                      breadcrumbs: [...safeBreadcrumbs],
+                      breadcrumbs: [...breadcrumbs],
                     }}
                     style={{ textDecoration: "none" }}
                   >

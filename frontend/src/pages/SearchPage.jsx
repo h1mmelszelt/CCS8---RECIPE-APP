@@ -347,12 +347,7 @@ function SearchPage() {
                   recipe && recipe._id ? (
                     <Link
                       to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                      state={{
-                        breadcrumbs: [
-                          { label: "Home", path: "/home" },
-                          { label: "Search", path: "/search" },
-                        ],
-                      }}
+                      state={{ from: "/search" }}
                       key={recipe._id}
                       style={{ textDecoration: "none" }} // Remove underline from the link
                     >
