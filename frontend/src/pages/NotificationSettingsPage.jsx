@@ -98,16 +98,16 @@ const NotificationSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}`},
+              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: `/notification-settings/${userId}`,
+                link: userId ? `/notification-settings/${userId}` : "/login",
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: `/advanced-settings/${userId}`,
+                link: userId ? `/advanced-settings/${userId}` : "/login",
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>

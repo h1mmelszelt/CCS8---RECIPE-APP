@@ -14,6 +14,12 @@ import { Link } from "react-router-dom";
 import { FaUserCog, FaSignOutAlt, FaStar, FaUser } from "react-icons/fa";
 
 function MePage() {
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (MePage) - All profile/settings links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  
   return (
     <Box bg="gray.100" minH="100vh" color="black">
       {/* Page Content */}
@@ -56,7 +62,7 @@ function MePage() {
             {/* Profile */}
             <Flex
               as={Link}
-              to="/profile/:id"
+              to={isValidPath(userId ? `/profile/${userId}` : "/login") ? (userId ? `/profile/${userId}` : "/login") : undefined}
               align="center"
               justify="space-between"
               p={4}
@@ -76,7 +82,7 @@ function MePage() {
             {/* Settings */}
             <Flex
               as={Link}
-              to="/settings"
+              to={isValidPath(userId ? `/settings/${userId}` : "/login") ? (userId ? `/settings/${userId}` : "/login") : undefined}
               align="center"
               justify="space-between"
               p={4}

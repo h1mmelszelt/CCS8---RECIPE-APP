@@ -25,12 +25,12 @@ const ProfileSettingsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeSetting, setActiveSetting] = useState("Profile Settings"); // Initialize activeSetting
   const location = useLocation();
-  // Breadcrumbs for Profile Settings Page
+  // Defensive: never allow malformed dynamic routes in breadcrumbs
   const breadcrumbs = [
     { label: "Home", path: "/home" },
-    { label: "Profile", path: `/profile/${userId}` },
+    userId ? { label: "Profile", path: `/profile/${userId}` } : null,
     { label: "Settings", path: location.pathname + location.search },
-  ];
+  ].filter(Boolean).filter(crumb => isValidPath(crumb.path));
 
   useEffect(() => {
     console.log("User ID from URL:", userId);
@@ -152,16 +152,16 @@ const ProfileSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: `/settings/${userId}` },
+              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: `/notification-settings/${userId}`,
+                link: userId ? `/notification-settings/${userId}` : "/login",
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: `/advanced-settings/${userId}`,
+                link: userId ? `/advanced-settings/${userId}` : "/login",
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>

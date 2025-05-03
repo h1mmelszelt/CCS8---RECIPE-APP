@@ -43,6 +43,7 @@ function Sitemap() {
     }
   };
 
+  // Defensive: filter out any sitemap link with a malformed path (containing '/:') before rendering
   return (
     <Box bg="gray.200" py={10} px={{ base: 6, md: 20 }} color="black">
       <Flex
@@ -72,25 +73,19 @@ function Sitemap() {
             <Text fontSize="lg" fontWeight="bold">
               Explore
             </Text>
-            <RouterLink to="/home">
-              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
-                Home
-              </Text>
-            </RouterLink>
-            <RouterLink to="/search">
-              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
-                Recipes
-              </Text>
-            </RouterLink>
-            <Link
-              as="button"
-              onClick={handleShareRecipe}
-              fontSize="sm"
-              color="black.400"
-              _hover={{ color: "orange.500" }}
-            >
-              Share Recipe
-            </Link>
+            {[
+              { label: "Home", to: "/home" },
+              { label: "Recipes", to: "/search" },
+              { label: "Notifications", to: "/notifications" },
+              { label: "Share Recipe", to: "/create" },
+              { label: "Get Started", to: "/" },
+            ].filter(link => link.to && !link.to.includes('/:') && !link.to.endsWith('/:')).map(link => (
+              <RouterLink key={link.label} to={link.to}>
+                <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                  {link.label}
+                </Text>
+              </RouterLink>
+            ))}
           </VStack>
 
           <VStack align="start" spacing={2}>

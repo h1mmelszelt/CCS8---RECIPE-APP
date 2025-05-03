@@ -47,11 +47,11 @@ function SearchPage() {
       }
     }, []);
 
-  // Breadcrumbs for SearchPage
+  // Defensive: never allow malformed dynamic routes in breadcrumbs
   const breadcrumbs = [
     { label: "Home", path: "/home" },
     { label: "Search", path: "/search" },
-  ];
+  ].filter(crumb => isValidPath(crumb.path));
 
   // Fetch recipes based on search query
   useEffect(() => {
@@ -150,6 +150,7 @@ function SearchPage() {
     >
       {/* Breadcrumbs at the top of the page */}
       <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        {/* Defensive: filter out any breadcrumb with a malformed path (containing '/:') before rendering */}
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
@@ -338,21 +339,23 @@ function SearchPage() {
                 }}
                 gap={{ base: 3, md: 6 }}
               >
-                {filteredRecipes.map((recipe) => (
-                  <Link
-                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                    state={{
-                      breadcrumbs: [
-                        { label: "Home", path: "/home" },
-                        { label: "Search", path: "/search" },
-                      ],
-                    }}
-                    key={recipe._id}
-                    style={{ textDecoration: "none" }} // Remove underline from the link
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </Link>
-                ))}
+                {filteredRecipes.map((recipe) =>
+                  recipe && recipe._id ? (
+                    <Link
+                      to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                      state={{
+                        breadcrumbs: [
+                          { label: "Home", path: "/home" },
+                          { label: "Search", path: "/search" },
+                        ],
+                      }}
+                      key={recipe._id}
+                      style={{ textDecoration: "none" }} // Remove underline from the link
+                    >
+                      <RecipeCard recipe={recipe} />
+                    </Link>
+                  ) : null
+                )}
               </Grid>
             )}
           </Box>

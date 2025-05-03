@@ -225,11 +225,16 @@ const ProfilePage = () => {
     }
   };
 
-  // Breadcrumbs logic (similar to RecipePage)
+  // Defensive: never allow malformed dynamic routes in breadcrumbs
   const breadcrumbs = [
     { label: "Home", path: "/home" },
-    { label: "Profile", path: location.pathname + location.search },
-  ];
+    { label: "Profile", path: `/profile/${userId}` },
+    { label: "Settings", path: `/settings/${userId}` },
+  ].filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:'));
+
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (ProfilePage) - All recipe/bookmark/settings links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');  
 
   const renderRecipeCards = () => (
     <Box>
@@ -262,60 +267,62 @@ const ProfilePage = () => {
         </Box>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-          {createdRecipes.map((recipe) => (
-            <Box key={recipe._id} position="relative">
-              <Link
-                to={`/recipes/${recipe._id}`}
-                state={{
-                  breadcrumbs: [
-                    { label: "Home", path: "/home" },
-                    {
-                      label: "Profile",
-                      path: location.pathname + location.search,
-                    },
-                  ],
-                }}
-                style={{ display: "block" }}
-              >
-                <RecipeCard recipe={recipe} />
-              </Link>
-              {isOwner && (
-                <Menu>
-                  <Tooltip label="Options" aria-label="Options tooltip">
-                    <MenuButton
-                      as={IconButton}
-                      icon={<FiMoreHorizontal />}
-                      size="xs"
-                      variant="solid"
-                      position="absolute"
-                      top={2}
-                      right={2}
-                      zIndex={2}
-                      aria-label="Options"
-                    />
-                  </Tooltip>
-                  <MenuList>
-                    <MenuItem
-                      icon={<EditIcon />} // Add edit icon
-                      color="blue.500"
-                      onClick={() =>
-                        (window.location.href = `/edit/${recipe._id}`)
-                      }
-                    >
-                      Edit
-                    </MenuItem>
-                    <MenuItem
-                      icon={<DeleteIcon />} // Add delete icon
-                      color="red.500"
-                      onClick={() => handleRemoveRecipe(recipe._id)}
-                    >
-                      Delete
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              )}
-            </Box>
-          ))}
+          {createdRecipes.map((recipe) =>
+            recipe && recipe._id && isValidPath(`/recipes/${recipe._id}`) ? (
+              <Box key={recipe._id} position="relative">
+                <Link
+                  to={`/recipes/${recipe._id}`}
+                  state={{
+                    breadcrumbs: [
+                      { label: "Home", path: "/home" },
+                      {
+                        label: "Profile",
+                        path: location.pathname + location.search,
+                      },
+                    ],
+                  }}
+                  style={{ display: "block" }}
+                >
+                  <RecipeCard recipe={recipe} />
+                </Link>
+                {isOwner && (
+                  <Menu>
+                    <Tooltip label="Options" aria-label="Options tooltip">
+                      <MenuButton
+                        as={IconButton}
+                        icon={<FiMoreHorizontal />}
+                        size="xs"
+                        variant="solid"
+                        position="absolute"
+                        top={2}
+                        right={2}
+                        zIndex={2}
+                        aria-label="Options"
+                      />
+                    </Tooltip>
+                    <MenuList>
+                      <MenuItem
+                        icon={<EditIcon />} // Add edit icon
+                        color="blue.500"
+                        onClick={() =>
+                          (window.location.href = `/edit/${recipe._id}`)
+                        }
+                      >
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        icon={<DeleteIcon />} // Add delete icon
+                        color="red.500"
+                        onClick={() => handleRemoveRecipe(recipe._id)}
+                      >
+                        Delete
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                )}
+              </Box>
+            ) : null
+          )}
         </SimpleGrid>
       )}
     </Box>
@@ -352,45 +359,47 @@ const ProfilePage = () => {
         </Box>
       ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
-          {bookmarks.map((bookmark) => (
-            <Box key={bookmark._id} position="relative">
-              <Link
-                to={`/recipes/${bookmark._id}`}
-                state={{
-                  breadcrumbs: [
-                    { label: "Home", path: "/home" },
-                    {
-                      label: "Profile",
-                      path: location.pathname + location.search,
-                    },
-                  ],
-                }}
-                style={{ display: "block" }}
-              >
-                <RecipeCard recipe={bookmark} />
-              </Link>
-              {isOwner && (
-                <Tooltip
-                  label="Remove from Bookmarks"
-                  aria-label="Remove bookmark tooltip"
+          {bookmarks.map((bookmark) =>
+            bookmark && bookmark._id && isValidPath(`/recipes/${bookmark._id}`) ? (
+              <Box key={bookmark._id} position="relative">
+                <Link
+                  to={`/recipes/${bookmark._id}`}
+                  state={{
+                    breadcrumbs: [
+                      { label: "Home", path: "/home" },
+                      {
+                        label: "Profile",
+                        path: location.pathname + location.search,
+                      },
+                    ],
+                  }}
+                  style={{ display: "block" }}
                 >
-                  <CloseButton
-                    size="xs"
-                    color="red.500"
-                    variant="solid"
-                    position="absolute"
-                    top={2}
-                    right={2}
-                    zIndex={2}
-                    onClick={() => handleRemoveBookmark(bookmark._id)}
-                    _hover={{
-                      color: "white", // White font on hover
-                    }}
-                  />
-                </Tooltip>
-              )}
-            </Box>
-          ))}
+                  <RecipeCard recipe={bookmark} />
+                </Link>
+                {isOwner && (
+                  <Tooltip
+                    label="Remove from Bookmarks"
+                    aria-label="Remove bookmark tooltip"
+                  >
+                    <CloseButton
+                      size="xs"
+                      color="red.500"
+                      variant="solid"
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      zIndex={2}
+                      onClick={() => handleRemoveBookmark(bookmark._id)}
+                      _hover={{
+                        color: "white", // White font on hover
+                      }}
+                    />
+                  </Tooltip>
+                )}
+              </Box>
+            ) : null
+          )}
         </SimpleGrid>
       )}
     </Box>
@@ -449,27 +458,31 @@ const ProfilePage = () => {
                 <VStack align="start" spacing={2} w="100%">
                   <Text fontSize="sm">
                     Commented on:{" "}
-                    <Link
-                      to={`/recipes/${review.recipe_id?._id}`}
-                      state={{
-                        breadcrumbs: [
-                          { label: "Home", path: "/home" },
-                          {
-                            label: "Profile",
-                            path: location.pathname + location.search,
-                          },
-                        ],
-                      }}
-                      style={{
-                        color: "#ED8936",
-                        fontWeight: "bold",
-                        textDecoration: "underline",
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = "#C05621")}
-                      onMouseLeave={(e) => (e.target.style.color = "#ED8936")}
-                    >
-                      {review.recipe_id?.name || "Unknown Recipe"}
-                    </Link>
+                    {review.recipe_id && review.recipe_id._id && isValidPath(`/recipes/${review.recipe_id._id}`) ? (
+                      <Link
+                        to={`/recipes/${review.recipe_id._id}`}
+                        state={{
+                          breadcrumbs: [
+                            { label: "Home", path: "/home" },
+                            {
+                              label: "Profile",
+                              path: location.pathname + location.search,
+                            },
+                          ],
+                        }}
+                        style={{
+                          color: "#ED8936",
+                          fontWeight: "bold",
+                          textDecoration: "underline",
+                        }}
+                        onMouseEnter={(e) => (e.target.style.color = "#C05621")}
+                        onMouseLeave={(e) => (e.target.style.color = "#ED8936")}
+                      >
+                        {review.recipe_id.name || "Unknown Recipe"}
+                      </Link>
+                    ) : (
+                      <span>Unknown Recipe</span>
+                    )}
                   </Text>
                   {editingReviewId === review._id ? (
                     <>
@@ -601,19 +614,12 @@ const ProfilePage = () => {
     <>
       <Box maxW="1200px" mx="auto" px={6} pt={6}>
         <Text fontSize="sm" color="gray.500" mb={4}>
-          {breadcrumbs.map((crumb, idx) => (
+          {breadcrumbs.filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:')).map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
-                  {crumb.label}
-                </span>
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
               ) : (
-                <Link
-                  to={crumb.path}
-                  style={{ color: "#FD660B", textDecoration: "underline" }}
-                >
-                  {crumb.label}
-                </Link>
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>

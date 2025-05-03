@@ -26,6 +26,9 @@ function LoginPage() {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
 
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (LoginPage) - Only allow navigation to /register if the path is valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
   
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
@@ -212,7 +215,7 @@ function LoginPage() {
                 mb={20}
               >
                 Don’t have an account?{" "}
-                <Link href="/register" color="#FD660B" fontWeight="bold">
+                <Link href={isValidPath("/register") ? "/register" : undefined} color="#FD660B" fontWeight="bold">
                   Sign up
                 </Link>
               </Text>

@@ -98,6 +98,8 @@ function App() {
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/sign-in-required" element={<SignInRequired />} />
             <Route path="/site-map" element={<SitemapPage />} />
+            {/* Fallback route */}
+            <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
 
           {/* Footer: Hide on SitemapPage */}

@@ -59,7 +59,10 @@ function Navbar({ transparent }) {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate
   const location = useLocation();
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Retrieve userId from storage
   
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+
   const handleSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`); // Navigate to SearchPage with query
@@ -381,28 +384,26 @@ function Navbar({ transparent }) {
         </Link>
 
         {/* User Icon */}
-        <Link to="/me">
+        <Link to={userId ? `/profile/${userId}` : "/login"}>
           <Flex
             direction="column"
             align="center"
-            onClick={() => handleProtectedRoute("/me")}
+            onClick={() => handleProtectedRoute(userId ? `/profile/${userId}` : "/login")}
           >
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
               variant="ghost"
-              color={location.pathname === "/me" ? "#FD660B" : "black"} // Highlight if on /profile
+              color={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
               borderRadius="full"
               border="2px solid"
-              borderColor={
-                location.pathname === "/profile" ? "#FD660B" : "black"
-              }
+              borderColor={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
             />
             <Box
               fontSize="sm"
-              color={location.pathname === "/profile" ? "#FD660B" : "black"}
+              color={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
               mt={1}
             >
               Me

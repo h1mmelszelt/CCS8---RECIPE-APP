@@ -253,15 +253,23 @@ function GetStartedPage() {
                 }}
                 gap={{ base: 4, md: 4 }}
               >
-                {recipes.slice(0, 4).map((recipe) => (
-                  <Link
-                    to={`/recipes/${recipe._id}`}
-                    key={recipe._id}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </Link>
-                ))}
+                {recipes
+                  .map((recipe) =>
+                    recipe && recipe._id ? (
+                      <Link
+                        to={`/recipes/${recipe._id}`}
+                        key={recipe._id}
+                        style={{ textDecoration: "none" }}
+                        onClick={e => {
+                          if (!recipe._id) {
+                            e.preventDefault();
+                          }
+                        }}
+                      >
+                        <RecipeCard recipe={recipe} />
+                      </Link>
+                    ) : null
+                  )}
               </Grid>
             )}
           </Box>

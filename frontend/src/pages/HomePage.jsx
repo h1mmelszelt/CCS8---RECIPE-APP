@@ -200,89 +200,96 @@ function HomePage() {
             ) : popularRecipes.length === 0 ? (
               <Text>No popular recipes found.</Text>
             ) : (
-              popularRecipes.map((recipe) => (
-                <Link
-                  to={`/recipes/${recipe._id}`}
-                  state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
-                  key={recipe._id}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Box
-                    bg="white"
-                    borderRadius="sm"
-                    boxShadow="md"
-                    overflow="hidden"
-                    zIndex={2}
-                    position="relative"
-                    cursor="pointer"
-                    _hover={{ boxShadow: "lg" }}
-                    role="group"
+              popularRecipes.map((recipe) =>
+                recipe._id ? (
+                  <Link
+                    to={`/recipes/${recipe._id}`}
+                    state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+                    key={recipe._id}
+                    style={{ textDecoration: "none" }}
+                    onClick={(e) => {
+                      if (!recipe._id) {
+                        e.preventDefault();
+                      }
+                    }}
                   >
                     <Box
-                      height={{ base: "120px", md: "200px" }}
+                      bg="white"
+                      borderRadius="sm"
+                      boxShadow="md"
                       overflow="hidden"
+                      zIndex={2}
                       position="relative"
+                      cursor="pointer"
+                      _hover={{ boxShadow: "lg" }}
+                      role="group"
                     >
-                      <Image
-                        src={getCompressedImageUrl(recipe.image)}
-                        alt={recipe.name}
-                        objectFit="cover"
-                        width="100%"
-                        height="100%"
-                      />
-                      {/* Hover Description */}
                       <Box
-                        position="absolute"
-                        top="0"
-                        left="0"
-                        width="100%"
-                        height="100%"
-                        bg="rgba(0, 0, 0, 0.6)"
-                        color="white"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        textAlign="center"
-                        opacity="0"
-                        transition="opacity 0.3s ease-in-out"
-                        _hover={{ opacity: "1" }}
+                        height={{ base: "120px", md: "200px" }}
+                        overflow="hidden"
+                        position="relative"
                       >
-                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                          {recipe.description || "No description available."}
+                        <Image
+                          src={getCompressedImageUrl(recipe.image)}
+                          alt={recipe.name}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                        {/* Hover Description */}
+                        <Box
+                          position="absolute"
+                          top="0"
+                          left="0"
+                          width="100%"
+                          height="100%"
+                          bg="rgba(0, 0, 0, 0.6)"
+                          color="white"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          textAlign="center"
+                          opacity="0"
+                          transition="opacity 0.3s ease-in-out"
+                          _hover={{ opacity: "1" }}
+                        >
+                          <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                            {recipe.description || "No description available."}
+                          </Text>
+                        </Box>
+                      </Box>
+                      <Text
+                        textAlign="center"
+                        fontSize={{ base: "14px", md: "16px" }}
+                        fontWeight="bold"
+                        color="black"
+                        mt={2}
+                        mb={0}
+                      >
+                        {recipe.name}
+                      </Text>
+                      {/* Show average rating and total reviews */}
+                      <Box textAlign="center" mb={2}>
+                        <Text
+                          fontSize="sm"
+                          color="orange.500"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          <Icon as={FaStar} mr={1} /> {/* Use FaStar icon */}
+                          {recipe.averageRating
+                            ? recipe.averageRating.toFixed(1)
+                            : "N/A"}
+                        </Text>
+                        <Text fontSize="xs" color="gray.500">
+                          {recipe.totalReviews || 0} reviews
                         </Text>
                       </Box>
                     </Box>
-                    <Text
-                      textAlign="center"
-                      fontSize={{ base: "14px", md: "16px" }}
-                      fontWeight="bold"
-                      color="black"
-                      mt={2}
-                      mb={0}
-                    >
-                      {recipe.name}
-                    </Text>
-                    {/* Show average rating and total reviews */}
-                    <Box textAlign="center" mb={2}>
-                      <Text
-                        fontSize="sm"
-                        color="orange.500"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Icon as={FaStar} mr={1} /> {/* Use FaStar icon */}
-                        {recipe.averageRating
-                          ? recipe.averageRating.toFixed(1)
-                          : "N/A"}
-                      </Text>
-                      <Text fontSize="xs" color="gray.500">
-                        {recipe.totalReviews || 0} reviews
-                      </Text>
-                    </Box>
-                  </Box>
-                </Link>
-              ))
+                  </Link>
+                ) : null
+              )
             )}
             {/* Show More Card 
             <Box
@@ -329,22 +336,34 @@ function HomePage() {
             ) : (
               getRecipesByTag("snack")
                 .slice(0, snackLimit)
-                .map((recipe) => (
-                  <Link
-                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                    state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
-                    key={recipe._id}
-                    style={{ textDecoration: "none" }} // Remove underline from the link
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </Link>
-                ))
+                .map((recipe) =>
+                  recipe && recipe._id ? (
+                    <Link
+                      to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                      state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+                      key={recipe._id}
+                      style={{ textDecoration: "none" }} // Remove underline from the link
+                      onClick={(e) => {
+                        if (!recipe._id) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      <RecipeCard recipe={recipe} />
+                    </Link>
+                  ) : null
+                )
             )}
             {/* Show More Card */}
             <Link
               to="/search?filter=snack"
               state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
               style={{ textDecoration: "none" }}
+              onClick={(e) => {
+                if (!getRecipesByTag("snack").length) {
+                  e.preventDefault();
+                }
+              }}
             >
               <Box
                 bg="gray.100"
@@ -392,16 +411,23 @@ function HomePage() {
             ) : (
               getRecipesByTag("filipino")
                 .slice(0, 4)
-                .map((recipe) => (
-                  <Link
-                    to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                    state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
-                    key={recipe._id}
-                    style={{ textDecoration: "none" }} // Remove underline from the link
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </Link>
-                ))
+                .map((recipe) =>
+                  recipe && recipe._id ? (
+                    <Link
+                      to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
+                      state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+                      key={recipe._id}
+                      style={{ textDecoration: "none" }} // Remove underline from the link
+                      onClick={(e) => {
+                        if (!recipe._id) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      <RecipeCard recipe={recipe} />
+                    </Link>
+                  ) : null
+                )
             )}
 
             {/* Show More Card */}
@@ -409,6 +435,11 @@ function HomePage() {
               to="/search?filter=filipino"
               state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
               style={{ textDecoration: "none" }}
+              onClick={(e) => {
+                if (!getRecipesByTag("filipino").length) {
+                  e.preventDefault();
+                }
+              }}
             >
               <Box
                 bg="gray.100"

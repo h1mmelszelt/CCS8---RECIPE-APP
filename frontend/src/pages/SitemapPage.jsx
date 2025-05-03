@@ -39,6 +39,9 @@ export default function SitemapPage() {
       navigate("/create");
     }
   };
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (SitemapPage) - All links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
   const sitemapLinks = [
     {
       heading: "Explore",
@@ -63,9 +66,9 @@ export default function SitemapPage() {
       heading: "Account",
       links: [
         { label: "My Profile", to: userId ? `/profile/${userId}` : "/login" },
-        { label: "Settings", to: "/settings", isAccount: true, path: "settings" },
-        { label: "Advanced Settings", to: "/advanced-settings", isAccount: true, path: "advanced-settings" },
-        { label: "Notification Settings", to: "/notification-settings", isAccount: true, path: "notification-settings" },
+        { label: "Settings", to: userId ? `/settings/${userId}` : "/login", isAccount: true, path: "settings" },
+        { label: "Advanced Settings", to: userId ? `/advanced-settings/${userId}` : "/login", isAccount: true, path: "advanced-settings" },
+        { label: "Notification Settings", to: userId ? `/notification-settings/${userId}` : "/login", isAccount: true, path: "notification-settings" },
         { label: "Login", to: "/login" },
         { label: "Register", to: "/register" },
       ],
@@ -81,6 +84,11 @@ export default function SitemapPage() {
       ],
     },
   ];
+  // Ensure all links in sitemapLinks are validated
+  const validatedSitemapLinks = sitemapLinks.map(section => ({
+    ...section,
+    links: section.links.filter(link => isValidPath(link.to))
+  }));
 
   return (
     <Box bg="gray.100" minH="100vh" py={12} px={{ base: 4, md: 20 }}>
@@ -94,7 +102,7 @@ export default function SitemapPage() {
         gap={{ base: 8, md: 20 }}
         align="flex-start"
       >
-        {sitemapLinks.map((section) => (
+        {validatedSitemapLinks.map((section) => (
           <VStack align="start" spacing={2} key={section.heading} minW="180px">
             <Text fontWeight="bold" fontSize="lg" mb={2}>
               {section.heading}
@@ -103,7 +111,8 @@ export default function SitemapPage() {
               .filter((link, idx, arr) => {
                 // Always show Login button in Account section
                 if (section.heading === "Account" && link.label === "Login") return true;
-                return arr.findIndex(l => l.to === link.to) === idx;
+                // Filter out malformed links (containing '/:' or ending with '/:')
+                return arr.findIndex(l => l.to === link.to) === idx && isValidPath(link.to);
               })
               .map((link) => (
                 link.isAccount ? (
@@ -203,6 +212,7 @@ export default function SitemapPage() {
           </Flex>
         </VStack>
       </Flex>
+      {/* Defensive: filter out any malformed links in the footer */}
       <Divider my={6} borderColor="black.400" />
       <Flex
         justify="space-between"
@@ -215,6 +225,15 @@ export default function SitemapPage() {
           © 2023 RecipeLogo. All Right Reserved
         </Text>
         <HStack spacing={4}>
+          {[{ label: "Sitemap", to: "/site-map" }]
+            .filter(link => link.to && !link.to.includes('/:') && !link.to.endsWith('/:'))
+            .map(link => (
+              <RouterLink key={link.label} to={link.to}>
+                <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                  {link.label}
+                </Text>
+              </RouterLink>
+            ))}
           <Link href="#" isExternal>
             <FaTiktok size={20} color="black" />
           </Link>

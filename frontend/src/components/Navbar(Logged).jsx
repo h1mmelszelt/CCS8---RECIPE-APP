@@ -308,13 +308,31 @@ function Navbar() {
                 icon={<FiUser size={20} />}
                 aria-label="User Profile"
                 variant="ghost"
-                color="black"
+                color={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
                 _hover={{ bg: "#FFF1E8" }}
                 size="sm"
                 borderRadius="full"
                 border="2px solid"
-                borderColor="black"
+                borderColor={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
               />
+              <Box
+                fontSize="sm"
+                color={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
+                mt={1}
+              >
+              </Box>
             </Link>
             {/* Hamburger Icon for Drawer */} {/* Drawer Trigger */}
             <IconButton
@@ -536,18 +554,14 @@ function Navbar() {
         </Link>
 
         {/* User Icon */}
-        <Link to="/me">
+        <Link to={userId ? `/profile/${userId}` : "/login"}>
           <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
               variant="ghost"
               color={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -556,11 +570,7 @@ function Navbar() {
               borderRadius="full"
               border="2px solid"
               borderColor={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -568,11 +578,7 @@ function Navbar() {
             <Box
               fontSize="sm"
               color={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }

@@ -21,6 +21,10 @@ const ContactUsPage = () => {
     window.scrollTo(0, 0);
   }, []); 
 
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (ContactUsPage) - All links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  
   return (
     <Box bg="white" minH="100vh">
       <Box px={{ base: 4, md: 20 }} py={10}>
