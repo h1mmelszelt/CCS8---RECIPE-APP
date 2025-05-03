@@ -21,6 +21,8 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Tooltip,
+  CloseButton,
   MenuItem,
 } from "@chakra-ui/react";
 import { FiMoreHorizontal } from "react-icons/fi";
@@ -95,10 +97,14 @@ const ProfilePage = () => {
 
   // Remove bookmark handler for profile page
   const handleRemoveBookmark = async (recipeId) => {
-    const confirmed = window.confirm("Are you sure you want to remove this recipe from your bookmarks?");
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this recipe from your bookmarks?"
+    );
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/users/bookmarks/${userId}/${recipeId}`);
+      await axios.delete(
+        `http://localhost:5000/api/users/bookmarks/${userId}/${recipeId}`
+      );
       setBookmarks((prev) => prev.filter((b) => b._id !== recipeId));
       toast({
         title: "Bookmark Removed",
@@ -120,7 +126,9 @@ const ProfilePage = () => {
 
   // Remove review handler for profile page
   const handleRemoveReview = async (reviewId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this review? This action cannot be undone.");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this review? This action cannot be undone."
+    );
     if (!confirmed) return;
     try {
       await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`);
@@ -145,7 +153,9 @@ const ProfilePage = () => {
 
   // Remove recipe handler for profile page
   const handleRemoveRecipe = async (recipeId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this recipe? This action cannot be undone."
+    );
     if (!confirmed) return;
     try {
       await axios.delete(`http://localhost:5000/api/recipes/${recipeId}`);
@@ -271,22 +281,26 @@ const ProfilePage = () => {
               </Link>
               {isOwner && (
                 <Menu>
-                  <MenuButton
-                    as={IconButton}
-                    icon={<FiMoreHorizontal />}
-                    size="xs"
-                    variant="ghost"
-                    position="absolute"
-                    top={2}
-                    right={2}
-                    zIndex={2}
-                    aria-label="Options"
-                  />
+                  <Tooltip label="Options" aria-label="Options tooltip">
+                    <MenuButton
+                      as={IconButton}
+                      icon={<FiMoreHorizontal />}
+                      size="xs"
+                      variant="solid"
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      zIndex={2}
+                      aria-label="Options"
+                    />
+                  </Tooltip>
                   <MenuList>
                     <MenuItem
                       icon={<EditIcon />} // Add edit icon
                       color="blue.500"
-                      onClick={() => window.location.href = `/edit/${recipe._id}`}
+                      onClick={() =>
+                        (window.location.href = `/edit/${recipe._id}`)
+                      }
                     >
                       Edit
                     </MenuItem>
@@ -356,18 +370,24 @@ const ProfilePage = () => {
                 <RecipeCard recipe={bookmark} />
               </Link>
               {isOwner && (
-                <Button
-                  size="xs"
-                  colorScheme="orange"
-                  variant="outline"
-                  position="absolute"
-                  top={2}
-                  right={2}
-                  zIndex={2}
-                  onClick={() => handleRemoveBookmark(bookmark._id)}
+                <Tooltip
+                  label="Remove from Bookmarks"
+                  aria-label="Remove bookmark tooltip"
                 >
-                  Remove
-                </Button>
+                  <CloseButton
+                    size="xs"
+                    color="red.500"
+                    variant="solid"
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    zIndex={2}
+                    onClick={() => handleRemoveBookmark(bookmark._id)}
+                    _hover={{
+                      color: "white", // White font on hover
+                    }}
+                  />
+                </Tooltip>
               )}
             </Box>
           ))}
@@ -454,13 +474,17 @@ const ProfilePage = () => {
                   {editingReviewId === review._id ? (
                     <>
                       <Box mb={2}>
-                        <Text fontSize="sm" mb={1} color="gray.600">Edit your review:</Text>
+                        <Text fontSize="sm" mb={1} color="gray.600">
+                          Edit your review:
+                        </Text>
                         <HStack spacing={1} mb={2}>
                           {[...Array(5)].map((_, i) => (
                             <Icon
                               as={FaStar}
                               key={i}
-                              color={i < editReviewRating ? "orange.400" : "gray.300"}
+                              color={
+                                i < editReviewRating ? "orange.400" : "gray.300"
+                              }
                               fontSize="lg"
                               cursor="pointer"
                               onClick={() => setEditReviewRating(i + 1)}
@@ -469,16 +493,29 @@ const ProfilePage = () => {
                         </HStack>
                         <textarea
                           value={editReviewText}
-                          onChange={e => setEditReviewText(e.target.value)}
+                          onChange={(e) => setEditReviewText(e.target.value)}
                           rows={3}
-                          style={{ width: "100%", borderRadius: 6, border: "1px solid #E2E8F0", padding: 6 }}
+                          style={{
+                            width: "100%",
+                            borderRadius: 6,
+                            border: "1px solid #E2E8F0",
+                            padding: 6,
+                          }}
                         />
                       </Box>
                       <HStack>
-                        <Button size="xs" colorScheme="green" onClick={() => handleSaveEdit(review._id)}>
+                        <Button
+                          size="xs"
+                          colorScheme="green"
+                          onClick={() => handleSaveEdit(review._id)}
+                        >
                           Save
                         </Button>
-                        <Button size="xs" variant="outline" onClick={handleCancelEdit}>
+                        <Button
+                          size="xs"
+                          variant="outline"
+                          onClick={handleCancelEdit}
+                        >
                           Cancel
                         </Button>
                       </HStack>
@@ -499,7 +536,9 @@ const ProfilePage = () => {
                           <Icon
                             as={FaStar}
                             key={i}
-                            color={i < review.rating ? "orange.400" : "gray.300"}
+                            color={
+                              i < review.rating ? "orange.400" : "gray.300"
+                            }
                             fontSize="sm"
                           />
                         ))}{" "}
@@ -565,9 +604,16 @@ const ProfilePage = () => {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                  {crumb.label}
+                </span>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
