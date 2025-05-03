@@ -19,6 +19,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { FaStar } from "react-icons/fa";
 
 function HomePage() {
   const [recipes, setRecipes] = useState([]); // All recipes from the API
@@ -208,7 +209,7 @@ function HomePage() {
                 >
                   <Box
                     bg="white"
-                    borderRadius="md"
+                    borderRadius="sm"
                     boxShadow="md"
                     overflow="hidden"
                     zIndex={2}
@@ -220,6 +221,7 @@ function HomePage() {
                     <Box
                       height={{ base: "120px", md: "200px" }}
                       overflow="hidden"
+                      position="relative"
                     >
                       <Image
                         src={getCompressedImageUrl(recipe.image)}
@@ -228,6 +230,27 @@ function HomePage() {
                         width="100%"
                         height="100%"
                       />
+                      {/* Hover Description */}
+                      <Box
+                        position="absolute"
+                        top="0"
+                        left="0"
+                        width="100%"
+                        height="100%"
+                        bg="rgba(0, 0, 0, 0.6)"
+                        color="white"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        textAlign="center"
+                        opacity="0"
+                        transition="opacity 0.3s ease-in-out"
+                        _hover={{ opacity: "1" }}
+                      >
+                        <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
+                          {recipe.description || "No description available."}
+                        </Text>
+                      </Box>
                     </Box>
                     <Text
                       textAlign="center"
@@ -235,41 +258,26 @@ function HomePage() {
                       fontWeight="bold"
                       color="black"
                       mt={2}
-                      mb={2}
+                      mb={0}
                     >
                       {recipe.name}
                     </Text>
                     {/* Show average rating and total reviews */}
                     <Box textAlign="center" mb={2}>
-                      <Text fontSize="sm" color="orange.500">
-                        ★{" "}
+                      <Text
+                        fontSize="sm"
+                        color="orange.500"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Icon as={FaStar} mr={1} /> {/* Use FaStar icon */}
                         {recipe.averageRating
                           ? recipe.averageRating.toFixed(1)
                           : "N/A"}
                       </Text>
                       <Text fontSize="xs" color="gray.500">
                         {recipe.totalReviews || 0} reviews
-                      </Text>
-                    </Box>
-                    {/* Hover Description */}
-                    <Box
-                      position="absolute"
-                      top="0"
-                      left="0"
-                      width="100%"
-                      height="100%"
-                      bg="rgba(0, 0, 0, 0.6)"
-                      color="white"
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      textAlign="center"
-                      opacity="0"
-                      transition="opacity 0.3s ease-in-out"
-                      _groupHover={{ opacity: "1" }}
-                    >
-                      <Text px={4} fontSize={{ base: "12px", md: "14px" }}>
-                        {recipe.description || "No description available."}
                       </Text>
                     </Box>
                   </Box>
