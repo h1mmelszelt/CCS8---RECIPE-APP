@@ -21,9 +21,13 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
 import axios from "axios"; // Import axios for API requests
 
 function CreatePage() {
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
   const [title, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
@@ -34,6 +38,7 @@ function CreatePage() {
   const [ingredientInput, setIngredientInput] = useState("");
   const [tagInput, setTagInput] = useState("");
   const toast = useToast(); // For user feedback
+  const navigate = useNavigate();
 
   const handleAddIngredient = () => setIngredients([...ingredients, ""]);
   const handleRemoveIngredient = (index) =>
@@ -51,6 +56,13 @@ function CreatePage() {
     const updated = [...instructions];
     updated[index] = value;
     setInstructions(updated);
+  };
+
+  const resetInvalidField = (field) => {
+    setInvalidFields((prev) => ({
+      ...prev,
+      [field]: false,
+    }));
   };
 
   const handleAddItem = (input, setInput, list, setList) => {
@@ -93,6 +105,21 @@ function CreatePage() {
       return;
     }
 
+    // Retrieve the logged-in user's ID
+    const userId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
+
+    if (!userId) {
+      toast({
+        title: "Error",
+        description: "User not logged in. Please log in to create a recipe.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const newRecipe = {
       name: title,
       image,
@@ -101,13 +128,12 @@ function CreatePage() {
       instructions: instructions.filter((i) => i.trim()),
       servingSize: servings,
       tags: tags.filter((tag) => tag.trim()),
+      user_id: userId, // Include the user ID as the author
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/recipes",
-        newRecipe
-      );
+      await axios.post("http://localhost:5000/api/recipes", newRecipe);
+
       toast({
         title: "Success",
         description: "Recipe saved successfully!",
@@ -115,22 +141,9 @@ function CreatePage() {
         duration: 3000,
         isClosable: true,
       });
-      // Optionally, reset the form
-      setTitle("");
-      setImage("");
-      setDescription("");
-      setIngredients([""]);
-      setInstructions([""]);
-      setServings("");
-      setTags([]);
-      setInvalidFields({
-        title: false,
-        image: false,
-        description: false,
-        ingredients: false,
-        instructions: false,
-        tags: false,
-      });
+
+      // Redirect to the home page
+      navigate("/home");
     } catch (error) {
       console.error("Error saving recipe:", error);
       toast({
@@ -179,22 +192,38 @@ function CreatePage() {
                 placeholder="What's the name of your recipe?"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onFocus={() => resetInvalidField("title")} // Reset the error state on focus
                 border="1px solid"
+                focusBorderColor="orange.400"
                 borderColor={invalidFields.title ? "red.500" : "gray.300"}
               />
+              {invalidFields.title && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Title is required.
+                </Text>
+              )}
             </Box>
+
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Recipe Image URL:
               </Text>
               <Input
+                focusBorderColor="orange.400"
                 placeholder="Enter the URL of your recipe image"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
+                onFocus={() => resetInvalidField("image")} // Reset the error state on focus
                 border="1px solid"
                 borderColor={invalidFields.image ? "red.500" : "gray.300"}
               />
+              {invalidFields.image && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Image URL is required.
+                </Text>
+              )}
             </Box>
+
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Description:
@@ -203,11 +232,19 @@ function CreatePage() {
                 placeholder="What's your recipe about?"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={() => resetInvalidField("description")} // Reset the error state on focus
                 maxLength={400}
                 border="1px solid"
+                focusBorderColor="orange.400"
                 borderColor={invalidFields.description ? "red.500" : "gray.300"}
               />
+              {invalidFields.description && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Description is required.
+                </Text>
+              )}
             </Box>
+
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Ingredients:
@@ -216,6 +253,7 @@ function CreatePage() {
                 placeholder="Add an ingredient and press Enter"
                 value={ingredientInput}
                 onChange={(e) => setIngredientInput(e.target.value)}
+                onFocus={() => resetInvalidField("ingredients")} // Reset the error state on focus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleAddItem(
@@ -226,9 +264,15 @@ function CreatePage() {
                     );
                   }
                 }}
+                focusBorderColor="orange.400"
                 border="1px solid"
                 borderColor={invalidFields.ingredients ? "red.500" : "gray.300"}
               />
+              {invalidFields.ingredients && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Ingredient(s) is required.
+                </Text>
+              )}
               <HStack spacing={2} mt={2} wrap="wrap">
                 {ingredients.map((ingredient, index) => (
                   <Tag
@@ -259,7 +303,9 @@ function CreatePage() {
                     onChange={(e) =>
                       handleInstructionChange(index, e.target.value)
                     }
+                    onFocus={() => resetInvalidField("instructions")} // Reset the error state on focus
                     border="1px solid"
+                    focusBorderColor="orange.400"
                     borderColor={
                       invalidFields.instructions ? "red.500" : "gray.300"
                     }
@@ -272,6 +318,11 @@ function CreatePage() {
                   />
                 </HStack>
               ))}
+              {invalidFields.instructions && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Instruction(s) is required.
+                </Text>
+              )}
               <Button
                 leftIcon={<AddIcon />}
                 size="sm"
@@ -297,6 +348,7 @@ function CreatePage() {
                 } // Update state
                 size="sm"
                 maxW="120px"
+                focusBorderColor="orange.400"
               >
                 <NumberInputField />
                 <NumberInputStepper>
@@ -305,7 +357,7 @@ function CreatePage() {
                 </NumberInputStepper>
               </NumberInput>
             </Box>
-            <Box mt={4}>
+            <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Tags:
               </Text>
@@ -313,14 +365,21 @@ function CreatePage() {
                 placeholder="Add a tag and press Enter"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
+                onFocus={() => resetInvalidField("tags")} // Reset the error state on focus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleAddItem(tagInput, setTagInput, tags, setTags);
                   }
                 }}
                 border="1px solid"
+                focusBorderColor="orange.400"
                 borderColor={invalidFields.tags ? "red.500" : "gray.300"}
               />
+              {invalidFields.tags && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Tag(s) is required.
+                </Text>
+              )}
               <HStack spacing={2} mt={2} wrap="wrap">
                 {tags.map((tag, index) => (
                   <Tag

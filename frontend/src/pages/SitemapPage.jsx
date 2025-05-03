@@ -10,6 +10,7 @@ import {
   HStack,
   Input,
   Button,
+  Image,
 } from "@chakra-ui/react";
 import {
   FaTiktok,
@@ -22,7 +23,8 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function SitemapPage() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
   const handleAccountLink = (path) => (e) => {
     e.preventDefault();
     if (!userId) {
@@ -45,7 +47,12 @@ export default function SitemapPage() {
       links: [
         { label: "Home", to: "/home" },
         { label: "Recipes", to: "/search" },
-        { label: "Notifications", to: "/notifications", isAccount: true, path: "notifications" },
+        {
+          label: "Notifications",
+          to: "/notifications",
+          isAccount: true,
+          path: "notifications",
+        },
         { label: "Share Recipe", to: "/create" },
         { label: "Get Started", to: "/" },
       ],
@@ -63,9 +70,24 @@ export default function SitemapPage() {
       heading: "Account",
       links: [
         { label: "My Profile", to: userId ? `/profile/${userId}` : "/login" },
-        { label: "Settings", to: "/settings", isAccount: true, path: "settings" },
-        { label: "Advanced Settings", to: "/advanced-settings", isAccount: true, path: "advanced-settings" },
-        { label: "Notification Settings", to: "/notification-settings", isAccount: true, path: "notification-settings" },
+        {
+          label: "Settings",
+          to: "/settings",
+          isAccount: true,
+          path: "settings",
+        },
+        {
+          label: "Advanced Settings",
+          to: "/advanced-settings",
+          isAccount: true,
+          path: "advanced-settings",
+        },
+        {
+          label: "Notification Settings",
+          to: "/notification-settings",
+          isAccount: true,
+          path: "notification-settings",
+        },
         { label: "Login", to: "/login" },
         { label: "Register", to: "/register" },
       ],
@@ -102,10 +124,11 @@ export default function SitemapPage() {
             {section.links
               .filter((link, idx, arr) => {
                 // Always show Login button in Account section
-                if (section.heading === "Account" && link.label === "Login") return true;
-                return arr.findIndex(l => l.to === link.to) === idx;
+                if (section.heading === "Account" && link.label === "Login")
+                  return true;
+                return arr.findIndex((l) => l.to === link.to) === idx;
               })
-              .map((link) => (
+              .map((link) =>
                 link.isAccount ? (
                   <a
                     key={link.label}
@@ -115,11 +138,13 @@ export default function SitemapPage() {
                       color: "#222",
                       textDecoration: "none",
                       transition: "color 0.2s",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     onClick={handleAccountLink(link.path)}
-                    onMouseOver={e => (e.currentTarget.style.color = "orange")}
-                    onMouseOut={e => (e.currentTarget.style.color = "#222")}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.color = "orange")
+                    }
+                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
                   >
                     {link.label}
                   </a>
@@ -132,11 +157,13 @@ export default function SitemapPage() {
                       color: "#222",
                       textDecoration: "none",
                       transition: "color 0.2s",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     onClick={handleShareRecipe}
-                    onMouseOver={e => (e.currentTarget.style.color = "orange")}
-                    onMouseOut={e => (e.currentTarget.style.color = "#222")}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.color = "orange")
+                    }
+                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
                   >
                     {link.label}
                   </a>
@@ -150,13 +177,15 @@ export default function SitemapPage() {
                       textDecoration: "none",
                       transition: "color 0.2s",
                     }}
-                    onMouseOver={e => (e.currentTarget.style.color = "orange")}
-                    onMouseOut={e => (e.currentTarget.style.color = "#222")}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.color = "orange")
+                    }
+                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
                   >
                     {link.label}
                   </RouterLink>
                 )
-              ))}
+              )}
           </VStack>
         ))}
       </Flex>
@@ -169,15 +198,24 @@ export default function SitemapPage() {
         gap={4}
       >
         <VStack align="start" spacing={4} maxW="300px">
-          <Text fontSize="2xl" fontWeight="bold">
-            Insane
-            <Text as="span" color="orange.500">
-              Recipe
+          <Flex alignItems="center" direction="row" gap={2}>
+            <Image
+              src="/images/bitebook.png" // Path to your logo image
+              alt="BiteBook Logo"
+              boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
+              objectFit="contain" // Ensure the image fits within the box
+            />
+            <Text fontSize="2xl" fontWeight="bold">
+              Bite
+              <Text as="span" color="orange.500">
+                Book
+              </Text>
             </Text>
-          </Text>
+          </Flex>
           <Text fontSize="sm" color="black.400">
-            Discover thousands of delicious recipes, share your own creations, and
-            explore a world of culinary inspiration. Join our community today!
+            Discover thousands of delicious recipes, share your own creations,
+            and explore a world of culinary inspiration. Join our community
+            today!
           </Text>
         </VStack>
 

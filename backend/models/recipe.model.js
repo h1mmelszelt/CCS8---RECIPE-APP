@@ -35,7 +35,7 @@ const recipeSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId, // Reference to the User collection
       ref: "User", // The name of the User model
-      required: false, // Assumes every recipe must have an author
+      required: true, // Assumes every recipe must have an author
     },
   },
   {

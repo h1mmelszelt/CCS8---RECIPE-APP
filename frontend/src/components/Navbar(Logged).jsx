@@ -17,6 +17,8 @@ import {
   HStack,
   Avatar,
   Divider,
+  Image,
+  Tooltip,
   Link as ChakraLink,
   useBreakpointValue,
   useDisclosure,
@@ -129,8 +131,8 @@ function Navbar() {
       {/* Navbar for larger screens */}
       <Box
         display={{ base: "none", md: "block" }}
-        px={{ base: 4, md: 6 }}
-        py={4}
+        px={{ base: 2, md: 4 }} // Reduce horizontal padding
+        py={2} // Reduce vertical padding
         boxShadow="md"
         position="sticky"
         top="0"
@@ -146,16 +148,24 @@ function Navbar() {
         >
           {/* Logo */}
           <Link to="/home">
-            <Flex alignItems="center">
-              <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
-                <Box as="span" color="black">
-                  Insane
+            <Tooltip label="Go to BiteBook Home page">
+              <Flex alignItems="center">
+                <Image
+                  src="/images/bitebook.png" // Path to your logo image
+                  alt="BiteBook Logo"
+                  boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
+                  objectFit="contain" // Ensure the image fits within the box
+                />
+                <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
+                  <Box as="span" color="black">
+                    Bite
+                  </Box>
+                  <Box as="span" color="#FD660B">
+                    Book
+                  </Box>
                 </Box>
-                <Box as="span" color="#FD660B">
-                  Recipe
-                </Box>
-              </Box>
-            </Flex>
+              </Flex>
+            </Tooltip>
           </Link>
 
           {/* Action Icons */}
@@ -164,11 +174,13 @@ function Navbar() {
             {/* Search Bar */}
             <InputGroup maxW="400px" display={{ base: "none", md: "flex" }}>
               <InputRightElement cursor="pointer">
-                <SearchIcon
-                  color="#FD660B"
-                  boxSize={5}
-                  onClick={() => handleSearch(searchQuery)}
-                />
+                <Tooltip label="Search recipes">
+                  <SearchIcon
+                    color="#FD660B"
+                    boxSize={5}
+                    onClick={() => handleSearch(searchQuery)}
+                  />
+                </Tooltip>
               </InputRightElement>
               <Input
                 type="text"
@@ -182,37 +194,42 @@ function Navbar() {
                     handleSearch(e.target.value);
                   }
                 }}
+                focusBorderColor="orange.400"
               />
             </InputGroup>
             {/* Create Icon */}
             <Link to="/create">
-              <IconButton
-                icon={<AddIcon boxSize={4} />}
-                aria-label="Create"
-                bg="white"
-                color="#FD660B"
-                border="2px solid"
-                borderColor="#FD660B"
-                _hover={{ bg: "#FFF1E8" }}
-                size="sm"
-              />
+              <Tooltip label="Create a new recipe" aria-label="Create tooltip">
+                <IconButton
+                  icon={<AddIcon boxSize={4} />}
+                  aria-label="Create"
+                  bg="white"
+                  color="#FD660B"
+                  border="2px solid"
+                  borderColor="#FD660B"
+                  _hover={{ bg: "#FFF1E8" }}
+                  size="sm"
+                />
+              </Tooltip>
             </Link>
             {/* Notifications Icon */}
             <Box position="relative">
-              <IconButton
-                icon={
-                  <BellIcon
-                    boxSize={6}
-                    color={isPopupVisible ? "#FD660B" : "black"}
-                  />
-                } // Change color based on isPopupVisible
-                aria-label="Notifications"
-                variant="ghost"
-                color="#FD660B"
-                _hover={{ bg: "#FFF1E8" }}
-                size="md"
-                onClick={togglePopup} // Use the togglePopup function
-              />
+              <Tooltip label="Notifications">
+                <IconButton
+                  icon={
+                    <BellIcon
+                      boxSize={6}
+                      color={isPopupVisible ? "#FD660B" : "black"}
+                    />
+                  } // Change color based on isPopupVisible
+                  aria-label="Notifications"
+                  variant="ghost"
+                  color="#FD660B"
+                  _hover={{ bg: "#FFF1E8" }}
+                  size="md"
+                  onClick={togglePopup} // Use the togglePopup function
+                />
+              </Tooltip>
               {isPopupVisible && (
                 <Box
                   ref={popupRef} // Attach the ref here
@@ -305,27 +322,31 @@ function Navbar() {
             </Box>
             {/* User Profile Icon */}
             <Link to={userId ? `/profile/${userId}` : "/login"}>
-              <IconButton
-                icon={<FiUser size={20} />}
-                aria-label="User Profile"
-                variant="ghost"
-                color="black"
-                _hover={{ bg: "#FFF1E8" }}
-                size="sm"
-                borderRadius="full"
-                border="2px solid"
-                borderColor="black"
-              />
+              <Tooltip label="Profile">
+                <IconButton
+                  icon={<FiUser size={20} />}
+                  aria-label="User Profile"
+                  variant="ghost"
+                  color="black"
+                  _hover={{ bg: "#FFF1E8" }}
+                  size="sm"
+                  borderRadius="full"
+                  border="2px solid"
+                  borderColor="black"
+                />
+              </Tooltip>
             </Link>
             {/* Hamburger Icon for Drawer */} {/* Drawer Trigger */}
-            <IconButton
-              icon={<HamburgerIcon boxSize={8} />}
-              aria-label="Open Menu"
-              onClick={onDrawerOpen}
-              bg="transparent"
-              color="#FD660B"
-              _hover={{ bg: "gray.100" }}
-            />
+            <Tooltip label="Menu">
+              <IconButton
+                icon={<HamburgerIcon boxSize={8} />}
+                aria-label="Open Menu"
+                onClick={onDrawerOpen}
+                bg="transparent"
+                color="#FD660B"
+                _hover={{ bg: "gray.100" }}
+              />
+            </Tooltip>
           </Flex>
         </Flex>
       </Box>
