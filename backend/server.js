@@ -24,7 +24,7 @@ app.use(express.json());
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
-app.use("/api", userRoutes);
+//app.use("/api", userRoutes);
 
 if(process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
