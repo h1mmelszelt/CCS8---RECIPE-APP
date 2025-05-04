@@ -250,7 +250,7 @@ function GetStartedPage() {
                 <Link to="/search">View More</Link>
               </MotionText>
             </Flex>
-            <Box px="5%" py={6}>
+            <Box  px={{ base: "4", md: "8" }} py={6} maxW="1200px" mx="auto">
               {loading ? (
                 <Text textAlign="center" fontSize="18px" color="gray.500">
                   Loading recipes...

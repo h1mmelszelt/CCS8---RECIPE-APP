@@ -47,15 +47,15 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
       boxShadow="md"
       transition="0.4s ease"
       position="relative"
-      width={{ base: "160px",  md: "200px", lg: "250px" }} // Responsive width
-      height={{ base: "150px",  md: "200px", lg: "240px" }} // Responsive height
+      width={{ base: "160px",  md: "200px", lg: "200px" }} // Responsive width
+      height={{ base: "150px",  md: "200px", lg: "200px" }} // Responsive height
     >
       {/* Recipe Image */}
       <Box position="relative">
         <Image
           src={getCompressedImageUrl(recipe.image)}
           alt={recipe.name}
-          height={{ base: "100%", md: "200px"}}
+          height={{ base: "100%", md: "160px", lg: "160px"}} // Responsive height
           width="100%"
           objectFit="cover"
         />
