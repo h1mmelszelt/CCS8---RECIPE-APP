@@ -36,7 +36,9 @@ function HomePage() {
     window.scrollTo(0, 0);
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/recipes");
+        const response = await axios.get(
+          "https://cs-test-z2vm.onrender.com/api/recipes"
+        );
         setRecipes(response.data.data); // Store all recipes
       } catch (error) {
         console.error("Error fetching recipes:", error.message);
@@ -48,7 +50,7 @@ function HomePage() {
     const fetchPopularRecipes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/recipes/popular"
+          "https://cs-test-z2vm.onrender.com/api/recipes/popular"
         );
         // The backend returns an array of objects with _id as the recipe object
         // and averageRating, totalReviews
@@ -93,7 +95,6 @@ function HomePage() {
       minH="100vh"
       color="black"
       pb={{ base: "60px", md: "0" }} // Adjust padding for mobile view
-      overflowY="scroll" // Allow vertical scrolling
       overflowX="hidden" // Disable horizontal movement
     >
       {/* Conditionally render the navbar */}

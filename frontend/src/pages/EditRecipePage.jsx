@@ -50,9 +50,10 @@ function EditRecipePage() {
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/recipes/${recipeId}`
+          `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
         );
         const recipe = data.data.recipe;
+
         setTitle(recipe.name || "");
         setImage(recipe.image || "");
         setDescription(recipe.description || "");
@@ -68,6 +69,18 @@ function EditRecipePage() {
         );
         setServings(recipe.servingSize || "");
         setTags(recipe.tags && recipe.tags.length ? recipe.tags : [""]);
+
+        // Update invalidFields based on fetched data
+        setInvalidFields({
+          title: !recipe.name?.trim(),
+          image: !recipe.image?.trim(),
+          description: !recipe.description?.trim(),
+          ingredients:
+            !recipe.ingredients || recipe.ingredients.some((i) => !i.trim()),
+          instructions:
+            !recipe.instructions || recipe.instructions.some((i) => !i.trim()),
+          tags: !recipe.tags || recipe.tags.some((tag) => !tag.trim()),
+        });
       } catch (error) {
         toast({
           title: "Error",
@@ -90,6 +103,19 @@ function EditRecipePage() {
     const updated = [...ingredients];
     updated[index] = value;
     setIngredients(updated);
+  };
+
+  const resetInvalidField = (field, index = null) => {
+    setInvalidFields((prev) => {
+      console.log("Resetting field:", field, "Index:", index); // Debugging log
+      if (index !== null) {
+        const updatedField = [...prev[field]];
+        updatedField[index] = false; // Reset the specific index
+        return { ...prev, [field]: updatedField };
+      } else {
+        return { ...prev, [field]: false }; // Reset the single field
+      }
+    });
   };
 
   const handleAddInstruction = () => setInstructions([...instructions, ""]);
@@ -143,19 +169,16 @@ function EditRecipePage() {
       title: !title.trim(),
       image: !image.trim(),
       description: !description.trim(),
-      ingredients: ingredients.map((ingredient) => !ingredient.trim()),
-      instructions: instructions.map((instruction) => !instruction.trim()),
-      tags: tags.map((tag) => !tag.trim()),
+      ingredients:
+        ingredients.length === 0 || ingredients.some((i) => !i.trim()),
+      instructions:
+        instructions.length === 0 || instructions.some((i) => !i.trim()),
+      tags: tags.length === 0 || tags.some((tag) => !tag.trim()), // Validate tags
     };
 
-    // Check if there are any invalid fields
-    const hasInvalidFields =
-      newInvalidFields.title ||
-      newInvalidFields.image ||
-      newInvalidFields.description ||
-      newInvalidFields.ingredients.includes(true) ||
-      newInvalidFields.instructions.includes(true) ||
-      newInvalidFields.tags.includes(true);
+    const hasInvalidFields = Object.values(newInvalidFields).some(
+      (field) => field
+    );
 
     setInvalidFields(newInvalidFields);
 
@@ -170,7 +193,7 @@ function EditRecipePage() {
       return;
     }
 
-    // Proceed with saving the recipe if all fields are valid
+    // Proceed with saving the recipe
     const updatedRecipe = {
       name: title,
       image,
@@ -183,7 +206,7 @@ function EditRecipePage() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/recipes/${recipeId}`,
+        `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`,
         updatedRecipe
       );
       toast({
@@ -204,7 +227,6 @@ function EditRecipePage() {
       });
     }
   };
-
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -236,9 +258,16 @@ function EditRecipePage() {
                 placeholder="What's the name of your recipe?"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onFocus={() => resetInvalidField("title")} // Reset the error state on focus
                 border="1px solid"
                 borderColor={invalidFields.title ? "red.500" : "gray.300"}
+                focusBorderColor="orange.400"
               />
+              {invalidFields.title && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Title is required.
+                </Text>
+              )}
             </Box>
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
@@ -248,10 +277,18 @@ function EditRecipePage() {
                 placeholder="Enter the URL of your recipe image"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
+                onFocus={() => resetInvalidField("image")}
                 border="1px solid"
                 borderColor={invalidFields.image ? "red.500" : "gray.300"}
+                focusBorderColor="orange.400"
               />
+              {invalidFields.image && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Image URL is required.
+                </Text>
+              )}
             </Box>
+
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Description:
@@ -260,11 +297,19 @@ function EditRecipePage() {
                 placeholder="What's your recipe about?"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={() => resetInvalidField("description")}
                 maxLength={400}
                 border="1px solid"
                 borderColor={invalidFields.description ? "red.500" : "gray.300"}
+                focusBorderColor="orange.400"
               />
+              {invalidFields.description && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Description is required.
+                </Text>
+              )}
             </Box>
+            {/* Ingredients Section */}
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Ingredients:
@@ -272,7 +317,9 @@ function EditRecipePage() {
               <Input
                 placeholder="Add an ingredient and press Enter"
                 value={ingredientInput}
+                focusBorderColor="orange.400"
                 onChange={(e) => setIngredientInput(e.target.value)}
+                onFocus={() => resetInvalidField("ingredients")}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleAddItem(
@@ -284,8 +331,14 @@ function EditRecipePage() {
                   }
                 }}
                 border="1px solid"
-                borderColor="gray.300"
+                borderColor={invalidFields.ingredients ? "red.500" : "gray.300"}
               />
+              {invalidFields.ingredients && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Ingredient(s) is required.
+                </Text>
+              )}
+
               <HStack spacing={2} mt={2} wrap="wrap">
                 {ingredients.map((ingredient, index) => (
                   <Tag
@@ -303,7 +356,7 @@ function EditRecipePage() {
                 ))}
               </HStack>
             </Box>
-
+            {/* Instructions Section */}
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Instructions:
@@ -316,10 +369,12 @@ function EditRecipePage() {
                     onChange={(e) =>
                       handleInstructionChange(index, e.target.value)
                     }
+                    onFocus={() => resetInvalidField("instructions", index)} // Reset the error state for this step
                     border="1px solid"
                     borderColor={
                       invalidFields.instructions[index] ? "red.500" : "gray.300"
                     }
+                    focusBorderColor="orange.400"
                   />
                   <IconButton
                     icon={<DeleteIcon />}
@@ -329,6 +384,16 @@ function EditRecipePage() {
                   />
                 </HStack>
               ))}
+              {instructions.length === 0 && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Instruction(s) is required.
+                </Text>
+              )}
+              {instructions.some((instruction) => !instruction.trim()) && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Please fill in all blank instruction fields.
+                </Text>
+              )}
               <Button
                 leftIcon={<AddIcon />}
                 size="sm"
@@ -342,6 +407,7 @@ function EditRecipePage() {
                 Add Steps
               </Button>
             </Box>
+            {/* Servings Section */}
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
                 Servings:
@@ -354,6 +420,7 @@ function EditRecipePage() {
                 } // Update state
                 size="sm"
                 maxW="120px"
+                focusBorderColor="orange.400"
               >
                 <NumberInputField />
                 <NumberInputStepper>
@@ -371,14 +438,21 @@ function EditRecipePage() {
                 placeholder="Add a tag and press Enter"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
+                onFocus={() => resetInvalidField("tags")}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleAddItem(tagInput, setTagInput, tags, setTags);
                   }
                 }}
                 border="1px solid"
-                borderColor="gray.300"
+                borderColor={invalidFields.tags ? "red.500" : "gray.300"}
+                focusBorderColor="orange.400"
               />
+              {invalidFields.tags && (
+                <Text fontSize="sm" color="red.500" mt={1}>
+                  Tag(s) is required.
+                </Text>
+              )}
               <HStack spacing={2} mt={2} wrap="wrap">
                 {tags.map((tag, index) => (
                   <Tag
@@ -396,6 +470,7 @@ function EditRecipePage() {
                 ))}
               </HStack>
             </Box>
+
             <Flex justify="flex-end" gap={2}>
               <Button
                 variant="outline"

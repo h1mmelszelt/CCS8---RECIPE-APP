@@ -71,10 +71,13 @@ const RecipePage = () => {
   // Save edited review
   const handleSaveEdit = async (reviewId) => {
     try {
-      await axios.put(`http://localhost:5000/api/reviews/${reviewId}`, {
-        rating: editReviewRating,
-        text: editReviewText,
-      });
+      await axios.put(
+        `https://cs-test-z2vm.onrender.com/api/reviews/${reviewId}`,
+        {
+          rating: editReviewRating,
+          text: editReviewText,
+        }
+      );
       setReviews((prev) =>
         prev.map((r) =>
           r._id === reviewId
@@ -105,7 +108,7 @@ const RecipePage = () => {
     const fetchTrendingRecipes = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/recipes/popular"
+          "https://cs-test-z2vm.onrender.com/api/recipes/popular"
         );
         // Map aggregation result to extract recipe details from _id
         const popularRecipes = Array.isArray(data.data)
@@ -128,13 +131,13 @@ const RecipePage = () => {
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/recipes/${recipeId}`
+          `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
         );
         setRecipe(data.data.recipe); // Set recipe details
         setReviews(data.data.reviews); // Set reviews
 
         const relatedResponse = await axios.get(
-          `http://localhost:5000/api/recipes/related/${recipeId}`
+          `https://cs-test-z2vm.onrender.com/api/recipes/related/${recipeId}`
         );
         setRelatedRecipes(relatedResponse.data.data);
       } catch (error) {
@@ -154,7 +157,7 @@ const RecipePage = () => {
       if (!userId) return;
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/users/bookmarks/${userId}`
+          `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}`
         );
         if (res.data && res.data.data) {
           setIsBookmarked(res.data.data.some((b) => b._id === recipeId));
@@ -196,7 +199,7 @@ const RecipePage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/bookmarks",
+        "https://cs-test-z2vm.onrender.com/api/users/bookmarks",
         {
           userId,
           recipeId,
@@ -236,9 +239,13 @@ const RecipePage = () => {
 
   // Handler for removing bookmark
   const handleRemoveBookmark = async () => {
-    const confirmed = window.confirm("Are you sure you want to remove this recipe from your bookmarks?");
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this recipe from your bookmarks?"
+    );
     if (!confirmed) return;
-    const userId = String(localStorage.getItem("userId") || sessionStorage.getItem("userId"));
+    const userId = String(
+      localStorage.getItem("userId") || sessionStorage.getItem("userId")
+    );
     const recipeIdStr = String(recipeId);
     if (!userId) {
       toast({
@@ -252,7 +259,9 @@ const RecipePage = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/api/users/bookmarks/${userId}/${recipeIdStr}`);
+      await axios.delete(
+        `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}/${recipeIdStr}`
+      );
       toast({
         title: "Bookmark Removed!",
         description: `${recipe.name} has been removed from your bookmarks.`,
@@ -361,7 +370,7 @@ const RecipePage = () => {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/reviews/${recipeId}`,
+        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`,
         commentData
       );
 
@@ -376,7 +385,7 @@ const RecipePage = () => {
 
       // Fetch updated comments
       const { data } = await axios.get(
-        `http://localhost:5000/api/reviews/${recipeId}`
+        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`
       );
       setReviews(data); // Update the reviews state
       setCommentText(""); // Clear the comment input
@@ -411,10 +420,14 @@ const RecipePage = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this review? This action cannot be undone.");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this review? This action cannot be undone."
+    );
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/reviews/${commentId}`);
+      await axios.delete(
+        `https://cs-test-z2vm.onrender.com/api/reviews/${commentId}`
+      );
       toast({
         title: "Comment Deleted",
         description: "Your comment has been successfully deleted.",
@@ -424,7 +437,7 @@ const RecipePage = () => {
       });
       // Refresh the comments list
       const { data } = await axios.get(
-        `http://localhost:5000/api/reviews/${recipeId}`
+        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`
       );
       setReviews(data);
     } catch (error) {
@@ -648,9 +661,15 @@ const RecipePage = () => {
                       colorScheme="red"
                       variant="outline"
                       onClick={async () => {
-                        if (window.confirm("Are you sure you want to delete this recipe? This action cannot be undone.")) {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this recipe? This action cannot be undone."
+                          )
+                        ) {
                           try {
-                            await axios.delete(`http://localhost:5000/api/recipes/${recipe._id}`);
+                            await axios.delete(
+                              `https://cs-test-z2vm.onrender.com/api/recipes/${recipe._id}`
+                            );
                             toast({
                               title: "Recipe deleted",
                               description: "Your recipe has been deleted.",
@@ -662,7 +681,8 @@ const RecipePage = () => {
                           } catch (error) {
                             toast({
                               title: "Error",
-                              description: "Failed to delete the recipe. Please try again.",
+                              description:
+                                "Failed to delete the recipe. Please try again.",
                               status: "error",
                               duration: 3000,
                               isClosable: true,
@@ -869,7 +889,9 @@ const RecipePage = () => {
                                       </MenuItem>
                                       <MenuItem
                                         icon={<DeleteIcon />} // Delete icon
-                                        onClick={() => handleDeleteComment(review._id)}
+                                        onClick={() =>
+                                          handleDeleteComment(review._id)
+                                        }
                                         color="red.500"
                                       >
                                         Delete
@@ -878,7 +900,9 @@ const RecipePage = () => {
                                   )}
                                   <MenuItem
                                     icon={<FiShare2 />} // Share icon
-                                    onClick={() => handleShareComment(review._id)}
+                                    onClick={() =>
+                                      handleShareComment(review._id)
+                                    }
                                   >
                                     Share
                                   </MenuItem>
@@ -887,13 +911,19 @@ const RecipePage = () => {
                             </HStack>
                             {editingReviewId === review._id ? (
                               <Box mt={2} mb={2}>
-                                <Text fontSize="sm" mb={1} color="gray.600">Edit your review:</Text>
+                                <Text fontSize="sm" mb={1} color="gray.600">
+                                  Edit your review:
+                                </Text>
                                 <HStack spacing={1} mb={2}>
                                   {[...Array(5)].map((_, i) => (
                                     <FaStar
                                       key={i}
                                       size={20}
-                                      color={i < editReviewRating ? "#FD660B" : "#D3D3D3"}
+                                      color={
+                                        i < editReviewRating
+                                          ? "#FD660B"
+                                          : "#D3D3D3"
+                                      }
                                       style={{ cursor: "pointer" }}
                                       onClick={() => setEditReviewRating(i + 1)}
                                     />
@@ -901,15 +931,25 @@ const RecipePage = () => {
                                 </HStack>
                                 <Input
                                   value={editReviewText}
-                                  onChange={e => setEditReviewText(e.target.value)}
+                                  onChange={(e) =>
+                                    setEditReviewText(e.target.value)
+                                  }
                                   placeholder="Edit your review..."
                                   mb={2}
                                 />
                                 <HStack>
-                                  <Button size="xs" colorScheme="green" onClick={() => handleSaveEdit(review._id)}>
+                                  <Button
+                                    size="xs"
+                                    colorScheme="green"
+                                    onClick={() => handleSaveEdit(review._id)}
+                                  >
                                     Save
                                   </Button>
-                                  <Button size="xs" variant="outline" onClick={handleCancelEdit}>
+                                  <Button
+                                    size="xs"
+                                    variant="outline"
+                                    onClick={handleCancelEdit}
+                                  >
                                     Cancel
                                   </Button>
                                 </HStack>

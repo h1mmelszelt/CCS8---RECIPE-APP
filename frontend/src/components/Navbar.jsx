@@ -15,43 +15,44 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
+  Image,
   Switch,
-  Select, 
+  Tooltip,
+  Select,
 } from "@chakra-ui/react";
-import { SearchIcon, HamburgerIcon, BellIcon, AddIcon } from "@chakra-ui/icons";
+import {
+  SearchIcon,
+  HamburgerIcon,
+  BellIcon,
+  AddIcon,
+  ChevronDownIcon,
+} from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useNavigate
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Adjust the path if necessary
 
 function Navbar({ transparent }) {
+  localStorage.removeItem("token"); // Remove token from localStorage
+  localStorage.removeItem("userId"); // Remove userId from localStorage
+  sessionStorage.removeItem("token"); // Remove token from sessionStorage
+  sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
 
-    localStorage.removeItem("token"); // Remove token from localStorage
-    localStorage.removeItem("userId"); // Remove userId from localStorage
-    sessionStorage.removeItem("token"); // Remove token from sessionStorage
-    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
-    
-    const {
-      isOpen: isDrawerOpen,
-      onOpen: onDrawerOpen,
-      onClose: onDrawerClose,
-    } = useDisclosure();
-    const {
-      isOpen: isSettingsDrawerOpen,
-      onOpen: onSettingsDrawerOpen,
-      onClose: onSettingsDrawerClose,
-    } = useDisclosure();
-    const {
-      isOpen: isAlertOpen,
-      onOpen: onAlertOpen,
-      onClose: onAlertClose,
-    } = useDisclosure();
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isSettingsDrawerOpen,
+    onOpen: onSettingsDrawerOpen,
+    onClose: onSettingsDrawerClose,
+  } = useDisclosure();
+  const {
+    isOpen: isAlertOpen,
+    onOpen: onAlertOpen,
+    onClose: onAlertClose,
+  } = useDisclosure();
 
   const cancelRef = useRef();
   const btnRef = useRef();
@@ -73,7 +74,7 @@ function Navbar({ transparent }) {
 
   const handleProtectedRoute = (path) => {
     if (!isAuthenticated && path !== "/home") {
-      navigate("/login"); // Redirect to the login page for protected routes
+      navigate("/sign-in-required"); // Redirect to the login page for protected routes
     } else {
       navigate(path); // Navigate to the intended path
     }
@@ -81,8 +82,8 @@ function Navbar({ transparent }) {
 
   return (
     <Box
-      px={{ base: 4, md: 6 }}
-      py={4}
+      px={{ base: 2, md: 4 }} // Reduce horizontal padding
+      py={2} // Reduce vertical padding
       boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
       position="sticky"
       top="0"
@@ -96,44 +97,57 @@ function Navbar({ transparent }) {
         flexDirection={{ base: "column", md: "row" }} // Stack items on smaller screens
       >
         {/* Logo */}
-        <Link to="/">
-          <Text fontSize={{ base: "22", sm: "28" }} fontWeight="bold">
-            <Text as="span" color="black">
-              Insane
-            </Text>
-            <Text as="span" color="#FD660B">
-              Recipe
-            </Text>
-          </Text>
-        </Link>
+        <Tooltip label="Go to BiteBook Home page">
+          Test Run v1.0.1
+          <Link to="/home">
+            <Flex alignItems="center">
+              <Image
+                src="/images/bitebook.png" // Path to your logo image
+                alt="BiteBook Logo"
+                boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
+                objectFit="contain" // Ensure the image fits within the box
+              />
+              <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
+                <Box as="span" color="black">
+                  Bite
+                </Box>
+                <Box as="span" color="#FD660B">
+                  Book
+                </Box>
+              </Box>
+            </Flex>
+          </Link>
+        </Tooltip>
 
         {/* Search Bar */}
-        <InputGroup
-          mt={{ base: 4, md: 0 }} // Add margin on smaller screens
-          maxW={{ base: "100%", md: "500px" }} // Full width on smaller screens
-          display={{ base: "none", md: "flex" }} // Hide on smaller screens
-          position={{ base: "static", md: "absolute" }} // Adjust position for smaller screens
-          right={{ md: "300px" }}
-        >
-          <InputRightElement
-            pointerEvents="auto" // Make the icon clickable
-            onClick={handleSearch} // Trigger search on click
-            cursor="pointer"
+        <Tooltip label="Search recipes">
+          <InputGroup
+            mt={{ base: 4, md: 0 }} // Add margin on smaller screens
+            maxW={{ base: "100%", md: "500px" }} // Full width on smaller screens
+            display={{ base: "none", md: "flex" }} // Hide on smaller screens
+            position={{ base: "static", md: "absolute" }} // Adjust position for smaller screens
+            right={{ md: "300px" }}
           >
-            <SearchIcon color="#FD660B" boxSize={6} />
-          </InputRightElement>
-          <Input
-            type="text"
-            placeholder="Search recipes..."
-            borderRadius="15px"
-            bg="#E6E6E6"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch(); // Trigger search on Enter key
-            }}
-          />
-        </InputGroup>
+            <InputRightElement
+              pointerEvents="auto" // Make the icon clickable
+              onClick={handleSearch} // Trigger search on click
+              cursor="pointer"
+            >
+              <SearchIcon color="#FD660B" boxSize={6} />
+            </InputRightElement>
+            <Input
+              type="text"
+              placeholder="Search recipes..."
+              borderRadius="15px"
+              bg="#E6E6E6"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch(); // Trigger search on Enter key
+              }}
+            />
+          </InputGroup>
+        </Tooltip>
 
         {/* Buttons */}
         <Flex
@@ -159,55 +173,109 @@ function Navbar({ transparent }) {
         </Flex>
 
         {/* Drawer Trigger */}
-        <IconButton
-          ref={btnRef}
-          icon={<HamburgerIcon boxSize={8}/>}
-          aria-label="Open Menu"
-          onClick={onDrawerOpen}
-          display={{ base: "none", md: "flex" }}
-          bg="transparent"
-          color="#FD660B"
-          _hover={{ bg: "gray.100" }}
-          mr="4"
-        />
+        <Tooltip label="Open Menu">
+          <IconButton
+            ref={btnRef}
+            icon={<HamburgerIcon boxSize={8} />}
+            aria-label="Open Menu"
+            onClick={onDrawerOpen}
+            display={{ base: "none", md: "flex" }}
+            bg="transparent"
+            color="#FD660B"
+            _hover={{ bg: "gray.100" }}
+            mr="4"
+          />
+        </Tooltip>
       </Flex>
 
       {/* Drawer */}
-      <Drawer
-        isOpen={isDrawerOpen}
-        placement="right"
-        onClose={onDrawerClose}
-        finalFocusRef={btnRef}
-      >
+      <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Menu</DrawerHeader>
-
           <DrawerBody>
             <Flex direction="column" gap={4}>
-              <Link to="/home" onClick={onDrawerClose}>
-                Home
+              <Link
+                to="/home"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Home
+                </Box>
               </Link>
-              <Link to="/about-us" onClick={onDrawerClose}>
-                About Us
+              <Link
+                to="/about-us"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  About Us
+                </Box>
               </Link>
-              <Link to="/contact-us" onClick={onDrawerClose}>
-                Contact Us
+              <Link
+                to="/contact-us"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Contact Us
+                </Box>
               </Link>
-              <Link to="/site-map" onClick={onDrawerClose}>
-                Site Map
+              <Link
+                to="/site-map"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Site Map
+                </Box>
               </Link>
-              <Link to="/faq" onClick={onDrawerClose}>
-                FAQ
+              <Link
+                to="/faq"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  FAQ
+                </Box>
               </Link>
               <Text
-    onClick={onSettingsDrawerOpen} // Open the settings drawer on click
-    cursor="pointer" // Make the text look clickable
-    _hover={{ textDecoration: "underline" }} // Optional: Add hover effect
-  >
-    Settings
-  </Text>
+                onClick={onSettingsDrawerOpen} // Open the settings drawer on click
+                cursor="pointer" // Make the text look clickable
+                _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                px={4}
+                py={2}
+                borderRadius="sm"
+              >
+                Settings
+              </Text>
             </Flex>
           </DrawerBody>
         </DrawerContent>
@@ -225,48 +293,24 @@ function Navbar({ transparent }) {
           <DrawerHeader>Settings</DrawerHeader>
 
           <DrawerBody>
-          <Flex direction="column" gap={6}>
-        {/* Theme Dark Mode */}
-        <Flex justify="space-between" align="center">
-          <Text>Theme Dark Mode</Text>
-          <Switch
-            colorScheme="teal"
-            size="lg"
-            onChange={(e) => {
-              // Handle dark mode toggle logic here
-              const isDarkMode = e.target.checked;
-              console.log("Dark Mode:", isDarkMode);
-            }}
-          />
-        </Flex>
-      </Flex>
+            <Flex direction="column" gap={6}>
+              {/* Theme Dark Mode */}
+              <Flex justify="space-between" align="center">
+                <Text>Theme Dark Mode</Text>
+                <Switch
+                  colorScheme="teal"
+                  size="lg"
+                  onChange={(e) => {
+                    // Handle dark mode toggle logic here
+                    const isDarkMode = e.target.checked;
+                    console.log("Dark Mode:", isDarkMode);
+                  }}
+                />
+              </Flex>
+            </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-
-
-      {/* AlertDialog for "Please Sign In" */}
-      <AlertDialog
-        isOpen={isAlertOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onAlertClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Please Sign In
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              You need to sign in to access your profile.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onAlertClose}>
-                Close
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
 
       {/* Navbar for smaller screens */}
       <Box
@@ -290,7 +334,7 @@ function Navbar({ transparent }) {
               icon={<FiHome size={30} />}
               aria-label="Home"
               variant="ghost"
-              color={location.pathname === "/home" ? "#FD660B" : "black"} // Highlight if on /home
+              color={location.pathname === "/home" ? "#FD660B" : "black"}
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
@@ -311,7 +355,7 @@ function Navbar({ transparent }) {
               icon={<SearchIcon boxSize={6} />}
               aria-label="Search"
               variant="ghost"
-              color={location.pathname === "/search" ? "#FD660B" : "black"} // Highlight if on /explore
+              color={location.pathname === "/search" ? "#FD660B" : "black"}
               _hover={{ bg: "#FFF1E8" }}
               size="sm"
             />
@@ -326,90 +370,78 @@ function Navbar({ transparent }) {
         </Link>
 
         {/* Create Icon */}
-        <Link to="/create">
-          <Flex
-            direction="column"
-            align="center"
-            onClick={() => handleProtectedRoute("/create")}
+        <Flex
+          direction="column"
+          align="center"
+          onClick={() => handleProtectedRoute("/create")}
+        >
+          <IconButton
+            icon={<AddIcon boxSize={4} />}
+            aria-label="Create"
+            bg="white"
+            color={location.pathname === "/create" ? "#FD660B" : "black"}
+            border="2px solid"
+            borderColor={location.pathname === "/create" ? "#FD660B" : "black"}
+            _hover={{ bg: "#FFF1E8" }}
+            size="sm"
+          />
+          <Box
+            fontSize="sm"
+            color={location.pathname === "/create" ? "#FD660B" : "black"}
+            mt={1}
           >
-            <IconButton
-              icon={<AddIcon boxSize={4} />}
-              aria-label="Create"
-              bg="white"
-              color={location.pathname === "/create" ? "#FD660B" : "black"} // Highlight if on /create
-              border="2px solid"
-              borderColor={
-                location.pathname === "/create" ? "#FD660B" : "black"
-              }
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname === "/create" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Create
-            </Box>
-          </Flex>
-        </Link>
+            Create
+          </Box>
+        </Flex>
 
         {/* Notification Icon */}
-        <Link to="/notifications">
-          <Flex
-            direction="column"
-            align="center"
-            onClick={() => handleProtectedRoute("/notifications")}
+        <Flex
+          direction="column"
+          align="center"
+          onClick={() => handleProtectedRoute("/notifications")}
+        >
+          <IconButton
+            icon={<BellIcon boxSize={8} />}
+            aria-label="Notifications"
+            variant="ghost"
+            color={location.pathname === "/notifications" ? "#FD660B" : "black"}
+            _hover={{ bg: "#FFF1E8" }}
+            size="sm"
+          />
+          <Box
+            fontSize="sm"
+            color={location.pathname === "/notifications" ? "#FD660B" : "black"}
+            mt={1}
           >
-            <IconButton
-              icon={<BellIcon boxSize={8} />}
-              aria-label="Notifications"
-              variant="ghost"
-              color={
-                location.pathname === "/notifications" ? "#FD660B" : "black"
-              } // Highlight if on /notifications
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-            />
-            <Box
-              fontSize="sm"
-              color={
-                location.pathname === "/notifications" ? "#FD660B" : "black"
-              }
-              mt={1}
-            >
-              Updates
-            </Box>
-          </Flex>
-        </Link>
+            Updates
+          </Box>
+        </Flex>
 
         {/* User Icon */}
-        <Link to={userId ? `/profile/${userId}` : "/login"}>
-          <Flex
-            direction="column"
-            align="center"
-            onClick={() => handleProtectedRoute(userId ? `/profile/${userId}` : "/login")}
+        <Flex
+          direction="column"
+          align="center"
+          onClick={() => handleProtectedRoute("/me")}
+        >
+          <IconButton
+            icon={<FiUser size={20} />}
+            aria-label="User Profile"
+            variant="ghost"
+            color={location.pathname === "/me" ? "#FD660B" : "black"}
+            _hover={{ bg: "#FFF1E8" }}
+            size="sm"
+            borderRadius="full"
+            border="2px solid"
+            borderColor={location.pathname === "/me" ? "#FD660B" : "black"}
+          />
+          <Box
+            fontSize="sm"
+            color={location.pathname === "/me" ? "#FD660B" : "black"}
+            mt={1}
           >
-            <IconButton
-              icon={<FiUser size={20} />}
-              aria-label="User Profile"
-              variant="ghost"
-              color={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
-              _hover={{ bg: "#FFF1E8" }}
-              size="sm"
-              borderRadius="full"
-              border="2px solid"
-              borderColor={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
-            />
-            <Box
-              fontSize="sm"
-              color={location.pathname.startsWith("/profile") || location.pathname === "/me" ? "#FD660B" : "black"}
-              mt={1}
-            >
-              Me
-            </Box>
-          </Flex>
-        </Link>
+            Me
+          </Box>
+        </Flex>
       </Box>
     </Box>
   );

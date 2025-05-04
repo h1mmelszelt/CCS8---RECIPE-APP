@@ -1,25 +1,61 @@
-import React from "react";
-import {
-  Box,
-  VStack,
-  Text,
-  Avatar,
-  Flex,
-  Icon,
-  Divider,
-  Button,
-} from "@chakra-ui/react";
+import React, { useEffect, useState, useContext } from "react";
+import { Box, VStack, Text, Avatar, Flex, Icon } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
-import { FaUserCog, FaSignOutAlt, FaStar, FaUser } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaUserCog, FaSignOutAlt, FaUser } from "react-icons/fa";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 function MePage() {
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (MePage) - All profile/settings links must be valid
   const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
   
+  const { setIsAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState(null); // Declare userId using useState
+  const [userData, setUserData] = useState({});
+
+  const handleLogout = () => {
+    console.log("Logout triggered");
+    localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("userId"); // Remove userId from localStorage
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
+    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
+    setIsAuthenticated(false); // Update authentication state
+    navigate("/login"); // Redirect to login page
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Retrieve the userId from localStorage or sessionStorage
+    const storedUserId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    setUserId(storedUserId); // Set userId state
+
+    // Fetch user data if userId exists
+    if (storedUserId) {
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(
+            `https://cs-test-z2vm.onrender.com/api/users/${storedUserId}`
+          );
+          setUserData({
+            name: response.data.name,
+            username: `@${response.data.username}`,
+            avatar: response.data.avatar,
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, []);
+
   return (
     <Box bg="gray.100" minH="100vh" color="black">
       {/* Page Content */}
@@ -27,7 +63,6 @@ function MePage() {
         {/* User Info Section */}
         <Flex
           direction={{ base: "column", md: "row" }}
-          align="center"
           justify="space-between"
           bg="gray.50"
           p={6}
@@ -38,16 +73,16 @@ function MePage() {
           <Flex align="center" mb={{ base: 4, md: 0 }}>
             <Avatar
               size="xl"
-              name="User Name"
-              src="/images/default-avatar.jpg" // Replace with actual avatar URL
+              name={userData.name}
+              src={userData.avatar} // Use the fetched avatar
               mr={4}
             />
             <Box>
               <Text fontSize="2xl" fontWeight="bold" color="black">
-                User Name
+                {userData.name} {/* Display the fetched name */}
               </Text>
               <Text fontSize="sm" color="gray.600">
-                @username
+                {userData.username} {/* Display the fetched username */}
               </Text>
             </Box>
           </Flex>
@@ -62,7 +97,7 @@ function MePage() {
             {/* Profile */}
             <Flex
               as={Link}
-              to={isValidPath(userId ? `/profile/${userId}` : "/login") ? (userId ? `/profile/${userId}` : "/login") : undefined}
+              to={userId ? `/profile/${userId}` : "/sign-in-required"} // Redirect to profile or login
               align="center"
               justify="space-between"
               p={4}
@@ -82,7 +117,7 @@ function MePage() {
             {/* Settings */}
             <Flex
               as={Link}
-              to={isValidPath(userId ? `/settings/${userId}` : "/login") ? (userId ? `/settings/${userId}` : "/login") : undefined}
+              to={userId ? `/settings/${userId}` : "/sign-in-required"}
               align="center"
               justify="space-between"
               p={4}
@@ -101,8 +136,9 @@ function MePage() {
 
             {/* Logout */}
             <Flex
-              as={Link}
-              to="/logout"
+              as="button"
+              onClick={handleLogout} // Use the moved handleLogout function
+              colorScheme="red"
               align="center"
               justify="space-between"
               p={4}

@@ -22,7 +22,8 @@ export const createRecipe = async (req, res) => {
     !recipe.ingredients ||
     !recipe.instructions ||
     !recipe.image ||
-    !recipe.tags
+    !recipe.tags ||
+    !recipe.user_id
   ) {
     return res
       .status(400)

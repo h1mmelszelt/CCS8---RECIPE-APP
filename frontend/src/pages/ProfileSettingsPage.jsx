@@ -42,7 +42,7 @@ const ProfileSettingsPage = () => {
       try {
         if (userId) {
           const { data } = await axios.get(
-            `http://localhost:5000/api/users/${userId}`
+            `https://cs-test-z2vm.onrender.com/api/users/${userId}`
           );
           console.log("Fetched User Data:", data); // Debugging: Log the fetched data
           setUserData({
@@ -71,7 +71,10 @@ const ProfileSettingsPage = () => {
   const handleSaveChanges = async () => {
     try {
       if (userId) {
-        await axios.put(`http://localhost:5000/api/users/${userId}`, userData);
+        await axios.put(
+          `https://cs-test-z2vm.onrender.com/api/users/${userId}`,
+          userData
+        );
         alert("Profile updated successfully!");
       }
     } catch (error) {
@@ -92,9 +95,16 @@ const ProfileSettingsPage = () => {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                  {crumb.label}
+                </span>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
@@ -278,10 +288,10 @@ const ProfileSettingsPage = () => {
                   Username
                 </Text>
                 <Input
-                placeholder="Enter your username"
-                name="username"
-                value={userData.username}
-                onChange={handleInputChange}
+                  placeholder="Enter your username"
+                  name="username"
+                  value={userData.username}
+                  onChange={handleInputChange}
                 />
                 {/* Adjust input width */}
               </Flex>
@@ -296,16 +306,15 @@ const ProfileSettingsPage = () => {
                   Email
                 </Text>
                 <Text
-                fontSize={{ base: "14px", md: "16px" }}
-                fontWeight="medium"
-                color="gray.700"
+                  fontSize={{ base: "14px", md: "16px" }}
+                  fontWeight="medium"
+                  color="gray.700"
                 >
                   {userData.email || "No email available"}
                 </Text>
               </Flex>
             </Box>
-            <Box width={{ base: "100%", md: "60%" }}>
-            </Box>
+            <Box width={{ base: "100%", md: "60%" }}></Box>
             <Button
               bg="#58653C"
               color="white"

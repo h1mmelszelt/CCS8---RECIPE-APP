@@ -23,7 +23,8 @@ import { AuthContext } from "../context/AuthContext";
 function Sitemap() {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
   const handleShareRecipe = (e) => {
     e.preventDefault();
@@ -55,9 +56,9 @@ function Sitemap() {
         {/* Logo and Description */}
         <VStack align="start" spacing={4} maxW="300px">
           <Text fontSize="2xl" fontWeight="bold">
-            Insane
+            Bite
             <Text as="span" color="orange.500">
-              Recipe
+              Book
             </Text>
           </Text>
           <Text fontSize="sm" color="black.400">
@@ -93,17 +94,29 @@ function Sitemap() {
               Helpful links
             </Text>
             <RouterLink to="/faq">
-              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+              <Text
+                fontSize="sm"
+                color="black.400"
+                _hover={{ color: "orange.500" }}
+              >
                 FAQ
               </Text>
             </RouterLink>
             <RouterLink to="/about-us">
-              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+              <Text
+                fontSize="sm"
+                color="black.400"
+                _hover={{ color: "orange.500" }}
+              >
                 About Us
               </Text>
             </RouterLink>
             <RouterLink to="/contact-us">
-              <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+              <Text
+                fontSize="sm"
+                color="black.400"
+                _hover={{ color: "orange.500" }}
+              >
                 Contact
               </Text>
             </RouterLink>
@@ -166,7 +179,11 @@ function Sitemap() {
           </Link>
           {/* Add Sitemap link here */}
           <RouterLink to="/site-map">
-            <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+            <Text
+              fontSize="sm"
+              color="black.400"
+              _hover={{ color: "orange.500" }}
+            >
               Sitemap
             </Text>
           </RouterLink>

@@ -64,27 +64,27 @@ const ProfilePage = () => {
       try {
         // Fetch the profile data of the user being visited
         const { data } = await axios.get(
-          `http://localhost:5000/api/users/${userId}`
+          `https://cs-test-z2vm.onrender.com/api/users/${userId}`
         );
         setUserData(data);
 
         // Fetch recipes created by the user
         const recipesResponse = await axios.get(
-          `http://localhost:5000/api/recipes/user/${userId}`
+          `https://cs-test-z2vm.onrender.com/api/recipes/user/${userId}`
         );
         setCreatedRecipes(recipesResponse.data.data);
 
         // Fetch bookmarks only if the profile belongs to the logged-in user
         if (isOwner) {
           const bookmarksResponse = await axios.get(
-            `http://localhost:5000/api/users/bookmarks/${userId}`
+            `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}`
           );
           setBookmarks(bookmarksResponse.data.data);
         }
 
         // Fetch reviews written by the user
         const reviewsResponse = await axios.get(
-          `http://localhost:5000/api/reviews/user/${userId}`
+          `https://cs-test-z2vm.onrender.com/api/reviews/user/${userId}`
         );
         setReviews(reviewsResponse.data.data);
       } catch (error) {
@@ -103,7 +103,7 @@ const ProfilePage = () => {
     if (!confirmed) return;
     try {
       await axios.delete(
-        `http://localhost:5000/api/users/bookmarks/${userId}/${recipeId}`
+        `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}/${recipeId}`
       );
       setBookmarks((prev) => prev.filter((b) => b._id !== recipeId));
       toast({
@@ -131,7 +131,9 @@ const ProfilePage = () => {
     );
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`);
+      await axios.delete(
+        `https://cs-test-z2vm.onrender.com/api/reviews/${reviewId}`
+      );
       setReviews((prev) => prev.filter((r) => r._id !== reviewId));
       toast({
         title: "Review Deleted",
@@ -158,7 +160,9 @@ const ProfilePage = () => {
     );
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/recipes/${recipeId}`);
+      await axios.delete(
+        `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
+      );
       setCreatedRecipes((prev) => prev.filter((r) => r._id !== recipeId));
       toast({
         title: "Recipe Deleted",
@@ -195,10 +199,13 @@ const ProfilePage = () => {
   // Save edited review
   const handleSaveEdit = async (reviewId) => {
     try {
-      await axios.put(`http://localhost:5000/api/reviews/${reviewId}`, {
-        rating: editReviewRating,
-        text: editReviewText,
-      });
+      await axios.put(
+        `https://cs-test-z2vm.onrender.com/api/reviews/${reviewId}`,
+        {
+          rating: editReviewRating,
+          text: editReviewText,
+        }
+      );
       setReviews((prev) =>
         prev.map((r) =>
           r._id === reviewId
@@ -265,7 +272,7 @@ const ProfilePage = () => {
           </Text>
         </Box>
       ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) =>
             recipe && recipe._id && isValidPath(`/recipes/${recipe._id}`) ? (
               <Box key={recipe._id} position="relative">
@@ -293,8 +300,8 @@ const ProfilePage = () => {
                         size="xs"
                         variant="solid"
                         position="absolute"
-                        top={2}
-                        right={2}
+                        top={{ base: "1", md: "4" }}
+                        right={{ base: "1", md: "4" }}
                         zIndex={2}
                         aria-label="Options"
                       />
@@ -357,7 +364,7 @@ const ProfilePage = () => {
           </Text>
         </Box>
       ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) =>
             bookmark && bookmark._id && isValidPath(`/recipes/${bookmark._id}`) ? (
               <Box key={bookmark._id} position="relative">
