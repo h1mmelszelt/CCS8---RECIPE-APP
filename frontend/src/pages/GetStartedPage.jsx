@@ -228,7 +228,7 @@ function GetStartedPage() {
           </Flex>
 
           {/* Explore Recipes Section */}
-          <Box py={6}>
+          <Box py={2}>
             <Flex justify="space-between" align="center" px="10%" mt="10%">
               <Text
                 fontWeight="bold"
