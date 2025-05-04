@@ -226,6 +226,7 @@ export default function SitemapPage() {
               borderRadius="md"
               _placeholder={{ color: "black.400" }}
               color="white"
+              focusBorderColor="orange.500"
             />
             <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
               Subscribe

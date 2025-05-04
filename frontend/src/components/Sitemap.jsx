@@ -63,7 +63,7 @@ function Sitemap() {
             </Text>
           </Text>
           <Text fontSize="sm" color="black.400">
-            Discover thousands of delicious recipes, share your own creations,
+            Discover hundreds of delicious recipes, share your own creations,
             and explore a world of culinary inspiration. Join our community
             today!
           </Text>
@@ -153,6 +153,7 @@ function Sitemap() {
               borderRadius="md"
               _placeholder={{ color: "black.400" }}
               color="white"
+              focusBorderColor="orange.500"
             />
             <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
               Subscribe

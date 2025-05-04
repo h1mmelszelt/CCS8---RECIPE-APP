@@ -222,7 +222,9 @@ function HomePage() {
                       zIndex={2}
                       position="relative"
                       cursor="pointer"
-                      _hover={{ boxShadow: "lg" }}
+                      _hover={{
+                        boxShadow: "0 0 10px 2px rgba(253, 102, 11, 0.6)", // Add an orange glow
+                      }}
                       role="group"
                     >
                       <Box
@@ -244,7 +246,7 @@ function HomePage() {
                           left="0"
                           width="100%"
                           height="100%"
-                          bg="rgba(0, 0, 0, 0.6)"
+                          bg="rgba(0, 0, 0, 0.8)"
                           color="white"
                           display="flex"
                           justifyContent="center"

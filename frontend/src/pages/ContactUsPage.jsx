@@ -15,16 +15,16 @@ import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import phone from "/images/phone by iStock.jpg";
 
 const ContactUsPage = () => {
-
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
-  }, []); 
+  }, []);
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (ContactUsPage) - All links must be valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-  
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
+
   return (
     <Box bg="white" minH="100vh">
       <Box px={{ base: 4, md: 20 }} py={10}>
@@ -148,9 +148,21 @@ const ContactUsPage = () => {
               Submit a Ticket
             </Text>
             <VStack spacing={4}>
-              <Input placeholder="Enter your Name" bg="white" />
-              <Input placeholder="Enter a valid e-mail address" bg="white" />
-              <Textarea placeholder="Enter your message" bg="white" />
+              <Input
+                focusBorderColor="orange.500"
+                placeholder="Enter your Name"
+                bg="white"
+              />
+              <Input
+                focusBorderColor="orange.500"
+                placeholder="Enter a valid e-mail address"
+                bg="white"
+              />
+              <Textarea
+                focusBorderColor="orange.500"
+                placeholder="Enter your message"
+                bg="white"
+              />
               <Button
                 bg="orange.500"
                 color="white"

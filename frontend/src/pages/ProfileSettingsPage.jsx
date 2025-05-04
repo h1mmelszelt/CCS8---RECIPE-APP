@@ -18,7 +18,8 @@ import axios from "axios";
 import BG_Image from "/images/11.png";
 
 // Define the isValidPath function at the top of the file
-const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+const isValidPath = (path) =>
+  path && !path.includes("/:") && !path.endsWith("/:");
 
 const ProfileSettingsPage = () => {
   const { id: userId } = useParams(); // Get userId from URL
@@ -33,7 +34,9 @@ const ProfileSettingsPage = () => {
     { label: "Home", path: "/home" },
     userId ? { label: "Profile", path: `/profile/${userId}` } : null,
     { label: "Settings", path: location.pathname + location.search },
-  ].filter(Boolean).filter(crumb => isValidPath(crumb.path));
+  ]
+    .filter(Boolean)
+    .filter((crumb) => isValidPath(crumb.path));
 
   useEffect(() => {
     console.log("User ID from URL:", userId);
@@ -165,7 +168,11 @@ const ProfileSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
+              {
+                label: "Profile Settings",
+                icon: FaUser,
+                link: userId ? `/settings/${userId}` : "/login",
+              },
               {
                 label: "Notifications",
                 icon: FaBell,
@@ -290,6 +297,7 @@ const ProfileSettingsPage = () => {
                 <Input
                   placeholder="Enter your username"
                   name="username"
+                  focusBorderColor="orange.500"
                   value={userData.username}
                   onChange={handleInputChange}
                 />

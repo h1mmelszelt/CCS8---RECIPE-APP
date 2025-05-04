@@ -207,6 +207,7 @@ function SearchPage() {
           placeholder="Search recipes by title..."
           size="sm"
           borderRadius="md"
+          focusBorderColor="orange.500"
           bg="gray.100"
           flex="1"
           mr={2}

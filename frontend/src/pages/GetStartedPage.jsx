@@ -312,7 +312,7 @@ function GetStartedPage() {
           maxW="85%" // Adjust width as needed
           bg="white" // Background color for the box
           border="1px solid #E2E8F0" // Light border
-          boxShadow="md" // Add shadow for better visibility
+          boxShadow="0 0 15px 2px rgba(253, 102, 11, 0.6)" // Add shadow for better visibility
           color="black"
           textAlign="center"
           zIndex={1}

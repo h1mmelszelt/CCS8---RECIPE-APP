@@ -512,7 +512,7 @@ const RecipePage = () => {
 
   return (
     <>
-      <Box maxW="1200px" mx="auto" p={6}>
+      <Box maxW="1200px" mx="auto" p={6} fontFamily="Poppins, sans-serif">
         {/* Breadcrumb */}
         <Text fontSize="sm" color="gray.500" mb={4}>
           {breadcrumbs.map((crumb, idx) => (
@@ -545,7 +545,7 @@ const RecipePage = () => {
           {/* Left Section */}
           <GridItem>
             {/* Recipe Header */}
-            <Heading as="h1" size="xl" mb={4}>
+            <Heading as="h1" size="xl" mb={4} fontFamily="Poppins, sans-serif">
               {recipe.name}
             </Heading>
             <HStack spacing={4} align="center" mb={6}>
@@ -558,7 +558,11 @@ const RecipePage = () => {
                   to={`/profile/${recipe.user_id?._id}`}
                   style={{ color: "#FD660B", textDecoration: "underline" }}
                 >
-                  <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }} color="#FD660B">
+                  <Text
+                    fontWeight="bold"
+                    fontSize={{ base: "sm", md: "md" }}
+                    color="#FD660B"
+                  >
                     {recipe.user_id?.name || "Unknown Author"}
                   </Text>
                 </Link>
@@ -604,17 +608,17 @@ const RecipePage = () => {
               alt={recipe.name}
               borderRadius="md"
               mb={6}
-              width={{ base:"100%",md: "100%"}}
-              height={{ base:"200px",md: "400px"}}
+              width={{ base: "100%", md: "100%" }}
+              height={{ base: "200px", md: "400px" }}
               objectFit="cover"
             />
 
             {/* Recipe Details */}
             <VStack align="start" spacing={4} mb={6}>
-              <Text 
-              fontSize={{ base: "md", md: "lg"}} 
-              fontWeight="bold"
-              width={{ base:"100%", md: "100%"}}
+              <Text
+                fontSize={{ base: "md", md: "lg" }}
+                fontWeight="bold"
+                width={{ base: "100%", md: "100%" }}
               >
                 {recipe.description}
               </Text>
@@ -720,7 +724,7 @@ const RecipePage = () => {
             <Divider mb={6} />
 
             {/* Ingredients */}
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
               Ingredients
             </Heading>
             <VStack align="start" spacing={2} mb={6}>
@@ -732,7 +736,7 @@ const RecipePage = () => {
             </VStack>
 
             {/* Instructions */}
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
               Instructions
             </Heading>
             <VStack align="start" spacing={4} mb={6}>
@@ -751,7 +755,7 @@ const RecipePage = () => {
             <Divider mb={6} />
 
             {/* Tags */}
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
               Tags
             </Heading>
             <HStack spacing={4}>
@@ -988,7 +992,7 @@ const RecipePage = () => {
           {/* Right Section */}
           <GridItem>
             {/* Related Recipes */}
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
               Related Recipes
             </Heading>
             <VStack spacing={4} align="stretch">
@@ -1064,7 +1068,13 @@ const RecipePage = () => {
             </Box>
 
             {/* Trending Recipes */}
-            <Heading as="h2" size="lg" mt={8} mb={4}>
+            <Heading
+              as="h2"
+              size="lg"
+              mt={8}
+              mb={4}
+              fontFamily="Poppins, sans-serif"
+            >
               Trending Recipes
             </Heading>
             <VStack spacing={4} align="stretch">
