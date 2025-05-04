@@ -28,11 +28,12 @@ function Sitemap() {
 
   const handleShareRecipe = (e) => {
     e.preventDefault();
+    console.log("isAuthenticated:", isAuthenticated); // Debug log
     if (!isAuthenticated) {
       navigate("/login");
-    } else {
-      navigate("/create");
+      return; // Ensure no further execution
     }
+    navigate("/create");
   };
 
   const handleAccountLink = (path) => (e) => {
@@ -78,10 +79,10 @@ function Sitemap() {
               { label: "Home", to: "/home" },
               { label: "Recipes", to: "/search" },
               { label: "Notifications", to: "/notifications" },
-              { label: "Share Recipe", to: "/create" },
+              { label: "Share Recipe", to: "#", onClick: handleShareRecipe },
               { label: "Get Started", to: "/" },
             ].filter(link => link.to && !link.to.includes('/:') && !link.to.endsWith('/:')).map(link => (
-              <RouterLink key={link.label} to={link.to}>
+              <RouterLink key={link.label} to={link.to} onClick={link.onClick}>
                 <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
                   {link.label}
                 </Text>

@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios"; // Import axios for API requests
 
 function CreatePage() {
+  window.scrollTo(0, 0);
   const userId =
     localStorage.getItem("userId") || sessionStorage.getItem("userId");
   const [title, setTitle] = useState("");

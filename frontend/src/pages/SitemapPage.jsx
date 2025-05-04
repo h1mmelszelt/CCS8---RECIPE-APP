@@ -23,15 +23,18 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function SitemapPage() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+
   const handleAccountLink = (path) => (e) => {
     e.preventDefault();
+    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
       navigate("/login");
     } else {
       navigate(`/${path}/${userId}`);
     }
   };
+
   const handleShareRecipe = (e) => {
     e.preventDefault();
     if (!userId) {
@@ -40,6 +43,17 @@ export default function SitemapPage() {
       navigate("/create");
     }
   };
+
+  const handleExploreLink = (path) => (e) => {
+    e.preventDefault();
+    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    if (!userId) {
+      navigate("/login");
+    } else {
+      navigate(path);
+    }
+  };
+
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (SitemapPage) - All links must be valid
   const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
@@ -72,9 +86,9 @@ export default function SitemapPage() {
       heading: "Account",
       links: [
         { label: "My Profile", to: userId ? `/profile/${userId}` : "/login" },
-        { label: "Settings", to: userId ? `/settings/${userId}` : "/login", isAccount: true, path: "settings" },
-        { label: "Advanced Settings", to: userId ? `/advanced-settings/${userId}` : "/login", isAccount: true, path: "advanced-settings" },
-        { label: "Notification Settings", to: userId ? `/notification-settings/${userId}` : "/login", isAccount: true, path: "notification-settings" },
+        { label: "Settings", to: userId ? `/settings/${userId}` : "/login", isAccount: true, path: `settings/${userId}` },
+        { label: "Advanced Settings", to: userId ? `/advanced-settings/${userId}` : "/login", isAccount: true, path: `advanced-settings/${userId}` },
+        { label: "Notification Settings", to: userId ? `/notification-settings/${userId}` : "/login", isAccount: true, path: `notification-settings/${userId}` },
         { label: "Login", to: "/login" },
         { label: "Register", to: "/register" },
       ],
@@ -96,6 +110,8 @@ export default function SitemapPage() {
     links: section.links.filter(link => isValidPath(link.to))
   }));
 
+  console.log("Validated Sitemap Links:", validatedSitemapLinks);
+
   return (
     <Box bg="gray.100" minH="100vh" py={12} px={{ base: 4, md: 20 }}>
       <Heading as="h1" size="xl" mb={8} textAlign="center">
@@ -113,71 +129,41 @@ export default function SitemapPage() {
             <Text fontWeight="bold" fontSize="lg" mb={2}>
               {section.heading}
             </Text>
-            {section.links
-              .filter((link, idx, arr) => {
-                // Always show Login button in Account section
-                if (section.heading === "Account" && link.label === "Login") return true;
-                // Filter out malformed links (containing '/:' or ending with '/:')
-                return arr.findIndex(l => l.to === link.to) === idx && isValidPath(link.to);
-              })
-              .map((link) =>
-                link.isAccount ? (
-                  <a
-                    key={link.label}
-                    href={link.to}
-                    style={{
-                      fontSize: "1rem",
-                      color: "#222",
-                      textDecoration: "none",
-                      transition: "color 0.2s",
-                      cursor: "pointer",
-                    }}
-                    onClick={handleAccountLink(link.path)}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.color = "orange")
-                    }
-                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
-                  >
-                    {link.label}
-                  </a>
-                ) : link.label === "Share Recipe" ? (
-                  <a
-                    key={link.label}
-                    href={link.to}
-                    style={{
-                      fontSize: "1rem",
-                      color: "#222",
-                      textDecoration: "none",
-                      transition: "color 0.2s",
-                      cursor: "pointer",
-                    }}
-                    onClick={handleShareRecipe}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.color = "orange")
-                    }
-                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <RouterLink
-                    key={link.label}
-                    to={link.to}
-                    style={{
-                      fontSize: "1rem",
-                      color: "#222",
-                      textDecoration: "none",
-                      transition: "color 0.2s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.color = "orange")
-                    }
-                    onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
-                  >
-                    {link.label}
-                  </RouterLink>
-                )
-              )}
+            {section.links.map((link) => (
+              link.label === "Notifications" || link.label === "Share Recipe" ? (
+                <a
+                  key={link.label}
+                  href={link.to}
+                  style={{
+                    fontSize: "1rem",
+                    color: "#222",
+                    textDecoration: "none",
+                    transition: "color 0.2s",
+                    cursor: "pointer",
+                  }}
+                  onClick={handleExploreLink(link.to)}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "orange")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <RouterLink
+                  key={link.label}
+                  to={link.to}
+                  style={{
+                    fontSize: "1rem",
+                    color: "#222",
+                    textDecoration: "none",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = "orange")}
+                  onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
+                >
+                  {link.label}
+                </RouterLink>
+              )
+            ))}
           </VStack>
         ))}
       </Flex>
