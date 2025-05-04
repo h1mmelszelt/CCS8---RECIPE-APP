@@ -14,6 +14,18 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 function NotificationsPage({ notifications }) {
   const navigate = useNavigate(); // Initialize useNavigate
 
+  const getAvatarColor = (name) => {
+    const colors = [
+      "teal.500",
+      "orange.500",
+      "blue.500",
+      "purple.500",
+      "red.500",
+    ];
+    const index = name.charCodeAt(0) % colors.length; // Use the first character's char code
+    return colors[index];
+  };
+
   return (
     <Box
       position="fixed"
@@ -53,7 +65,8 @@ function NotificationsPage({ notifications }) {
               <Avatar
                 size="md"
                 src={notification.avatar}
-                name={notification.name}
+                name={notification.name.charAt(0)}
+                bg={getAvatarColor(notification.name)}
               />
               <Box>
                 <Text fontWeight="bold" fontSize="sm" color="black">

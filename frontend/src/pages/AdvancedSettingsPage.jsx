@@ -28,7 +28,13 @@ const AdvancedSettingsPage = () => {
     { label: "Home", path: "/home" },
     { label: "Profile", path: `/profile/${userId}` },
     { label: "Settings", path: `/settings/${userId}` },
-  ].filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:'));
+  ].filter(
+    (crumb) =>
+      crumb &&
+      crumb.path &&
+      !crumb.path.includes("/:") &&
+      !crumb.path.endsWith("/:")
+  );
 
   return (
     <Box
@@ -40,16 +46,31 @@ const AdvancedSettingsPage = () => {
       {/* Breadcrumbs at the top of the page */}
       <Box maxW="1200px" mx="auto" px={6} pt={6}>
         <Text fontSize="sm" color="gray.500" mb={4}>
-          {breadcrumbs.filter(crumb => crumb && crumb.path && !crumb.path.includes('/:') && !crumb.path.endsWith('/:')).map((crumb, idx) => (
-            <span key={crumb.path}>
-              {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
-              ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
-              )}
-              {idx < breadcrumbs.length - 1 && " > "}
-            </span>
-          ))}
+          {breadcrumbs
+            .filter(
+              (crumb) =>
+                crumb &&
+                crumb.path &&
+                !crumb.path.includes("/:") &&
+                !crumb.path.endsWith("/:")
+            )
+            .map((crumb, idx) => (
+              <span key={crumb.path}>
+                {idx === breadcrumbs.length - 1 ? (
+                  <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                    {crumb.label}
+                  </span>
+                ) : (
+                  <Link
+                    to={crumb.path}
+                    style={{ color: "#FD660B", textDecoration: "underline" }}
+                  >
+                    {crumb.label}
+                  </Link>
+                )}
+                {idx < breadcrumbs.length - 1 && " > "}
+              </span>
+            ))}
         </Text>
       </Box>
 
@@ -107,7 +128,11 @@ const AdvancedSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
+              {
+                label: "Profile Settings",
+                icon: FaUser,
+                link: userId ? `/settings/${userId}` : "/login",
+              },
               {
                 label: "Notifications",
                 icon: FaBell,
@@ -187,7 +212,7 @@ const AdvancedSettingsPage = () => {
             </Flex>
             <Flex justify="space-between" align="center">
               <Text
-                fontSize={{ base: "20px", md: "16px" }} // Smaller font size for mobile, larger for desktop
+                fontSize={{ base: "16px", md: "16px" }} // Smaller font size for mobile, larger for desktop
                 fontWeight="medium"
                 color="black"
               >

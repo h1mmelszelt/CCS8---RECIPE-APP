@@ -23,8 +23,8 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { getCompressedImageUrl } from "../utils/imageUtils";
 
 // Define the isValidPath function at the top of the file
-const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-
+const isValidPath = (path) =>
+  path && !path.includes("/:") && !path.endsWith("/:");
 
 function SearchPage() {
   const location = useLocation();
@@ -41,6 +41,7 @@ function SearchPage() {
 
   // Clear the query parameter on page refresh
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
       // Remove 'query' from the URL
       const params = new URLSearchParams(window.location.search);
@@ -61,7 +62,7 @@ function SearchPage() {
   const breadcrumbs = [
     { label: "Home", path: "/home" },
     { label: "Search", path: "/search" },
-  ].filter(crumb => isValidPath(crumb.path));
+  ].filter((crumb) => isValidPath(crumb.path));
 
   // Fetch recipes based on search query
   useEffect(() => {
@@ -96,10 +97,9 @@ function SearchPage() {
     fetchRecipes();
   }, [location.search]);
 
-  window.scrollTo(0, 0);
-
   // Handle search functionality
   const handleSearch = () => {
+    window.scrollTo(0, 0);
     if (searchQuery.trim() === "") {
       setFilteredRecipes(recipes); // Show all recipes if search query is empty
     } else {

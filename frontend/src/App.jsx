@@ -35,19 +35,19 @@ function App() {
   const notifications = [
     {
       id: 1,
-      name: "John Doe",
+      name: "Juan Dela Cruz",
       message: "liked your recipe",
       time: "2 hours ago",
     },
     {
       id: 2,
-      name: "Jane Smith",
+      name: "Daisy Sanchez",
       message: "commented on your recipe",
       time: "Yesterday",
     },
     {
       id: 3,
-      name: "Alice Johnson",
+      name: "Kurt Cobain",
       message: "shared your recipe",
       time: "Tuesday",
     },
@@ -75,7 +75,10 @@ function App() {
             <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/settings/:id" element={<SettingsPage />} />
-            <Route path="/logged-out-settings" element={<LoggedOutSettings />} />
+            <Route
+              path="/logged-out-settings"
+              element={<LoggedOutSettings />}
+            />
             <Route
               path="/notifications"
               element={<NotificationsPage notifications={notifications} />}
@@ -103,9 +106,7 @@ function App() {
           </Routes>
 
           {/* Footer: Hide on SitemapPage */}
-          {location.pathname !== "/site-map" && (
-            <Sitemap />
-          )}
+          {location.pathname !== "/site-map" && <Sitemap />}
         </Box>
       </CustomThemeProvider>
     </AuthProvider>

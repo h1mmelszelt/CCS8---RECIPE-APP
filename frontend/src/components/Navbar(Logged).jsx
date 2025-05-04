@@ -44,7 +44,8 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const { setIsAuthenticated } = useContext(AuthContext);
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
   const popupRef = useRef(null);
 
   const {
@@ -89,28 +90,28 @@ function Navbar() {
   const [notifications, setNotifications] = useState([
     {
       id: 1,
-      name: "Brigid Dawson",
+      name: "Juan Dela Cruz",
       message: "liked your recipe",
       avatar: "/images/avatar1.jpg",
       time: "4 hours ago",
     },
     {
       id: 2,
-      name: "John Dwyer",
+      name: "Daisy Sanchez",
       message: "liked your recipe",
       avatar: "/images/avatar2.jpg",
       time: "Yesterday",
     },
     {
       id: 3,
-      name: "Tim Hellman",
+      name: "Kurt Cobain",
       message: "liked your recipe",
       avatar: "/images/avatar3.jpg",
       time: "Tuesday",
     },
     {
       id: 5,
-      name: "Shannon Shaw",
+      name: "Francisco Reyes",
       message: "commented on your recipe",
       avatar: "/images/avatar4.jpg",
       time: "4 days ago",
@@ -123,6 +124,18 @@ function Navbar() {
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible); // Toggle the popup visibility
     setShowAllNotifications(false); // Reset to show "See all recent activity"
+  };
+
+  const getAvatarColor = (name) => {
+    const colors = [
+      "teal.500",
+      "orange.500",
+      "blue.500",
+      "purple.500",
+      "red.500",
+    ];
+    const index = name.charCodeAt(0) % colors.length; // Use the first character's char code
+    return colors[index];
   };
 
   return (
@@ -272,11 +285,15 @@ function Navbar() {
                           align="start"
                           spacing={3}
                           width="100%"
+                          p={1}
+                          borderRadius="sm" // Add rounded corners for better visuals
+                          _hover={{ bg: "gray.200" }} // Darken the background on hover
                         >
                           <Avatar
                             size="md"
                             src={notification.avatar}
-                            name={notification.name}
+                            name={notification.name.charAt(0)}
+                            bg={getAvatarColor(notification.name)}
                           />
                           <Box>
                             <Text fontWeight="bold" fontSize="sm" color="black">
@@ -327,30 +344,32 @@ function Navbar() {
                   aria-label="User Profile"
                   variant="ghost"
                   color={
-                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
-                    ? "#FD660B"
-                    : "black"
-                }
+                    (userId && location.pathname === `/profile/${userId}`) ||
+                    location.pathname === "/me"
+                      ? "#FD660B"
+                      : "black"
+                  }
                   _hover={{ bg: "#FFF1E8" }}
                   size="sm"
                   borderRadius="full"
                   border="2px solid"
                   borderColor={
-                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
-                    ? "#FD660B"
-                    : "black"
-                }
+                    (userId && location.pathname === `/profile/${userId}`) ||
+                    location.pathname === "/me"
+                      ? "#FD660B"
+                      : "black"
+                  }
                 />
-              <Box
-                fontSize="sm"
-                color={
-                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
-                    ? "#FD660B"
-                    : "black"
-                }
-                mt={1}
-              >
-              </Box>
+                <Box
+                  fontSize="sm"
+                  color={
+                    (userId && location.pathname === `/profile/${userId}`) ||
+                    location.pathname === "/me"
+                      ? "#FD660B"
+                      : "black"
+                  }
+                  mt={1}
+                ></Box>
               </Tooltip>
             </Link>
             {/* Hamburger Icon for Drawer */} {/* Drawer Trigger */}
@@ -372,7 +391,10 @@ function Navbar() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader fontFamily="Poppins, sans-serif">
+            Menu
+          </DrawerHeader>{" "}
+          {/* Change font for the header */}
           <DrawerBody>
             <Flex direction="column" gap={4}>
               <Link
@@ -381,10 +403,11 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   Home
                 </Box>
@@ -395,10 +418,11 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   About Us
                 </Box>
@@ -409,10 +433,11 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   Contact Us
                 </Box>
@@ -423,10 +448,11 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   Site Map
                 </Box>
@@ -437,10 +463,11 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   FAQ
                 </Box>
@@ -451,15 +478,20 @@ function Navbar() {
                 style={{ textDecoration: "none" }}
               >
                 <Box
-                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  _hover={{ bg: "#FFD8B2", color: "black" }}
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif" // Change font for this item
                 >
                   Settings
                 </Box>
               </Link>
-              <Button onClick={handleLogout} colorScheme="red">
+              <Button
+                onClick={handleLogout}
+                colorScheme="red"
+                fontFamily="Poppins, sans-serif" // Change font for the logout button
+              >
                 Logout
               </Button>
             </Flex>
@@ -582,7 +614,8 @@ function Navbar() {
               aria-label="User Profile"
               variant="ghost"
               color={
-                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                (userId && location.pathname === `/profile/${userId}`) ||
+                location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -591,7 +624,8 @@ function Navbar() {
               borderRadius="full"
               border="2px solid"
               borderColor={
-                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                (userId && location.pathname === `/profile/${userId}`) ||
+                location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -599,7 +633,8 @@ function Navbar() {
             <Box
               fontSize="sm"
               color={
-                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                (userId && location.pathname === `/profile/${userId}`) ||
+                location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }

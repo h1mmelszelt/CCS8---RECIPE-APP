@@ -18,7 +18,6 @@ import {
   Image,
   Switch,
   Tooltip,
-  Select,
 } from "@chakra-ui/react";
 import {
   SearchIcon,
@@ -75,6 +74,7 @@ function Navbar({ transparent }) {
   };
 
   const handleProtectedRoute = (path) => {
+    window.scrollTo(0, 0);
     if (!isAuthenticated && path !== "/home") {
       navigate("/sign-in-required"); // Redirect to the login page for protected routes
     } else {
@@ -85,7 +85,7 @@ function Navbar({ transparent }) {
   return (
     <Box
       px={{ base: 2, md: 4 }} // Reduce horizontal padding
-      py={2} // Reduce vertical padding
+      py={0} // Reduce vertical padding
       boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
       position="sticky"
       top="0"
@@ -99,27 +99,31 @@ function Navbar({ transparent }) {
         flexDirection={{ base: "column", md: "row" }} // Stack items on smaller screens
       >
         {/* Logo */}
-        <Tooltip label="Go to BiteBook Home page">
-          Test Run v1.1.1
-          <Link to="/home">
-            <Flex alignItems="center">
-              <Image
-                src="/images/bitebook.png" // Path to your logo image
-                alt="BiteBook Logo"
-                boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
-                objectFit="contain" // Ensure the image fits within the box
-              />
-              <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
-                <Box as="span" color="black">
-                  Bite
+        <Box display={{ base: "none", md: "flex" }}>
+          {" "}
+          {/* Hide on smaller screens */}
+          <Tooltip label="Go to BiteBook Home page">
+            Test Run v1.1.1
+            <Link to="/home">
+              <Flex alignItems="center">
+                <Image
+                  src="/images/bitebook.png" // Path to your logo image
+                  alt="BiteBook Logo"
+                  boxSize={{ base: "50px", sm: "50px" }} // Adjust size as needed
+                  objectFit="contain" // Ensure the image fits within the box
+                />
+                <Box fontSize={{ base: "22px", sm: "28px" }} fontWeight="bold">
+                  <Box as="span" color="black">
+                    Bite
+                  </Box>
+                  <Box as="span" color="#FD660B">
+                    Book
+                  </Box>
                 </Box>
-                <Box as="span" color="#FD660B">
-                  Book
-                </Box>
-              </Box>
-            </Flex>
-          </Link>
-        </Tooltip>
+              </Flex>
+            </Link>
+          </Tooltip>
+        </Box>
 
         {/* Search Bar */}
         <Tooltip label="Search recipes">
@@ -195,7 +199,7 @@ function Navbar({ transparent }) {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader fontFamily="Poppins, sans-serif">Menu</DrawerHeader>
           <DrawerBody>
             <Flex direction="column" gap={4}>
               <Link
@@ -208,6 +212,7 @@ function Navbar({ transparent }) {
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif"
                 >
                   Home
                 </Box>
@@ -222,6 +227,7 @@ function Navbar({ transparent }) {
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif"
                 >
                   About Us
                 </Box>
@@ -236,6 +242,7 @@ function Navbar({ transparent }) {
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif"
                 >
                   Contact Us
                 </Box>
@@ -250,6 +257,7 @@ function Navbar({ transparent }) {
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif"
                 >
                   Site Map
                 </Box>
@@ -264,6 +272,7 @@ function Navbar({ transparent }) {
                   px={4}
                   py={2}
                   borderRadius="sm"
+                  fontFamily="Poppins, sans-serif"
                 >
                   FAQ
                 </Box>
@@ -275,6 +284,7 @@ function Navbar({ transparent }) {
                 px={4}
                 py={2}
                 borderRadius="sm"
+                fontFamily="Poppins, sans-serif"
               >
                 Settings
               </Text>
