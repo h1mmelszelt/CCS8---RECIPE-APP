@@ -78,16 +78,29 @@ function Sitemap() {
             {[
               { label: "Home", to: "/home" },
               { label: "Recipes", to: "/search" },
-              { label: "Notifications", to: "/notifications" },
+
               { label: "Share Recipe", to: "#", onClick: handleShareRecipe },
               { label: "Get Started", to: "/" },
-            ].filter(link => link.to && !link.to.includes('/:') && !link.to.endsWith('/:')).map(link => (
-              <RouterLink key={link.label} to={link.to} onClick={link.onClick}>
-                <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
-                  {link.label}
-                </Text>
-              </RouterLink>
-            ))}
+            ]
+              .filter(
+                (link) =>
+                  link.to && !link.to.includes("/:") && !link.to.endsWith("/:")
+              )
+              .map((link) => (
+                <RouterLink
+                  key={link.label}
+                  to={link.to}
+                  onClick={link.onClick}
+                >
+                  <Text
+                    fontSize="sm"
+                    color="black.400"
+                    _hover={{ color: "orange.500" }}
+                  >
+                    {link.label}
+                  </Text>
+                </RouterLink>
+              ))}
           </VStack>
 
           <VStack align="start" spacing={2}>
@@ -160,7 +173,7 @@ function Sitemap() {
         gap={4}
       >
         <Text fontSize="sm" color="black.400">
-          © 2023 RecipeLogo. All Right Reserved
+          © 2025 BiteBook. All Rights Reserved
         </Text>
         <HStack spacing={4}>
           <Link href="#" isExternal _hover={{ color: "orange.500" }}>

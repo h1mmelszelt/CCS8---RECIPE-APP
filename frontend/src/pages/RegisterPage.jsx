@@ -19,8 +19,9 @@ function RegisterPage() {
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (RegisterPage) - Only allow navigation to /home and /login if the path is valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-  
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
+
   return (
     <>
       <Flex
@@ -84,6 +85,7 @@ function RegisterPage() {
                   borderRadius="md"
                   bg="white"
                   mb={4}
+                  focusBorderColor="orange.400"
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -95,6 +97,7 @@ function RegisterPage() {
                   borderRadius="md"
                   bg="white"
                   mb={4}
+                  focusBorderColor="orange.400"
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -106,6 +109,7 @@ function RegisterPage() {
                   borderRadius="md"
                   bg="white"
                   mb={4}
+                  focusBorderColor="orange.400"
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -117,9 +121,13 @@ function RegisterPage() {
                   borderRadius="md"
                   bg="white"
                   mb={4}
+                  focusBorderColor="orange.400"
                 />
 
-                <Link href={isValidPath("/home") ? "/home" : undefined} style={{ textDecoration: "none" }}>
+                <Link
+                  href={isValidPath("/home") ? "/home" : undefined}
+                  style={{ textDecoration: "none" }}
+                >
                   <Button
                     w="100%"
                     bg="#AAD05E"
@@ -143,7 +151,11 @@ function RegisterPage() {
                 mb={20}
               >
                 Already have an account?{" "}
-                <Link href={isValidPath("/login") ? "/login" : undefined} color="#FD660B" fontWeight="bold">
+                <Link
+                  href={isValidPath("/login") ? "/login" : undefined}
+                  color="#FD660B"
+                  fontWeight="bold"
+                >
                   Log in
                 </Link>
               </Text>

@@ -28,8 +28,9 @@ function LoginPage() {
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (LoginPage) - Only allow navigation to /register if the path is valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-  
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
+
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
@@ -99,6 +100,7 @@ function LoginPage() {
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         pt={20}
+        pb={10}
       >
         <Box
           borderRadius="lg"
@@ -151,6 +153,7 @@ function LoginPage() {
                   mb={4}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  focusBorderColor="orange.400"
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -162,6 +165,7 @@ function LoginPage() {
                   borderRadius="md"
                   bg="white"
                   mb={2}
+                  focusBorderColor="orange.400"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => {
@@ -215,7 +219,11 @@ function LoginPage() {
                 mb={20}
               >
                 Don’t have an account?{" "}
-                <Link href={isValidPath("/register") ? "/register" : undefined} color="#FD660B" fontWeight="bold">
+                <Link
+                  href={isValidPath("/register") ? "/register" : undefined}
+                  color="#FD660B"
+                  fontWeight="bold"
+                >
                   Sign up
                 </Link>
               </Text>

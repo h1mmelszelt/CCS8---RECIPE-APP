@@ -23,11 +23,13 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function SitemapPage() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
   const handleAccountLink = (path) => (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    const userId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
       navigate("/login");
     } else {
@@ -46,7 +48,8 @@ export default function SitemapPage() {
 
   const handleExploreLink = (path) => (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    const userId =
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
       navigate("/login");
     } else {
@@ -56,19 +59,15 @@ export default function SitemapPage() {
 
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (SitemapPage) - All links must be valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
   const sitemapLinks = [
     {
       heading: "Explore",
       links: [
         { label: "Home", to: "/home" },
         { label: "Recipes", to: "/search" },
-        {
-          label: "Notifications",
-          to: "/notifications",
-          isAccount: true,
-          path: "notifications",
-        },
+
         { label: "Share Recipe", to: "/create" },
         { label: "Get Started", to: "/" },
       ],
@@ -86,9 +85,24 @@ export default function SitemapPage() {
       heading: "Account",
       links: [
         { label: "My Profile", to: userId ? `/profile/${userId}` : "/login" },
-        { label: "Settings", to: userId ? `/settings/${userId}` : "/login", isAccount: true, path: `settings/${userId}` },
-        { label: "Advanced Settings", to: userId ? `/advanced-settings/${userId}` : "/login", isAccount: true, path: `advanced-settings/${userId}` },
-        { label: "Notification Settings", to: userId ? `/notification-settings/${userId}` : "/login", isAccount: true, path: `notification-settings/${userId}` },
+        {
+          label: "Settings",
+          to: userId ? `/settings/${userId}` : "/login",
+          isAccount: true,
+          path: `settings/${userId}`,
+        },
+        {
+          label: "Advanced Settings",
+          to: userId ? `/advanced-settings/${userId}` : "/login",
+          isAccount: true,
+          path: `advanced-settings/${userId}`,
+        },
+        {
+          label: "Notification Settings",
+          to: userId ? `/notification-settings/${userId}` : "/login",
+          isAccount: true,
+          path: `notification-settings/${userId}`,
+        },
         { label: "Login", to: "/login" },
         { label: "Register", to: "/register" },
       ],
@@ -105,9 +119,9 @@ export default function SitemapPage() {
     },
   ];
   // Ensure all links in sitemapLinks are validated
-  const validatedSitemapLinks = sitemapLinks.map(section => ({
+  const validatedSitemapLinks = sitemapLinks.map((section) => ({
     ...section,
-    links: section.links.filter(link => isValidPath(link.to))
+    links: section.links.filter((link) => isValidPath(link.to)),
   }));
 
   console.log("Validated Sitemap Links:", validatedSitemapLinks);
@@ -129,8 +143,8 @@ export default function SitemapPage() {
             <Text fontWeight="bold" fontSize="lg" mb={2}>
               {section.heading}
             </Text>
-            {section.links.map((link) => (
-              link.label === "Notifications" || link.label === "Share Recipe" ? (
+            {section.links.map((link) =>
+              link.label === "Share Recipe" ? (
                 <a
                   key={link.label}
                   href={link.to}
@@ -163,7 +177,7 @@ export default function SitemapPage() {
                   {link.label}
                 </RouterLink>
               )
-            ))}
+            )}
           </VStack>
         ))}
       </Flex>
@@ -229,14 +243,21 @@ export default function SitemapPage() {
         gap={4}
       >
         <Text fontSize="sm" color="black.400">
-          © 2023 RecipeLogo. All Right Reserved
+          © 2025 BiteBook. All Rights Reserved
         </Text>
         <HStack spacing={4}>
           {[{ label: "Sitemap", to: "/site-map" }]
-            .filter(link => link.to && !link.to.includes('/:') && !link.to.endsWith('/:'))
-            .map(link => (
+            .filter(
+              (link) =>
+                link.to && !link.to.includes("/:") && !link.to.endsWith("/:")
+            )
+            .map((link) => (
               <RouterLink key={link.label} to={link.to}>
-                <Text fontSize="sm" color="black.400" _hover={{ color: "orange.500" }}>
+                <Text
+                  fontSize="sm"
+                  color="black.400"
+                  _hover={{ color: "orange.500" }}
+                >
                   {link.label}
                 </Text>
               </RouterLink>
