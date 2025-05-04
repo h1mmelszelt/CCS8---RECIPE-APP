@@ -9,6 +9,8 @@ import recipeRoutes from "./routes/recipe.route.js";
 import userRoutes from "./routes/user.route.js";
 import reviewRoutes from "./routes/review.route.js";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -22,6 +24,16 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api", userRoutes);
+
+// Serve static files from the React app
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+// Catch-all route to serve index.html for React Router
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
 
 app.listen(5000, () => {
   connectDB();
