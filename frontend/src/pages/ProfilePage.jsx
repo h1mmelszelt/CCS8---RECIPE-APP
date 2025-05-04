@@ -268,7 +268,7 @@ const ProfilePage = () => {
           </Text>
         </Box>
       ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={6}>
           {createdRecipes.map((recipe) => (
             <Box key={recipe._id} position="relative">
               <Link
@@ -295,8 +295,8 @@ const ProfilePage = () => {
                       size="xs"
                       variant="solid"
                       position="absolute"
-                      top={2}
-                      right={2}
+                      top={{ base: "1", md: "4" }}
+                      right={{ base: "1", md: "4" }}
                       zIndex={2}
                       aria-label="Options"
                     />
