@@ -50,7 +50,7 @@ function EditRecipePage() {
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/recipes/${recipeId}`
+          `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
         );
         const recipe = data.data.recipe;
 
@@ -206,7 +206,7 @@ function EditRecipePage() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/recipes/${recipeId}`,
+        `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`,
         updatedRecipe
       );
       toast({

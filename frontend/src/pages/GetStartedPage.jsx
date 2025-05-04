@@ -23,7 +23,9 @@ function GetStartedPage() {
     window.scrollTo(0, 0);
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/recipes");
+        const response = await axios.get(
+          "https://cs-test-z2vm.onrender.com/api/recipes"
+        );
         console.log("Fetched recipes from API:", response.data); // Debug log
         setRecipes(response.data.data);
       } catch (error) {
