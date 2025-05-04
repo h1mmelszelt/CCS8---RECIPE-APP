@@ -43,7 +43,7 @@ app.get("*", (req, res) => {
 // Catch-all route to serve index.html for React Router
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-});
+});a
 */
 
 app.listen(5000, () => {
