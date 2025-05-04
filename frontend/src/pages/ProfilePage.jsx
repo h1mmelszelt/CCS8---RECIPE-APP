@@ -358,7 +358,7 @@ const ProfilePage = () => {
           </Text>
         </Box>
       ) : (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={6}>
+        <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={6}>
           {bookmarks.map((bookmark) => (
             <Box key={bookmark._id} position="relative">
               <Link
