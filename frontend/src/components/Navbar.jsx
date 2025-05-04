@@ -95,6 +95,7 @@ function Navbar({ transparent }) {
       >
         {/* Logo */}
         <Tooltip label="Go to BiteBook Home page">
+          Test Run
           <Link to="/home">
             <Flex alignItems="center">
               <Image
