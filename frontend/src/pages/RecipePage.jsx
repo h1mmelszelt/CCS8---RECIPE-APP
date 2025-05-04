@@ -47,7 +47,6 @@ const RecipePage = () => {
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const location = useLocation();
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   // State for editing a review in the comments section
   const [editingReviewId, setEditingReviewId] = useState(null);
@@ -142,8 +141,6 @@ const RecipePage = () => {
         setRelatedRecipes(relatedResponse.data.data);
       } catch (error) {
         console.error("Error fetching recipe:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchRecipe();
@@ -184,7 +181,7 @@ const RecipePage = () => {
     }
 
     const userId =
-      localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+      localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
       toast({
         title: "Error",
@@ -493,24 +490,25 @@ const RecipePage = () => {
   if (location.state && location.state.from) {
     if (location.state.from.includes("/search")) {
       prevLabel = "Search";
-      prevPath = "/search";
-    }
+      prevPath = location.state.from;
+    } else if (location.state.from.includes("/profile")) {
+      prevLabel = "Profile";
+      prevPath = location.state.from;
+    } else if (location.state.from.includes("/notifications")) {
+      prevLabel = "Notifications";
+      prevPath = location.state.from;
+    } // Add more as needed
   }
 
-  // Render breadcrumbs, ensuring proper hierarchy based on navigation source
-  const breadcrumbs = [
-    { label: "Home", path: "/home" },
-    prevLabel === "Search" ? { label: "Search", path: prevPath } : null,
-    recipe && recipe._id ? { label: recipe.name, path: `/recipes/${recipe._id}` } : null,
-  ].filter(Boolean);
+  // Render breadcrumbs, limiting to only one recipe (the current one)
+  const breadcrumbs =
+    location.state && location.state.breadcrumbs
+      ? location.state.breadcrumbs.filter(
+          (crumb) => !crumb.path.startsWith("/recipes/")
+        )
+      : [{ label: "Home", path: "/home" }];
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (!recipe) {
-    return <Text>Recipe not found.</Text>;
-  }
+  if (!recipe) return <Text>Loading...</Text>;
 
   return (
     <>
@@ -520,13 +518,27 @@ const RecipePage = () => {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
           ))}
+          {breadcrumbs.length > 0 && " > "}
+          <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+            {recipe.name}
+          </span>
         </Text>
 
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
@@ -541,51 +553,44 @@ const RecipePage = () => {
                 src={recipe.user_id?.avatar}
                 name={recipe.user_id?.name}
               />
-              {/* Defensive: only render link if recipe.user_id and recipe.user_id._id exist */}
               <HStack spacing={2} align="center">
-                {recipe.user_id && recipe.user_id._id ? (
-                  <Link
-                    to={`/profile/${recipe.user_id._id}`}
-                    style={{ color: "#FD660B", textDecoration: "underline" }}
-                  >
-                    <Text fontWeight="bold" fontSize="md" color="#FD660B">
-                      {recipe.user_id.name}
-                    </Text>
-                  </Link>
-                ) : (
-                  <Text fontWeight="bold" fontSize="md" color="#FD660B">
-                    Unknown User
+                <Link
+                  to={`/profile/${recipe.user_id?._id}`}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  <Text fontWeight="bold" fontSize={{ base: "sm", md: "md" }} color="#FD660B">
+                    {recipe.user_id?.name || "Unknown Author"}
                   </Text>
-                )}
+                </Link>
+                <HStack spacing={1}>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <FaStar
+                      key={index}
+                      size={15} // Adjust the size of the star
+                      color={
+                        index <
+                        (reviews.length > 0
+                          ? Math.round(
+                              reviews.reduce((sum, r) => sum + r.rating, 0) /
+                                reviews.length
+                            )
+                          : 0)
+                          ? "#FD660B" // Orange for filled stars
+                          : "#D3D3D3" // Gray for empty stars
+                      }
+                    />
+                  ))}
+                </HStack>
+                <Text fontSize={{ base: "sm", md: "md" }} color="gray.600">
+                  {reviews.length > 0
+                    ? (
+                        reviews.reduce((sum, r) => sum + r.rating, 0) /
+                        reviews.length
+                      ).toFixed(1)
+                    : "0.0"}{" "}
+                  ({reviews.length})
+                </Text>
               </HStack>
-              <HStack spacing={1}>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <FaStar
-                    key={index}
-                    size={15} // Adjust the size of the star
-                    color={
-                      index <
-                      (reviews.length > 0
-                        ? Math.round(
-                            reviews.reduce((sum, r) => sum + r.rating, 0) /
-                              reviews.length
-                          )
-                        : 0)
-                        ? "#FD660B" // Orange for filled stars
-                        : "#D3D3D3" // Gray for empty stars
-                    }
-                  />
-                ))}
-              </HStack>
-              <Text fontSize="md" color="gray.600">
-                {reviews.length > 0
-                  ? (
-                      reviews.reduce((sum, r) => sum + r.rating, 0) /
-                      reviews.length
-                    ).toFixed(1)
-                  : "0.0"}{" "}
-                ({reviews.length})
-              </Text>
               <VStack align="start" spacing={0}>
                 <Text fontSize="sm" color="gray.500">
                   Posted on: {new Date(recipe.createdAt).toLocaleDateString()}
@@ -599,22 +604,27 @@ const RecipePage = () => {
               alt={recipe.name}
               borderRadius="md"
               mb={6}
-              width="100%"
-              height="400px"
+              width={{ base:"100%",md: "100%"}}
+              height={{ base:"200px",md: "400px"}}
               objectFit="cover"
             />
 
             {/* Recipe Details */}
             <VStack align="start" spacing={4} mb={6}>
-              <Text fontSize="lg" fontWeight="bold">
+              <Text 
+              fontSize={{ base: "md", md: "lg"}} 
+              fontWeight="bold"
+              width={{ base:"100%", md: "100%"}}
+              >
                 {recipe.description}
               </Text>
-              <HStack spacing={4}>
+              <HStack spacing={4} wrap="wrap">
                 <Button
                   leftIcon={<FiPrinter />}
                   colorScheme="orange"
                   variant="outline"
                   onClick={handlePrint}
+                  size={{ base: "sm", md: "md" }}
                 >
                   Print Recipe
                 </Button>
@@ -623,6 +633,7 @@ const RecipePage = () => {
                   colorScheme="orange"
                   variant="outline"
                   onClick={handleShare}
+                  size={{ base: "sm", md: "md" }}
                 >
                   Share Recipe
                 </Button>
@@ -632,6 +643,7 @@ const RecipePage = () => {
                     colorScheme="orange"
                     variant="solid"
                     onClick={handleRemoveBookmark}
+                    size={{ base: "sm", md: "md" }}
                   >
                     Remove from Bookmarks
                   </Button>
@@ -641,6 +653,7 @@ const RecipePage = () => {
                     colorScheme="orange"
                     variant="outline"
                     onClick={handleBookmark}
+                    size={{ base: "sm", md: "md" }}
                   >
                     Add to Bookmarks
                   </Button>
@@ -653,6 +666,7 @@ const RecipePage = () => {
                       colorScheme="blue"
                       variant="outline"
                       onClick={() => navigate(`/edit/${recipe._id}`)}
+                      size={{ base: "sm", md: "md" }}
                     >
                       Edit
                     </Button>
@@ -981,9 +995,11 @@ const RecipePage = () => {
               {relatedRecipes.length > 0 ? (
                 relatedRecipes.map((relatedRecipe) => (
                   <Link
-                    to={`/recipes/${relatedRecipe._id}`}
-                    state={{ from: location.state?.from || "/home" }}
                     key={relatedRecipe._id}
+                    to={`/recipes/${relatedRecipe._id}`}
+                    state={{
+                      breadcrumbs: [...breadcrumbs],
+                    }}
                     style={{ textDecoration: "none" }}
                   >
                     <HStack
@@ -1053,7 +1069,7 @@ const RecipePage = () => {
             </Heading>
             <VStack spacing={4} align="stretch">
               {trendingRecipes && trendingRecipes.length > 0 ? (
-                trendingRecipes.filter(r => r && r._id).map((recipe) => (
+                trendingRecipes.map((recipe) => (
                   <Link
                     key={recipe._id}
                     to={`/recipes/${recipe._id}`}
@@ -1083,7 +1099,7 @@ const RecipePage = () => {
                           {recipe.name}
                         </Text>
                         <Text fontSize="xs" color="gray.500">
-                          {recipe.description}
+                          {recipe.description || "No description available"}
                         </Text>
                       </VStack>
                     </HStack>
