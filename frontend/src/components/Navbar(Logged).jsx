@@ -575,7 +575,7 @@ function Navbar() {
         </Link>
 
         {/* User Icon */}
-        <Link to={userId ? `/profile/${userId}` : "/login"}>
+        <Link to={userId ? `/me` : "/login"}>
           <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<FiUser size={20} />}
