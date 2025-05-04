@@ -13,8 +13,21 @@ import {
   Image,
 } from "@chakra-ui/react";
 import faqImage from "/images/chef asking VideoHive.jpg"; // Replace with your image path
+import { useEffect } from "react";
+
+
 
 const FAQPage = () => {
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
+  
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (FAQPage) - All links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  
   const faqs = [
     {
       question: "Is it free to use the site?",
@@ -74,7 +87,7 @@ const FAQPage = () => {
               our{" "}
               <Text
                 as="a"
-                href="/contact-us"
+                href={isValidPath("/contact-us") ? "/contact-us" : undefined}
                 color="orange.500"
                 fontWeight="semibold"
               >

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -13,6 +13,12 @@ import aboutUsImage from "/images/cooking by AdobeStock.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const AboutUsPage = () => {
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <Box bg="white" minH="100vh" color="black">
       {/* Main Content */}

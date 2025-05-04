@@ -6,10 +6,12 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
   Button,
   VStack,
   HStack,
@@ -17,11 +19,18 @@ import {
   Divider,
   Link as ChakraLink,
   useBreakpointValue,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { SearchIcon, BellIcon, AddIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  CloseIcon,
+  SearchIcon,
+  BellIcon,
+  AddIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import { FiUser, FiHome } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import NotificationsPage from "../pages/NotificationsPage";
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -31,13 +40,23 @@ function Navbar() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAllNotifications, setShowAllNotifications] = useState(false);
   const { setIsAuthenticated } = useContext(AuthContext);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+  const popupRef = useRef(null);
 
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
   // Logout function
   const handleLogout = () => {
     console.log("Logout triggered");
     localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("userId"); // Remove userId from localStorage
+    sessionStorage.removeItem("token"); // Remove token from sessionStorage
+    sessionStorage.removeItem("userId"); // Remove userId from sessionStorage
     setIsAuthenticated(false); // Update authentication state
     navigate("/login"); // Redirect to login page
   };
@@ -49,6 +68,20 @@ function Navbar() {
       navigate(`/search`); // Clear the query parameter if search is empty
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setIsPopupVisible(false); // Close the popup
+        setShowAllNotifications(false); // Reset to show "See all recent activity"
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // State for notifications
   const [notifications, setNotifications] = useState([
@@ -74,13 +107,6 @@ function Navbar() {
       time: "Tuesday",
     },
     {
-      id: 4,
-      name: "Running low on storage space",
-      message: "",
-      avatar: "/images/storage-icon.png",
-      time: "Monday",
-    },
-    {
       id: 5,
       name: "Shannon Shaw",
       message: "commented on your recipe",
@@ -93,7 +119,8 @@ function Navbar() {
 
   // Toggle notification popup
   const togglePopup = () => {
-    setIsPopupVisible(!isPopupVisible);
+    setIsPopupVisible(!isPopupVisible); // Toggle the popup visibility
+    setShowAllNotifications(false); // Reset to show "See all recent activity"
   };
 
   return (
@@ -156,7 +183,6 @@ function Navbar() {
                 }}
               />
             </InputGroup>
-
             {/* Create Icon */}
             <Link to="/create">
               <IconButton
@@ -170,38 +196,60 @@ function Navbar() {
                 size="sm"
               />
             </Link>
-
             {/* Notifications Icon */}
             <Box position="relative">
               <IconButton
-                icon={<BellIcon boxSize={6} color={"black"} />}
+                icon={
+                  <BellIcon
+                    boxSize={6}
+                    color={isPopupVisible ? "#FD660B" : "black"}
+                  />
+                } // Change color based on isPopupVisible
                 aria-label="Notifications"
                 variant="ghost"
                 color="#FD660B"
                 _hover={{ bg: "#FFF1E8" }}
                 size="md"
-                onClick={togglePopup}
+                onClick={togglePopup} // Use the togglePopup function
               />
               {isPopupVisible && (
                 <Box
+                  ref={popupRef} // Attach the ref here
                   position="absolute"
                   top="40px"
                   right="0"
                   bg="white"
-                  boxShadow="md"
+                  boxShadow="lg"
                   borderRadius="md"
-                  borderColor={"gray.400"}
-                  p={4}
+                  borderColor="gray.300"
+                  borderWidth="1px"
+                  p={5}
                   zIndex="1000"
                   width="300px"
+                  maxHeight={showAllNotifications ? "600px" : "400px"}
+                  overflowY="auto"
                 >
-                  <Text fontWeight="bold" mb={2}>
-                    Notifications
-                  </Text>
+                  <Flex justify="space-between" align="center" mb={2}>
+                    <Text fontWeight="bold">Notifications</Text>
+                    <IconButton
+                      icon={<CloseIcon />}
+                      aria-label="Close popup"
+                      size="sm"
+                      color={"black"}
+                      variant="ghost"
+                      onClick={() => {
+                        setIsPopupVisible(false); // Close the popup
+                        setShowAllNotifications(false); // Reset to show "See all recent activity"
+                      }}
+                    />
+                  </Flex>
                   <Divider mb={4} />
                   <VStack align="start" spacing={4}>
                     {notifications.length > 0 ? (
-                      notifications.map((notification) => (
+                      (showAllNotifications
+                        ? notifications
+                        : notifications.slice(0, 3)
+                      ).map((notification) => (
                         <HStack
                           key={notification.id}
                           align="start"
@@ -242,130 +290,164 @@ function Navbar() {
                     fontWeight="bold"
                     textAlign="center"
                     display="block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowAllNotifications(!showAllNotifications); // Toggle the state
+                    }}
                   >
-                    See all recent activity
+                    {showAllNotifications
+                      ? "Show less"
+                      : "See all recent activity"}
                   </ChakraLink>
                 </Box>
               )}
             </Box>
-
             {/* User Profile Icon */}
-            <Link to={`/profile/${userId}`}>
+            <Link to={userId ? `/profile/${userId}` : "/login"}>
               <IconButton
                 icon={<FiUser size={20} />}
                 aria-label="User Profile"
                 variant="ghost"
-                color="black"
+                color={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
                 _hover={{ bg: "#FFF1E8" }}
                 size="sm"
                 borderRadius="full"
                 border="2px solid"
-                borderColor="black"
+                borderColor={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
               />
-            </Link>
-
-            {/* Menu */}
-            <Menu>
-              <MenuButton
-                as={Button}
-                _active={{ bg: "white" }}
-                bg="transparent"
-                colorScheme="gray"
+              <Box
+                fontSize="sm"
+                color={
+                  (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
+                    ? "#FD660B"
+                    : "black"
+                }
+                mt={1}
               >
-                <HamburgerIcon boxSize={9} color="#FD660B" />
-              </MenuButton>
-              <MenuList bg="white" border="1px solid #E2E8F0" p={0}>
-                {/* Home Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/home"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }} // Slight hover effect
-                  fontWeight="semibold" // Semi-bold text
-                  fontSize="sm"
-                  py={3} // Consistent padding
-                >
-                  Home
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />{" "}
-                {/* Gray line separator */}
-                {/* About Us Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/about-us"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  About Us
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Contact Us Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/contact-us"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Contact Us
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Site Map Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/sitemap"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Site Map
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* FAQ Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/faq"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  FAQ
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-                {/* Settings Menu Item */}
-                <MenuItem
-                  as={Link}
-                  to="/settings"
-                  color="black"
-                  _hover={{ bg: "#F9F9F9" }}
-                  fontWeight="semibold"
-                  fontSize="sm"
-                  py={3}
-                >
-                  Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout} color="red">
-                  Logout
-                </MenuItem>
-                <Box borderBottom="1px solid #E2E8F0" />
-              </MenuList>
-            </Menu>
+              </Box>
+            </Link>
+            {/* Hamburger Icon for Drawer */} {/* Drawer Trigger */}
+            <IconButton
+              icon={<HamburgerIcon boxSize={8} />}
+              aria-label="Open Menu"
+              onClick={onDrawerOpen}
+              bg="transparent"
+              color="#FD660B"
+              _hover={{ bg: "gray.100" }}
+            />
           </Flex>
         </Flex>
       </Box>
 
+      <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerBody>
+            <Flex direction="column" gap={4}>
+              <Link
+                to="/home"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Home
+                </Box>
+              </Link>
+              <Link
+                to="/about-us"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  About Us
+                </Box>
+              </Link>
+              <Link
+                to="/contact-us"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Contact Us
+                </Box>
+              </Link>
+              <Link
+                to="/site-map"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Site Map
+                </Box>
+              </Link>
+              <Link
+                to="/faq"
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  FAQ
+                </Box>
+              </Link>
+              <Link
+                to={userId ? `/settings/${userId}` : "/login"}
+                onClick={onDrawerClose}
+                style={{ textDecoration: "none" }}
+              >
+                <Box
+                  _hover={{ bg: "#FFD8B2", color: "black" }} // Lighter orange background with black text
+                  px={4}
+                  py={2}
+                  borderRadius="sm"
+                >
+                  Settings
+                </Box>
+              </Link>
+              <Button onClick={handleLogout} colorScheme="red">
+                Logout
+              </Button>
+            </Flex>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
       {/* Navbar for smaller screens ------------------------------------------------*/}
       <Box
-        display={{ base: "flex", md: "none" }}
+        display={{ base: "flex", sm: "none" }}
         position="fixed"
         bottom="0"
         left="0"
@@ -472,18 +554,14 @@ function Navbar() {
         </Link>
 
         {/* User Icon */}
-        <Link to="/me">
+        <Link to={userId ? `/profile/${userId}` : "/login"}>
           <Flex direction="column" align="center" justify="center">
             <IconButton
               icon={<FiUser size={20} />}
               aria-label="User Profile"
               variant="ghost"
               color={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -492,11 +570,7 @@ function Navbar() {
               borderRadius="full"
               border="2px solid"
               borderColor={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }
@@ -504,11 +578,7 @@ function Navbar() {
             <Box
               fontSize="sm"
               color={
-                location.pathname === "/me" ||
-                location.pathname === "/profile/:id" ||
-                location.pathname === "/settings" ||
-                location.pathname === "/notification-settings" ||
-                location.pathname === "/advanced-settings"
+                (userId && location.pathname === `/profile/${userId}`) || location.pathname === "/me"
                   ? "#FD660B"
                   : "black"
               }

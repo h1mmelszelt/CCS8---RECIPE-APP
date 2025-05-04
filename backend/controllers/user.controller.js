@@ -155,6 +155,13 @@ export const addBookmark = async (req, res) => {
   const { userId, recipeId } = req.body;
 
   try {
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -162,11 +169,10 @@ export const addBookmark = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Check if the recipe is already bookmarked
     if (user.bookmarks.includes(recipeId)) {
       return res
-        .status(400)
-        .json({ success: false, message: "Recipe already bookmarked" });
+        .status(200)
+        .json({ success: true, message: "Recipe already bookmarked" });
     }
 
     user.bookmarks.push(recipeId);
@@ -177,6 +183,30 @@ export const addBookmark = async (req, res) => {
       .json({ success: true, message: "Recipe bookmarked successfully" });
   } catch (error) {
     console.error("Error adding bookmark:", error.message);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Remove a recipe from bookmarks
+export const removeBookmark = async (req, res) => {
+  let { userId, recipeId } = req.params;
+  try {
+    userId = String(userId);
+    recipeId = String(recipeId);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    const bookmarkIds = user.bookmarks.map(id => String(id));
+    const recipeIndex = bookmarkIds.indexOf(recipeId);
+    if (recipeIndex === -1) {
+      return res.status(404).json({ success: false, message: "Bookmark not found" });
+    }
+    user.bookmarks.splice(recipeIndex, 1);
+    await user.save();
+    res.status(200).json({ success: true, message: "Bookmark removed successfully" });
+  } catch (error) {
+    console.error("Error removing bookmark:", error.message);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

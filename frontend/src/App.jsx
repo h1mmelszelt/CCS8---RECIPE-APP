@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import Sitemap from "./components/Sitemap";
 import NavbarWrapper from "./components/NavbarWrapper";
@@ -26,10 +27,11 @@ import FAQPage from "./pages/FAQPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import SignInRequired from "./pages/SignInRequired";
 import { AuthProvider } from "./context/AuthContext";
+import SitemapPage from "./pages/SitemapPage";
+import LoggedOutSettings from "./pages/LoggedOutSettings";
+import EditRecipePage from "./pages/EditRecipePage";
 
 function App() {
-  const loggedInUserId = "6803723a7cf02156db240351"; // Replace with actual logged-in user ID
-  const profileOwnerId = "6803723a7cf02156db240351"; // Replace with the profile owner's ID (dynamic)
   const notifications = [
     {
       id: 1,
@@ -50,7 +52,7 @@ function App() {
       time: "Tuesday",
     },
   ];
-
+  const location = useLocation();
   return (
     <AuthProvider>
       <CustomThemeProvider>
@@ -72,17 +74,18 @@ function App() {
             />
             <Route path="/me" element={<MePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings/:id" element={<SettingsPage />} />
+            <Route path="/logged-out-settings" element={<LoggedOutSettings />} />
             <Route
               path="/notifications"
               element={<NotificationsPage notifications={notifications} />}
             />
             <Route
-              path="/advanced-settings"
+              path="/advanced-settings/:id"
               element={<AdvancedSettingsPage />}
             />
             <Route
-              path="/notification-settings"
+              path="/notification-settings/:id"
               element={<NotificationSettingsPage />}
             />
             <Route path="/create" element={<CreatePage />} />
@@ -90,13 +93,19 @@ function App() {
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/recipes/:recipeId" element={<RecipePage />} />
+            <Route path="/edit/:recipeId" element={<EditRecipePage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
             <Route path="/sign-in-required" element={<SignInRequired />} />
+            <Route path="/site-map" element={<SitemapPage />} />
+            {/* Fallback route */}
+            <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
 
-          {/* Footer */}
-          <Sitemap />
+          {/* Footer: Hide on SitemapPage */}
+          {location.pathname !== "/site-map" && (
+            <Sitemap />
+          )}
         </Box>
       </CustomThemeProvider>
     </AuthProvider>

@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -11,10 +12,19 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-
 import phone from "/images/phone by iStock.jpg";
 
 const ContactUsPage = () => {
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []); 
+
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (ContactUsPage) - All links must be valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  
   return (
     <Box bg="white" minH="100vh">
       <Box px={{ base: 4, md: 20 }} py={10}>

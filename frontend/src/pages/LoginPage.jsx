@@ -14,16 +14,26 @@ import cooking from "/images/AdobeStock guy cooking.jpeg";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const { setIsAuthenticated } = useContext(AuthContext);
+
+  // Defensive: never allow malformed dynamic routes in any navigation or link
+  // (LoginPage) - Only allow navigation to /register if the path is valid
+  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    window.scrollTo(0, 0);
+  }, []); 
 
   const handleLogin = async () => {
     setLoading(true);
@@ -36,9 +46,20 @@ function LoginPage() {
         }
       );
 
-      // Save token to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userId", response.data.user.id);
+      // Clear any previous credentials before saving new ones
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("userId");
+
+      // Save token to localStorage or sessionStorage based on Remember Me
+      if (rememberMe) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.user.id);
+      } else {
+        sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("userId", response.data.user.id);
+      }
 
       setIsAuthenticated(true);
 
@@ -143,12 +164,19 @@ function LoginPage() {
                   mb={2}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleLogin();
+                    }
+                  }}
                 />
 
                 <Flex justify="space-between" align="center" mb={20}>
                   <Checkbox
                     colorScheme="white"
                     iconColor="orange"
+                    isChecked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                     sx={{
                       "& .chakra-checkbox__control": {
                         bg: "white",
@@ -187,7 +215,7 @@ function LoginPage() {
                 mb={20}
               >
                 Don’t have an account?{" "}
-                <Link href="/register" color="#FD660B" fontWeight="bold">
+                <Link href={isValidPath("/register") ? "/register" : undefined} color="#FD660B" fontWeight="bold">
                   Sign up
                 </Link>
               </Text>

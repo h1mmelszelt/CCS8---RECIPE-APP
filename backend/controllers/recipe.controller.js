@@ -97,7 +97,7 @@ export const getPopularRecipes = async (req, res) => {
 
     const results = await Recipe.populate(popular, { path: "_id" });
 
-    res.status(200).json(results);
+    res.status(200).json({ success: true, data: results });
   } catch (err) {
     console.error("Error fetching popular recipes:", err);
     res.status(500).json({ error: "Failed to get popular recipes" });
@@ -130,14 +130,21 @@ export const getRecipeById = async (req, res) => {
   }
 
   try {
-    const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id)
+      .populate("user_id", "name avatar") // Populate author details
+      .lean();
 
     if (!recipe) {
       return res
         .status(404)
         .json({ success: false, message: "Recipe not found" });
     }
-    res.status(200).json({ success: true, data: recipe });
+
+    const reviews = await Review.find({ recipe_id: id })
+      .populate("user_id", "name avatar") // Populate reviewer details
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: { recipe, reviews } });
   } catch (error) {
     console.error("Error fetching recipe by ID:", error.message);
     res.status(500).json({ success: false, message: "Server Error" });

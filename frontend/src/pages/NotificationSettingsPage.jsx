@@ -11,15 +11,39 @@ import {
 } from "@chakra-ui/react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa"; // Import icons
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link, useLocation, useParams } from "react-router-dom"; // Import Link for navigation
 
 import BG_Image from "/images/11.png";
 
 const NotificationSettingsPage = () => {
+  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+  const location = useLocation();
+  // Breadcrumbs for Notification Settings Page (stop at Settings)
+  const breadcrumbs = [
+    { label: "Home", path: "/home" },
+    { label: "Profile", path: `/profile/${userId}` },
+    { label: "Settings", path: `/settings/${userId}` },
+  ];
   const [activeSetting, setActiveSetting] = useState("Notifications"); // State to track active setting
+  
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
+      {/* Breadcrumbs at the top of the page */}
+      <Box maxW="1200px" mx="auto" px={6} pt={6}>
+        <Text fontSize="sm" color="gray.500" mb={4}>
+          {breadcrumbs.map((crumb, idx) => (
+            <span key={crumb.path}>
+              {idx === breadcrumbs.length - 1 ? (
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+              ) : (
+                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+              )}
+              {idx < breadcrumbs.length - 1 && " > "}
+            </span>
+          ))}
+        </Text>
+      </Box>
       <Box position="relative" zIndex={2}></Box>
 
       {/* Background Images */}
@@ -74,16 +98,16 @@ const NotificationSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: "/settings" },
+              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
               {
                 label: "Notifications",
                 icon: FaBell,
-                link: "/notification-settings",
+                link: userId ? `/notification-settings/${userId}` : "/login",
               },
               {
                 label: "Advanced Settings",
                 icon: FaSlidersH,
-                link: "/advanced-settings",
+                link: userId ? `/advanced-settings/${userId}` : "/login",
               },
             ].map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
