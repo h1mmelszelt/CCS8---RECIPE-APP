@@ -60,9 +60,11 @@ function Navbar({ transparent }) {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate(); // Initialize useNavigate
   const location = useLocation();
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Retrieve userId from storage
-  
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId"); // Retrieve userId from storage
+
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -98,7 +100,7 @@ function Navbar({ transparent }) {
       >
         {/* Logo */}
         <Tooltip label="Go to BiteBook Home page">
-          Test Run v1.1.1
+          Test Run v1.1.2
           <Link to="/home">
             <Flex alignItems="center">
               <Image
