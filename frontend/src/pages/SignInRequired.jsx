@@ -12,12 +12,12 @@ function SignInRequired() {
       alignItems="center"
       bg="gray.100"
       textAlign="center"
-      p={6}
+      pb={20}
     >
       <Text fontSize="2xl" fontWeight="bold" mb={4}>
         Please Sign In
       </Text>
-      <Text fontSize="lg" color="gray.600" mb={6}>
+      <Text fontSize="lg" color="gray.600" mb={4}>
         You need to sign in to access this page.
       </Text>
       <Link to="/login">
