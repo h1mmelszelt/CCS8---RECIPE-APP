@@ -59,7 +59,7 @@ const ContactUsPage = () => {
             </Text>
             <Text fontSize="md" color="gray.600">
               Fill out the ticket form and our support team will address any of
-              your concerns or questions about InsaneRecipe.
+              your concerns or questions about BiteBook.
             </Text>
             <Text fontSize="md" color="gray.600">
               Or you can get in touch with us through our contact details below:

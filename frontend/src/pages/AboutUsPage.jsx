@@ -33,7 +33,7 @@ const AboutUsPage = () => {
             through the power of food
           </Text>
           <Text fontSize="md" color="gray.600">
-            At InsaneRecipe, we believe food is more than just nourishment—it's
+            At BiteBook, we believe food is more than just nourishment—it's
             a way to connect, inspire, and grow. Our platform empowers home
             cooks and aspiring chefs to share their passion through videos,
             build their personal brands, and learn from a supportive community.
