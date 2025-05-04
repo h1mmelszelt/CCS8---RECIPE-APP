@@ -44,9 +44,9 @@ app.get("*", (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
-/*
+*/
 
 app.listen(5000, () => {
   connectDB();
   console.log("Server started at http://localhost:" + PORT);
-});*/
+});

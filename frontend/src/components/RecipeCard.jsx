@@ -47,8 +47,8 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
       boxShadow="md"
       transition="0.4s ease"
       position="relative"
-      width={{ base: "160px",  md: "200px", lg: "200px" }} // Responsive width
-      height={{ base: "150px",  md: "200px", lg: "200px" }} // Responsive height
+      width={{ base: "160px",  md: "200px", lg: "100%" }} // Responsive width
+      height={{ base: "150px",  md: "200px", lg: "100%" }} // Responsive height
     >
       {/* Recipe Image */}
       <Box position="relative">
