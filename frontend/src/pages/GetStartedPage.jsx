@@ -1,8 +1,8 @@
 import { Box, Button, Image, Text, Flex, VStack, Grid } from "@chakra-ui/react";
 
 import { motion } from "framer-motion";
-import Phone from "/images/phone.png";
-import Fabio from "/images/fabio.png";
+import Phone from "/images/bitebookQR.png";
+
 import RecipeCard from "../components/RecipeCard";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -250,7 +250,7 @@ function GetStartedPage() {
                 <Link to="/search">View More</Link>
               </MotionText>
             </Flex>
-            <Box  px={{ base: "4", md: "8" }} py={6} maxW="1200px" mx="auto">
+            <Box px={{ base: "4", md: "8" }} py={6} maxW="1200px" mx="auto">
               {loading ? (
                 <Text textAlign="center" fontSize="18px" color="gray.500">
                   Loading recipes...
@@ -269,19 +269,19 @@ function GetStartedPage() {
                 >
                   {recipes.slice(0, 4).map((recipe) =>
                     recipe && recipe._id ? (
-                        <Link
-                          to={`/recipes/${recipe._id}`}
-                          key={recipe._id}
-                          style={{ textDecoration: "none" }}
-                        onClick={e => {
+                      <Link
+                        to={`/recipes/${recipe._id}`}
+                        key={recipe._id}
+                        style={{ textDecoration: "none" }}
+                        onClick={(e) => {
                           if (!recipe._id) {
                             e.preventDefault();
                           }
                         }}
-                        >
-                          <RecipeCard recipe={recipe} />
-                        </Link>
-                      ) : null
+                      >
+                        <RecipeCard recipe={recipe} />
+                      </Link>
+                    ) : null
                   )}
                 </Grid>
               )}
