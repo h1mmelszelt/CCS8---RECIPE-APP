@@ -47,15 +47,15 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
       boxShadow="md"
       transition="0.4s ease"
       position="relative"
-      width={{ base: "160px",  md: "200px", lg: "100%" }} // Responsive width
-      height={{ base: "150px",  md: "200px", lg: "100%" }} // Responsive height
+      width={{ base: "160px", md: "200px", lg: "100%" }} // Responsive width
+      height={{ base: "150px", md: "200px", lg: "100%" }} // Responsive height
     >
       {/* Recipe Image */}
       <Box position="relative">
         <Image
           src={getCompressedImageUrl(recipe.image)}
           alt={recipe.name}
-          height={{ base: "100%", md: "160px", lg: "160px"}} // Responsive height
+          height={{ base: "100%", md: "160px", lg: "160px" }} // Responsive height
           width="100%"
           objectFit="cover"
         />
@@ -73,16 +73,14 @@ const RecipeCard = ({ recipe, loggedInUserId }) => {
           transition="opacity 0.3s ease"
           _hover={{ opacity: "1" }}
           display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
+          alignItems="center" // Vertically center the content
+          justifyContent="center" // Horizontally center the content
           p={3}
         >
           {/* Description */}
-          <Box textAlign="center" mt={12}>
-            <Text fontSize="sm" noOfLines={3}>
-              {recipe.description}
-            </Text>
-          </Box>
+          <Text fontSize="sm" textAlign="center" noOfLines={3}>
+            {recipe.description}
+          </Text>
         </Box>
       </Box>
 

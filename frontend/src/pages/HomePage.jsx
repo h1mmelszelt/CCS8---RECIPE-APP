@@ -292,26 +292,6 @@ function HomePage() {
                 ) : null
               )
             )}
-            {/* Show More Card 
-            <Box
-              bg="gray.100"
-              borderRadius="md"
-              boxShadow="md"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height={{ base: "120px", md: "200px" }}
-              cursor="pointer"
-              _hover={{ bg: "gray.200" }}
-            >
-              <Text
-                fontSize={{ base: "14px", md: "16px" }}
-                fontWeight="bold"
-                color="gray.600"
-              >
-                Show More
-              </Text>
-            </Box>*/}
           </Grid>
 
           <Divider borderColor="gray.400" my={8} />
@@ -341,7 +321,9 @@ function HomePage() {
                   recipe && recipe._id ? (
                     <Link
                       to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                      state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+                      state={{
+                        breadcrumbs: [{ label: "Home", path: "/home" }],
+                      }}
                       key={recipe._id}
                       style={{ textDecoration: "none" }} // Remove underline from the link
                       onClick={(e) => {
@@ -416,7 +398,9 @@ function HomePage() {
                   recipe && recipe._id ? (
                     <Link
                       to={`/recipes/${recipe._id}`} // Navigate to the recipe details page
-                      state={{ breadcrumbs: [{ label: "Home", path: "/home" }] }}
+                      state={{
+                        breadcrumbs: [{ label: "Home", path: "/home" }],
+                      }}
                       key={recipe._id}
                       style={{ textDecoration: "none" }} // Remove underline from the link
                       onClick={(e) => {
