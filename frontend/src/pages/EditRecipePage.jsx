@@ -18,6 +18,7 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Tooltip,
 } from "@chakra-ui/react";
 import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -255,7 +256,7 @@ function EditRecipePage() {
                 Recipe Title:
               </Text>
               <Input
-                placeholder="What's the name of your recipe?"
+                placeholder="Enter the name of your recipe."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onFocus={() => resetInvalidField("title")} // Reset the error state on focus
@@ -294,7 +295,7 @@ function EditRecipePage() {
                 Description:
               </Text>
               <Textarea
-                placeholder="What's your recipe about?"
+                placeholder="Enter a brief description of your recipe."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onFocus={() => resetInvalidField("description")}
@@ -314,31 +315,52 @@ function EditRecipePage() {
               <Text fontWeight="bold" color="black" mb={2}>
                 Ingredients:
               </Text>
-              <Input
-                placeholder="Add an ingredient and press Enter"
-                value={ingredientInput}
-                focusBorderColor="orange.400"
-                onChange={(e) => setIngredientInput(e.target.value)}
-                onFocus={() => resetInvalidField("ingredients")}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddItem(
-                      ingredientInput,
-                      setIngredientInput,
-                      ingredients,
-                      setIngredients
-                    );
+              <HStack spacing={2}>
+                <Input
+                  placeholder="Add an ingredient to your recipe."
+                  value={ingredientInput}
+                  focusBorderColor="orange.400"
+                  onChange={(e) => setIngredientInput(e.target.value)}
+                  onFocus={() => resetInvalidField("ingredients")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddItem(
+                        ingredientInput,
+                        setIngredientInput,
+                        ingredients,
+                        setIngredients
+                      );
+                    }
+                  }}
+                  border="1px solid"
+                  borderColor={
+                    invalidFields.ingredients ? "red.500" : "gray.300"
                   }
-                }}
-                border="1px solid"
-                borderColor={invalidFields.ingredients ? "red.500" : "gray.300"}
-              />
+                />
+                <Tooltip
+                  label="Add Ingredient"
+                  aria-label="Add Ingredient Tooltip"
+                >
+                  <IconButton
+                    size="sm"
+                    colorScheme="orange"
+                    icon={<AddIcon />}
+                    onClick={() =>
+                      handleAddItem(
+                        ingredientInput,
+                        setIngredientInput,
+                        ingredients,
+                        setIngredients
+                      )
+                    }
+                  />
+                </Tooltip>
+              </HStack>
               {invalidFields.ingredients && (
                 <Text fontSize="sm" color="red.500" mt={1}>
                   Ingredient(s) is required.
                 </Text>
               )}
-
               <HStack spacing={2} mt={2} wrap="wrap">
                 {ingredients.map((ingredient, index) => (
                   <Tag
@@ -356,6 +378,7 @@ function EditRecipePage() {
                 ))}
               </HStack>
             </Box>
+
             {/* Instructions Section */}
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
@@ -364,7 +387,7 @@ function EditRecipePage() {
               {instructions.map((instruction, index) => (
                 <HStack key={index} spacing={4} mb={2}>
                   <Input
-                    placeholder={`Step ${index + 1}`}
+                    placeholder={`Enter step ${index + 1} of your recipe.`}
                     value={instruction}
                     onChange={(e) =>
                       handleInstructionChange(index, e.target.value)
@@ -434,20 +457,32 @@ function EditRecipePage() {
               <Text fontWeight="bold" color="black" mb={2}>
                 Tags:
               </Text>
-              <Input
-                placeholder="Add a tag and press Enter"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onFocus={() => resetInvalidField("tags")}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddItem(tagInput, setTagInput, tags, setTags);
-                  }
-                }}
-                border="1px solid"
-                borderColor={invalidFields.tags ? "red.500" : "gray.300"}
-                focusBorderColor="orange.400"
-              />
+              <HStack spacing={2}>
+                <Input
+                  placeholder="Add a tag to your recipe."
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onFocus={() => resetInvalidField("tags")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddItem(tagInput, setTagInput, tags, setTags);
+                    }
+                  }}
+                  border="1px solid"
+                  borderColor={invalidFields.tags ? "red.500" : "gray.300"}
+                  focusBorderColor="orange.400"
+                />
+                <Tooltip label="Add Tag" aria-label="Add Tag Tooltip">
+                  <IconButton
+                    size="sm"
+                    colorScheme="orange"
+                    icon={<AddIcon />}
+                    onClick={() =>
+                      handleAddItem(tagInput, setTagInput, tags, setTags)
+                    }
+                  />
+                </Tooltip>
+              </HStack>
               {invalidFields.tags && (
                 <Text fontSize="sm" color="red.500" mt={1}>
                   Tag(s) is required.
