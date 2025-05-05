@@ -42,10 +42,9 @@ const AboutUsPage = () => {
     },
     {
       name: "Marcus Suyko",
-      role: "Lead Developer",
-      description:
-        "Marcus is the tech wizard behind the scenes, making sure everything runs smoothly.",
-      image: "/images/charlie.jpg",
+      role: "Support Developer",
+      description: "i fix stuff.",
+      image: "/images/mrcs.jpg", // Replace with actual image path
       links: {
         facebook: "https://facebook.com/marcussuyko",
         github: "https://github.com/marcussuyko",
