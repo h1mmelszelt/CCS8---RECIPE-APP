@@ -7,20 +7,23 @@ import {
   deleteUser,
   loginUser,
   addBookmark,
-  removeBookmark, // <-- add import
+  removeBookmark,
   getBookmarks,
+  updateProfilePicture,
+  uploadMiddleware
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.post("/login", loginUser); // Add login route
+router.post("/login", loginUser);
 router.post("/", createUser);
 router.get("/", getAllUsers);
-router.get("/:id", getUserById); //no postman req yet
+router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.post("/bookmarks", addBookmark);
-router.delete("/bookmarks/:userId/:recipeId", removeBookmark); // <-- add route
+router.delete("/bookmarks/:userId/:recipeId", removeBookmark);
 router.get("/bookmarks/:id", getBookmarks);
+router.put("/:id/profile-picture", uploadMiddleware, updateProfilePicture);
 
 export default router;

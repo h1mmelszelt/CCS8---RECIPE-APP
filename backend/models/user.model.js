@@ -38,6 +38,13 @@ const userSchema = new mongoose.Schema(
       required: true, // Name is optional
       trim: true,
     },
+
+    // Profile picture URL
+    profilePicture: {
+      type: String,
+      default: "", // Default to an empty string if no picture is provided
+    },
+
     bookmarks: [
       {
         type: mongoose.Schema.Types.ObjectId,
