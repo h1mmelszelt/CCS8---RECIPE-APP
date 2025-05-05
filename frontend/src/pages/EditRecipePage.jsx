@@ -108,9 +108,9 @@ function EditRecipePage() {
 
   const resetInvalidField = (field, index = null) => {
     setInvalidFields((prev) => {
-      console.log("Resetting field:", field, "Index:", index); // Debugging log
       if (index !== null) {
-        const updatedField = [...prev[field]];
+        // Ensure the field is an array before modifying it
+        const updatedField = Array.isArray(prev[field]) ? [...prev[field]] : [];
         updatedField[index] = false; // Reset the specific index
         return { ...prev, [field]: updatedField };
       } else {
@@ -119,13 +119,24 @@ function EditRecipePage() {
     });
   };
 
-  const handleAddInstruction = () => setInstructions([...instructions, ""]);
-  const handleRemoveInstruction = (index) =>
+  const handleAddInstruction = () => {
+    setInstructions([...instructions, ""]);
+    setInvalidFields((prev) => ({
+      ...prev,
+      instructions: Array.isArray(prev.instructions)
+        ? [...prev.instructions, false]
+        : [false], // Add a new false value
+    }));
+  };
+
+  const handleRemoveInstruction = (index) => {
     setInstructions(instructions.filter((_, i) => i !== index));
-  const handleInstructionChange = (index, value) => {
-    const updated = [...instructions];
-    updated[index] = value;
-    setInstructions(updated);
+    setInvalidFields((prev) => ({
+      ...prev,
+      instructions: Array.isArray(prev.instructions)
+        ? prev.instructions.filter((_, i) => i !== index)
+        : [], // Remove the corresponding invalid field
+    }));
   };
 
   const handleAddTag = () => setTags([...tags, ""]);
@@ -135,6 +146,12 @@ function EditRecipePage() {
     const updated = [...tags];
     updated[index] = value;
     setTags(updated);
+  };
+
+  const handleInstructionChange = (index, value) => {
+    const updatedInstructions = [...instructions];
+    updatedInstructions[index] = value; // Update the specific instruction
+    setInstructions(updatedInstructions); // Update the state
   };
 
   const handleAddItem = (input, setInput, list, setList) => {
