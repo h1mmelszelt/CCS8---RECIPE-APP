@@ -45,6 +45,7 @@ function CreatePage() {
   const [tagInput, setTagInput] = useState("");
   const toast = useToast(); // For user feedback
   const navigate = useNavigate();
+  const [imageUploading, setImageUploading] = useState(false);
 
   const handleAddIngredient = () => setIngredients([...ingredients, ""]);
   const handleRemoveIngredient = (index) =>
@@ -174,6 +175,40 @@ function CreatePage() {
     tags: false,
   });
 
+  // Handle image file upload to Cloudinary
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "lleyshpd"); // Use your actual unsigned preset
+    try {
+      const cloudinaryResponse = await axios.post(
+        "https://api.cloudinary.com/v1_1/dz4jym5dr/image/upload",
+        formData
+      );
+      setImage(cloudinaryResponse.data.secure_url);
+      toast({
+        title: "Image uploaded!",
+        description: "Your image was uploaded successfully.",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Image upload failed",
+        description: "Please try again.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
   return (
     <Box
       bg="gray.100"
@@ -215,20 +250,31 @@ function CreatePage() {
 
             <Box>
               <Text fontWeight="bold" color="black" mb={2}>
-                Recipe Image URL:
+                Recipe Image:
               </Text>
               <Input
                 focusBorderColor="orange.400"
-                placeholder="Enter the URL of your recipe image."
+                placeholder="Enter the URL of your recipe image. Or upload below."
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                onFocus={() => resetInvalidField("image")} // Reset the error state on focus
+                onFocus={() => resetInvalidField("image")}
                 border="1px solid"
                 borderColor={invalidFields.image ? "red.500" : "gray.300"}
+                mb={2}
               />
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                isDisabled={imageUploading}
+                mb={2}
+              />
+              {imageUploading && (
+                <Text fontSize="sm" color="orange.500">Uploading image...</Text>
+              )}
               {invalidFields.image && (
                 <Text fontSize="sm" color="red.500" mt={1}>
-                  Image URL is required.
+                  Image is required.
                 </Text>
               )}
             </Box>
