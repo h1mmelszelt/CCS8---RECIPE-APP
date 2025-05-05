@@ -234,7 +234,7 @@ export const getBookmarks = async (req, res) => {
 export const updateProfilePicture = async (req, res) => {
   try {
     const { id } = req.params; // User ID from the URL
-
+    console.log("Received body:", req.body); // Log the request body for debugging
     // Accept both direct Cloudinary URL (from frontend) and file upload (from form)
     if (req.body.profilePicture) {
       // If the frontend sends a Cloudinary URL directly
