@@ -657,7 +657,7 @@ const ProfilePage = () => {
             <Avatar
               size="2xl"
               name={userData?.name}
-              src={userData?.avatar}
+              src={userData?.profilePicture}
               mb={4}
               border="4px solid white"
             />

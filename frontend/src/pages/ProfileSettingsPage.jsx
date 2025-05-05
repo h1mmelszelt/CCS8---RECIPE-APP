@@ -138,7 +138,7 @@ const ProfileSettingsPage = () => {
 
       // Send the Cloudinary URL to the backend (matches backend logic)
       await axios.put(
-        `http://localhost:5000/api/users/${userId}/profile-picture`,
+        `https://thebitebook.onrender.com/api/users/${userId}/profile-picture`,
         { profilePicture: profilePictureUrl }
       );
 
