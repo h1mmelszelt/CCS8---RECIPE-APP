@@ -51,7 +51,7 @@ function EditRecipePage() {
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
-          `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
+          `https://thebitebook.onrender.com/api/recipes/${recipeId}`
         );
         const recipe = data.data.recipe;
 
@@ -224,7 +224,7 @@ function EditRecipePage() {
 
     try {
       await axios.put(
-        `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`,
+        `https://thebitebook.onrender.com/api/recipes/${recipeId}`,
         updatedRecipe
       );
       toast({

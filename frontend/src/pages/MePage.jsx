@@ -39,7 +39,7 @@ function MePage() {
       const fetchUserData = async () => {
         try {
           const response = await axios.get(
-            `https://cs-test-z2vm.onrender.com/api/users/${storedUserId}`
+            `https://thebitebook.onrender.com/api/users/${storedUserId}`
           );
           setUserData({
             name: response.data.name,

@@ -40,7 +40,7 @@ function LoginPage() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://cs-test-z2vm.onrender.com/api/users/login",
+        "https://thebitebook.onrender.com/api/users/login",
         {
           email,
           password,

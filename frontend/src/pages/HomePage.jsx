@@ -37,7 +37,7 @@ function HomePage() {
     const fetchRecipes = async () => {
       try {
         const response = await axios.get(
-          "https://cs-test-z2vm.onrender.com/api/recipes"
+          "https://thebitebook.onrender.com/api/recipes"
         );
         setRecipes(response.data.data); // Store all recipes
       } catch (error) {
@@ -50,7 +50,7 @@ function HomePage() {
     const fetchPopularRecipes = async () => {
       try {
         const response = await axios.get(
-          "https://cs-test-z2vm.onrender.com/api/recipes/popular"
+          "https://thebitebook.onrender.com/api/recipes/popular"
         );
         // The backend returns an array of objects with _id as the recipe object
         // and averageRating, totalReviews

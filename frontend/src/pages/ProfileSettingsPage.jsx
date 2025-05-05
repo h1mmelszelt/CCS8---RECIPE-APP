@@ -49,7 +49,7 @@ const ProfileSettingsPage = () => {
       try {
         if (userId) {
           const { data } = await axios.get(
-            `https://cs-test-z2vm.onrender.com/api/users/${userId}`
+            `https://thebitebook.onrender.com.onrender.com/api/users/${userId}`
           );
           console.log("Fetched User Data:", data); // Debugging: Log the fetched data
           setUserData({
@@ -96,7 +96,7 @@ const ProfileSettingsPage = () => {
     try {
       if (userId) {
         await axios.put(
-          `https://cs-test-z2vm.onrender.com/api/users/${userId}`,
+          `https://thebitebook.onrender.comm.onrender.com/api/users/${userId}`,
           userData
         );
         toast({

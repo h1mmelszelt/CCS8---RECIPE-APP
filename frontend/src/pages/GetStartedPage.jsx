@@ -24,7 +24,7 @@ function GetStartedPage() {
     const fetchRecipes = async () => {
       try {
         const response = await axios.get(
-          "https://cs-test-z2vm.onrender.com/api/recipes"
+          "https://thebitebook.onrender.com/api/recipes"
         );
         console.log("Fetched recipes from API:", response.data); // Debug log
         setRecipes(response.data.data);

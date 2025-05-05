@@ -107,7 +107,7 @@ const RecipePage = () => {
   const handleSaveEdit = async (reviewId) => {
     try {
       await axios.put(
-        `https://cs-test-z2vm.onrender.com/api/reviews/${reviewId}`,
+        `https://thebitebook.onrender.com/api/reviews/${reviewId}`,
         {
           rating: editReviewRating,
           text: editReviewText,
@@ -143,7 +143,7 @@ const RecipePage = () => {
     const fetchTrendingRecipes = async () => {
       try {
         const { data } = await axios.get(
-          "https://cs-test-z2vm.onrender.com/api/recipes/popular"
+          "https://thebitebook.onrender.com/api/recipes/popular"
         );
         // Map aggregation result to extract recipe details from _id
         const popularRecipes = Array.isArray(data.data)
@@ -166,13 +166,13 @@ const RecipePage = () => {
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
-          `https://cs-test-z2vm.onrender.com/api/recipes/${recipeId}`
+          `https://thebitebook.onrender.com/api/recipes/${recipeId}`
         );
         setRecipe(data.data.recipe); // Set recipe details
         setReviews(data.data.reviews); // Set reviews
 
         const relatedResponse = await axios.get(
-          `https://cs-test-z2vm.onrender.com/api/recipes/related/${recipeId}`
+          `https://thebitebook.onrender.com/api/recipes/related/${recipeId}`
         );
         setRelatedRecipes(relatedResponse.data.data);
       } catch (error) {
@@ -190,7 +190,7 @@ const RecipePage = () => {
       if (!userId) return;
       try {
         const res = await axios.get(
-          `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}`
+          `https://thebitebook.onrender.com/api/users/bookmarks/${userId}`
         );
         if (res.data && res.data.data) {
           setIsBookmarked(res.data.data.some((b) => b._id === recipeId));
@@ -232,7 +232,7 @@ const RecipePage = () => {
 
     try {
       const response = await axios.post(
-        "https://cs-test-z2vm.onrender.com/api/users/bookmarks",
+        "https://thebitebook.onrender.com/api/users/bookmarks",
         {
           userId,
           recipeId,
@@ -293,7 +293,7 @@ const RecipePage = () => {
     }
     try {
       await axios.delete(
-        `https://cs-test-z2vm.onrender.com/api/users/bookmarks/${userId}/${recipeIdStr}`
+        `https://thebitebook.onrender.com/api/users/bookmarks/${userId}/${recipeIdStr}`
       );
       toast({
         title: "Bookmark Removed!",
@@ -407,7 +407,7 @@ const RecipePage = () => {
 
     try {
       await axios.post(
-        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`,
+        `https://thebitebook.onrender.com/api/reviews/${recipeId}`,
         commentData
       );
 
@@ -422,7 +422,7 @@ const RecipePage = () => {
 
       // Fetch updated comments
       const { data } = await axios.get(
-        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`
+        `https://thebitebook.onrender.com/api/reviews/${recipeId}`
       );
       setReviews(data); // Update the reviews state
       setCommentText(""); // Clear the comment input
@@ -463,7 +463,7 @@ const RecipePage = () => {
     if (!confirmed) return;
     try {
       await axios.delete(
-        `https://cs-test-z2vm.onrender.com/api/reviews/${commentId}`
+        `https://thebitebook.onrender.com/api/reviews/${commentId}`
       );
       toast({
         title: "Comment Deleted",
@@ -474,7 +474,7 @@ const RecipePage = () => {
       });
       // Refresh the comments list
       const { data } = await axios.get(
-        `https://cs-test-z2vm.onrender.com/api/reviews/${recipeId}`
+        `https://thebitebook.onrender.com/api/reviews/${recipeId}`
       );
       setReviews(data);
     } catch (error) {
@@ -726,7 +726,7 @@ const RecipePage = () => {
                         ) {
                           try {
                             await axios.delete(
-                              `https://cs-test-z2vm.onrender.com/api/recipes/${recipe._id}`
+                              `https://thebitebook.onrender.com/api/recipes/${recipe._id}`
                             );
                             toast({
                               title: "Recipe deleted",

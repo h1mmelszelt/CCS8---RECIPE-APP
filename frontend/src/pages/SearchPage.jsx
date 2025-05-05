@@ -117,7 +117,7 @@ function SearchPage() {
 
         if (query && query.trim() !== "") {
           const response = await axios.get(
-            `https://cs-test-z2vm.onrender.com/api/recipes/search/${encodeURIComponent(
+            `https://thebitebook.onrender.com/api/recipes/search/${encodeURIComponent(
               query
             )}`
           );
@@ -126,7 +126,7 @@ function SearchPage() {
           setSearchQuery(query);
         } else {
           const response = await axios.get(
-            "https://cs-test-z2vm.onrender.com/api/recipes"
+            "https://thebitebook.onrender.com/api/recipes"
           ); // Replace with your API endpoint
           setRecipes(response.data.data);
           setFilteredRecipes(response.data.data); // Initially, show all recipes

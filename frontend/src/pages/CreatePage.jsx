@@ -139,7 +139,7 @@ function CreatePage() {
 
     try {
       await axios.post(
-        "https://cs-test-z2vm.onrender.com/api/recipes",
+        "https://thebitebook.onrender.com/api/recipes",
         newRecipe
       );
 
