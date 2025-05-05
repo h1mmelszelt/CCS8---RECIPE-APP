@@ -318,7 +318,11 @@ const RecipePage = () => {
 
   // Handler for printing the recipe
   const handlePrint = () => {
-    window.print(); // Opens the browser's print dialog
+    const printContent = document.getElementById("recipe-content");
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>Print Recipe</title></head><body>${printContent.innerHTML}</body></html>`);
+    printWindow.document.close();
+    printWindow.print();
   };
 
   // Handler for sharing the recipe

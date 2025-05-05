@@ -229,3 +229,30 @@ export const getBookmarks = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// Update profile picture
+export const updateProfilePicture = async (req, res) => {
+  try {
+    const { id } = req.params; // User ID from the URL
+    console.log("Received body:", req.body); // Log the request body for debugging
+    // Accept both direct Cloudinary URL (from frontend) and file upload (from form)
+    if (req.body.profilePicture) {
+      // If the frontend sends a Cloudinary URL directly
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { profilePicture: req.body.profilePicture },
+        { new: true, runValidators: true }
+      ).select("-password");
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(200).json({ message: "Profile picture updated", user: updatedUser });
+    } else {
+      return res.status(400).json({ message: "No file or profilePicture URL provided" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

@@ -119,8 +119,66 @@ const ProfileSettingsPage = () => {
     }
   };
 
+  const handleProfilePictureChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "lleyshpd"); // Use your actual unsigned preset
+
+    try {
+      // Upload to Cloudinary
+      const cloudinaryResponse = await axios.post(
+        "https://api.cloudinary.com/v1_1/dz4jym5dr/image/upload",
+        formData
+      );
+
+      const profilePictureUrl = cloudinaryResponse.data.secure_url;
+
+      // Send the Cloudinary URL to the backend (matches backend logic)
+      await axios.put(
+        `http://localhost:5000/api/users/${userId}/profile-picture`,
+        { profilePicture: profilePictureUrl }
+      );
+
+      toast({
+        title: "Profile picture updated successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setUserData((prevData) => ({
+        ...prevData,
+        profilePicture: profilePictureUrl,
+      }));
+    } catch (error) {
+      console.error("Error updating profile picture:", error.response?.data || error.message);
+      toast({
+        title: "Failed to upload profile picture.",
+        description: error.response?.data?.message || "Please try again later.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   if (isLoading) {
-    return <Text>Loading...</Text>; // Show a loading message while fetching data
+    return (
+      <Box textAlign="center" mt={10}>
+        <Text>Loading...</Text>
+      </Box>
+    );
+  }
+
+  if (!userId) {
+    return (
+      <Box textAlign="center" mt={10}>
+        <Text color="red.500">Error: User ID is missing. Please try again.</Text>
+      </Box>
+    );
   }
 
   return (
@@ -288,7 +346,7 @@ const ProfileSettingsPage = () => {
               overflow="hidden" // Ensures the image stays within the circle"
             >
               <Image
-                src="/images/Gordon.jpg" // Replace with the actual profile picture path
+                src={userData.profilePicture || "/images/Gordon.jpg"} // Display user's profile picture or fallback to default
                 alt="Profile Picture"
                 objectFit="cover"
                 width="100%"
@@ -303,9 +361,16 @@ const ProfileSettingsPage = () => {
               _hover={{ bg: "orange.100" }} // Background color on hover
               size="sm"
               ml={{ base: "10%", md: "10%" }}
+              onClick={() => document.getElementById("profilePictureInput").click()}
             >
               Change Profile Picture
             </Button>
+            <Input
+              type="file"
+              id="profilePictureInput"
+              style={{ display: "none" }}
+              onChange={handleProfilePictureChange}
+            />
           </Flex>
 
           {/* Form Fields */}

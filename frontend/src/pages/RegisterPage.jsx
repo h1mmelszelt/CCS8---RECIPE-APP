@@ -77,6 +77,18 @@ function RegisterPage() {
 
               <Box w="100%">
                 <Text fontSize="sm" mb={1} color="black">
+                  Display Name
+                </Text>
+                <Input
+                  type="text"
+                  placeholder="Enter your display name"
+                  borderRadius="md"
+                  bg="white"
+                  mb={4}
+                  focusBorderColor="orange.400"
+                />
+
+                <Text fontSize="sm" mb={1} color="black">
                   Username
                 </Text>
                 <Input

@@ -103,7 +103,7 @@ function Navbar({ transparent }) {
           {" "}
           {/* Hide on smaller screens */}
           <Tooltip label="Go to BiteBook Home page">
-            Test Run v1.1.1
+            Test Run v1.2.3
             <Link to="/home">
               <Flex alignItems="center">
                 <Image
