@@ -214,14 +214,32 @@ const RecipePage = () => {
   }, []);
 
   useEffect(() => {
+    // Clear previous recipe and reviews immediately on recipeId change
+    setRecipe(null);
+    setReviews([]);
     window.scrollTo(0, 0);
     const fetchRecipe = async () => {
       try {
         const { data } = await axios.get(
           `https://thebitebook.onrender.com/api/recipes/${recipeId}`
         );
-        setRecipe(data.data.recipe); // Set recipe details
-        setReviews(data.data.reviews); // Set reviews
+        // Normalize author
+        let author = data.data.recipe.user_id;
+        if (typeof author === "string" || !author.profilePicture) {
+          author = await fetchUserById(typeof author === "string" ? author : author._id);
+        }
+        // Normalize reviews
+        let newReviews = await Promise.all(
+          data.data.reviews.map(async (review) => {
+            let user = review.user_id;
+            if (typeof user === "string" || !user.profilePicture) {
+              user = await fetchUserById(typeof user === "string" ? user : user._id);
+            }
+            return { ...review, user_id: user };
+          })
+        );
+        setRecipe({ ...data.data.recipe, user_id: author });
+        setReviews(newReviews);
 
         const relatedResponse = await axios.get(
           `https://thebitebook.onrender.com/api/recipes/related/${recipeId}`
@@ -233,30 +251,6 @@ const RecipePage = () => {
     };
     fetchRecipe();
   }, [recipeId]);
-
-  // After fetching recipe and reviews, normalize all user_id fields
-  useEffect(() => {
-    const normalizeUsers = async () => {
-      if (!recipe) return;
-      let author = recipe.user_id;
-      if (typeof author === "string" || !author.profilePicture) {
-        author = await fetchUserById(typeof author === "string" ? author : author._id);
-      }
-      let newReviews = await Promise.all(
-        reviews.map(async (review) => {
-          let user = review.user_id;
-          if (typeof user === "string" || !user.profilePicture) {
-            user = await fetchUserById(typeof user === "string" ? user : user._id);
-          }
-          return { ...review, user_id: user };
-        })
-      );
-      setRecipe((r) => ({ ...r, user_id: author }));
-      setReviews(newReviews);
-    };
-    normalizeUsers();
-    // eslint-disable-next-line
-  }, [recipe, reviews.length]);
 
   // Check if recipe is bookmarked by the user
   useEffect(() => {
@@ -672,8 +666,11 @@ const RecipePage = () => {
                   authorInfo?.name ||
                   "?"
                 }
-                src={getAvatarSrc((typeof recipe.user_id === "object" && recipe.user_id.profilePicture) || authorInfo?.profilePicture)}
+                src={getAvatarSrc(getCompressedImageUrl((typeof recipe.user_id === "object" && recipe.user_id.profilePicture) || authorInfo?.profilePicture))}
                 mr={2}
+                as={Link}
+                to={recipe.user_id?._id ? `/profile/${recipe.user_id._id}` : undefined}
+                cursor="pointer"
               />
               <HStack spacing={2} align="center">
                 <Link
@@ -968,8 +965,11 @@ const RecipePage = () => {
                               reviewerInfo[(typeof review.user_id === "string" ? review.user_id : review.user_id._id)]?.name ||
                               "?"
                             }
-                            src={getAvatarSrc((typeof review.user_id === "object" && review.user_id.profilePicture) || reviewerInfo[(typeof review.user_id === "string" ? review.user_id : review.user_id._id)]?.profilePicture)}
+                            src={getAvatarSrc(getCompressedImageUrl((typeof review.user_id === "object" && review.user_id.profilePicture) || reviewerInfo[(typeof review.user_id === "string" ? review.user_id : review.user_id._id)]?.profilePicture))}
                             mr={2}
+                            as={Link}
+                            to={review.user_id?._id ? `/profile/${review.user_id._id}` : undefined}
+                            cursor="pointer"
                           />
                           <Box flex="1">
                             <HStack justify="space-between">
