@@ -138,7 +138,7 @@ const ProfileSettingsPage = () => {
 
       // Send the Cloudinary URL to the backend (matches backend logic)
       await axios.put(
-        `https://cs-test-z2vm.onrender.com/api/users/${userId}/profile-picture`,
+        `http://localhost:5000/api/users/${userId}/profile-picture`,
         { profilePicture: profilePictureUrl }
       );
 
