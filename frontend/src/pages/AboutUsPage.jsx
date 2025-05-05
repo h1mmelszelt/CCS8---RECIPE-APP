@@ -31,10 +31,10 @@ const AboutUsPage = () => {
     },
     {
       name: "Fabio Hascoet",
-      role: "Community Manager",
+      role: "Frontend/Backend Developer",
       description:
-        "Fabio ensures our community stays engaged and connected through exciting events and updates.",
-      image: "/images/bob.jpg",
+        "I built the wireframes and contributed to both frontend and backend development, while also helping to optimize the website.",
+      image: "/images/fabi.jpg",
       links: {
         facebook: "https://facebook.com/fabiohascoet",
         github: "https://github.com/fabiohascoet",
