@@ -9,10 +9,10 @@ import {
   Button,
   Icon,
   Textarea,
-  Image,
+  Heading,
+  Divider,
 } from "@chakra-ui/react";
 import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import phone from "/images/phone by iStock.jpg";
 
 const ContactUsPage = () => {
   useEffect(() => {
@@ -20,161 +20,132 @@ const ContactUsPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Defensive: never allow malformed dynamic routes in any navigation or link
-  // (ContactUsPage) - All links must be valid
-  const isValidPath = (path) =>
-    path && !path.includes("/:") && !path.endsWith("/:");
-
   return (
-    <Box bg="white" minH="100vh">
-      <Box px={{ base: 4, md: 20 }} py={10}>
-        {/* Header Section */}
+    <Box bg="gray.50" minH="100vh" py={10} px={{ base: 4, md: 20 }}>
+      {/* Header Section */}
+      <Box mb={16}>
+        <Heading
+          as="h1"
+          size="xl"
+          textAlign="center"
+          mb={6}
+          color="orange.500"
+          fontWeight="bold"
+          fontFamily="Poppins, sans-serif"
+        >
+          Contact Us
+        </Heading>
         <Text
-          fontSize={{ base: "2xl", md: "3xl" }}
-          fontWeight="light"
-          textAlign="left"
-          mb={2}
+          fontSize="lg"
+          color="gray.700"
+          textAlign="center"
+          maxW="800px"
+          mx="auto"
         >
-          CONTACT US
+          Have questions or feedback? We're here to help! Reach out to us using
+          the form below or through our contact details. We’d love to hear from
+          you!
         </Text>
+      </Box>
 
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          align="center"
-          justify="space-between"
-          gap={10}
-          mt={8}
-        >
-          {/* Left Section */}
-          <VStack align="start" spacing={6} flex="1">
-            <Text
-              fontSize={{ base: "3xl", md: "4xl" }}
-              fontWeight="bold"
-              color="grey.600"
-            >
-              Send us{" "}
-              <Text as="span" color="#97C33A">
-                Feedback
-              </Text>
-            </Text>
-            <Text fontSize="md" color="gray.600">
-              Fill out the ticket form and our support team will address any of
-              your concerns or questions about BiteBook.
-            </Text>
-            <Text fontSize="md" color="gray.600">
-              Or you can get in touch with us through our contact details below:
-            </Text>
-          </VStack>
+      {/* Divider */}
+      <Divider borderColor="orange.300" my={10} />
 
-          {/* Right Section */}
-          <Box
-            flex="1"
-            ml={{ base: 0, md: 300 }}
-            display={{ base: "none", md: "block" }}
-            alignSelf="flex-start"
+      {/* Contact Details Section */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        justify="space-between"
+        align="center"
+        gap={10}
+        mb={16}
+      >
+        {/* Left Section */}
+        <VStack align="start" spacing={6} flex="1">
+          <Text
+            fontSize={{ base: "3xl", md: "4xl" }}
+            fontWeight="bold"
+            color="orange.500"
           >
-            <Image
-              src={phone}
-              objectFit="cover"
-              alt="Contact Us"
-              borderRadius="md"
-              boxSize={{ base: "500px", md: "700px" }}
-              clipPath="polygon(37% 12%, 45% 11%, 53% 12%, 58% 15%, 62% 20%, 67% 24%, 72% 27%, 76% 33%, 77% 40%, 76% 47%, 73% 54%, 73% 62%, 74% 69%, 72% 75%, 68% 81%, 61% 84%, 51% 85%, 43% 84%, 30% 89%, 18% 90%, 8% 87%, 1% 79%, 1% 69%, 4% 60%, 3% 51%, 0 43%, 0 31%, 5% 24%, 12% 18%, 21% 16%, 30% 15%)"
-            />
-          </Box>
-        </Flex>
-
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          align="start"
-          justify="space-between"
-          gap={10}
-          mt={10}
-        >
-          {/* Lower Left Section */}
-          <VStack align="start" spacing={4} flex="1">
+            Get in Touch
+          </Text>
+          <Text fontSize="md" color="gray.600">
+            Fill out the form or contact us directly using the details below.
+          </Text>
+          <VStack align="start" spacing={4}>
             <HStack>
-              <Icon as={FaPhone} color="#97C33A" boxSize={5} />
+              <Icon as={FaPhone} color="orange.500" boxSize={5} />
               <Text fontSize="md" color="gray.700">
                 0XX-XXX-YYYY <br /> 09XX-XXX-YYYY
               </Text>
             </HStack>
             <HStack>
-              <Icon as={FaFax} color="#97C33A" boxSize={5} />
+              <Icon as={FaFax} color="orange.500" boxSize={5} />
               <Text fontSize="md" color="gray.700">
                 09XX-XXX-YYYY
               </Text>
             </HStack>
             <HStack>
-              <Icon as={FaEnvelope} color="#97C33A" boxSize={5} />
+              <Icon as={FaEnvelope} color="orange.500" boxSize={5} />
               <Text fontSize="md" color="gray.700">
                 marcuscuyko@su.edu.ph
               </Text>
             </HStack>
             <HStack>
-              <Icon as={FaMapMarkerAlt} color="#97C33A" boxSize={5} />
+              <Icon as={FaMapMarkerAlt} color="orange.500" boxSize={5} />
               <Text fontSize="md" color="gray.700">
                 Somewhere Street, Some City
               </Text>
             </HStack>
           </VStack>
+        </VStack>
 
-          {/* Mobile-Only Image */}
-          <Box
-            display={{ base: "block", md: "none" }}
-            alignSelf="self-end"
-            my={6}
+        {/* Right Section - Submit Ticket Box */}
+        <Box
+          bg="white"
+          p={8}
+          borderRadius="md"
+          boxShadow="2xl"
+          maxW="600px"
+          flex="1"
+        >
+          <Heading
+            as="h2"
+            size="lg"
+            textAlign="center"
+            mb={6}
+            color="orange.500"
+            fontWeight="bold"
+            fontFamily="Poppins, sans-serif"
           >
-            <Image
-              src={phone}
-              objectFit="cover"
-              alt="Contact Us"
-              borderRadius="md"
-              boxSize="300px"
-              clipPath="polygon(37% 12%, 45% 11%, 53% 12%, 58% 15%, 62% 20%, 67% 24%, 72% 27%, 76% 33%, 77% 40%, 76% 47%, 73% 54%, 73% 62%, 74% 69%, 72% 75%, 68% 81%, 61% 84%, 51% 85%, 43% 84%, 30% 89%, 18% 90%, 8% 87%, 1% 79%, 1% 69%, 4% 60%, 3% 51%, 0 43%, 0 31%, 5% 24%, 12% 18%, 21% 16%, 30% 15%)"
+            Submit a Ticket
+          </Heading>
+          <VStack spacing={4}>
+            <Input
+              focusBorderColor="orange.500"
+              placeholder="Enter your Name"
+              bg="gray.50"
             />
-          </Box>
-
-          {/* Lower Right Section */}
-          <Box
-            flex="1"
-            bg="gray.100"
-            p={6}
-            borderRadius="md"
-            boxShadow="md"
-            w={{ base: "100%", md: "auto" }}
-          >
-            <Text fontSize="lg" fontWeight="bold" mb={4}>
-              Submit a Ticket
-            </Text>
-            <VStack spacing={4}>
-              <Input
-                focusBorderColor="orange.500"
-                placeholder="Enter your Name"
-                bg="white"
-              />
-              <Input
-                focusBorderColor="orange.500"
-                placeholder="Enter a valid e-mail address"
-                bg="white"
-              />
-              <Textarea
-                focusBorderColor="orange.500"
-                placeholder="Enter your message"
-                bg="white"
-              />
-              <Button
-                bg="orange.500"
-                color="white"
-                _hover={{ bg: "orange.600" }}
-                width={{ base: "100%", md: "25%" }}
-              >
-                SUBMIT
-              </Button>
-            </VStack>
-          </Box>
-        </Flex>
-      </Box>
+            <Input
+              focusBorderColor="orange.500"
+              placeholder="Enter a valid e-mail address"
+              bg="gray.50"
+            />
+            <Textarea
+              focusBorderColor="orange.500"
+              placeholder="Enter your message"
+              bg="gray.50"
+            />
+            <Button
+              bg="orange.500"
+              color="white"
+              _hover={{ bg: "orange.600" }}
+              width="100%"
+            >
+              SUBMIT
+            </Button>
+          </VStack>
+        </Box>
+      </Flex>
     </Box>
   );
 };

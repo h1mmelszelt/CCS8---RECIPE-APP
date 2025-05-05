@@ -10,27 +10,31 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { FaFacebook, FaGithub, FaInstagram } from "react-icons/fa";
+import { useEffect } from "react";
 
 const AboutUsPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const teamMembers = [
     {
       name: "Rach Bongo",
       role: "Backend Developer",
       description:
-        "In this project, I worked as the Backend Developer —building the database schema, developing API endpoints, and creating pages as well as UI components like navbars, recipe cards, and the sitemap. I also contributed to UI/UX design and ensured smooth integration between the frontend and backend.",
-      image: "/images/rach.jpg", // Replace with actual image path
+        "I built the database schema and our API endpoints. I also created pages, UI components and ensured smooth integration between the frontend and backend.",
+      image: "/images/rach.jpg",
       links: {
-        facebook: "https://facebook.com/rachbongo",
-        github: "https://github.com/rachbongo",
-        instagram: "https://instagram.com/rachbongo",
+        facebook: "https://facebook.com",
+        github: "https://github.com",
+        instagram: "https://instagram.com",
       },
     },
     {
       name: "Fabio Hascoet",
-      role: "Community Manager",
+      role: "Frontend/Backend Developer",
       description:
-        "Fabio ensures our community stays engaged and connected through exciting events and updates.",
-      image: "/images/bob.jpg", // Replace with actual image path
+        "I built the wireframes and contributed to both frontend and backend development, while also helping to optimize the website.",
+      image: "/images/fabi.jpg",
       links: {
         facebook: "https://facebook.com/fabiohascoet",
         github: "https://github.com/fabiohascoet",
@@ -40,8 +44,7 @@ const AboutUsPage = () => {
     {
       name: "Marcus Suyko",
       role: "Support Developer",
-      description:
-        "i fix stuff.",
+      description: "i fix stuff.",
       image: "/images/mrcs.jpg", // Replace with actual image path
       links: {
         facebook: "https://facebook.com/marcussuyko",
@@ -110,30 +113,36 @@ const AboutUsPage = () => {
             borderRadius="md"
             boxShadow="lg"
             p={8}
-            border={"1px solid#d19c79"}
+            border={"1px solid #d19c79"}
             textAlign="center"
-            maxW="400px"
+            width="350px"
+            height="500px"
             transition="transform 0.3s"
             _hover={{ transform: "scale(1.01)" }}
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-between" // Ensures icons stay at the bottom
           >
-            <Image
-              src={member.image}
-              alt={member.name}
-              borderRadius="full"
-              boxSize="200px"
-              mx="auto"
-              mb={6}
-            />
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-              {member.name}
-            </Text>
-            <Text fontSize="lg" color="orange.500" mb={4}>
-              {member.role}
-            </Text>
-            <Text fontSize="md" color="gray.600" mb={6}>
-              {member.description}
-            </Text>
-            <Flex justify="center" gap={4}>
+            <Box>
+              <Image
+                src={member.image}
+                alt={member.name}
+                borderRadius="full"
+                boxSize="180px"
+                mx="auto"
+                mb={6}
+              />
+              <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+                {member.name}
+              </Text>
+              <Text fontSize="lg" color="orange.500" mb={4}>
+                {member.role}
+              </Text>
+              <Text fontSize="sm" color="gray.600" mb={6}>
+                {member.description}
+              </Text>
+            </Box>
+            <Flex justify="center" alignItems="center" gap={4}>
               <Link href={member.links.facebook} isExternal>
                 <Icon as={FaFacebook} boxSize={6} color="blue.600" />
               </Link>

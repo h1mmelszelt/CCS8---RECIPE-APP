@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -11,23 +10,17 @@ import {
   AccordionPanel,
   AccordionIcon,
   Image,
+  Heading,
+  Divider,
 } from "@chakra-ui/react";
-import faqImage from "/images/chef asking VideoHive.jpg"; // Replace with your image path
-import { useEffect } from "react";
-
-
+import faqImage from "/images/FAQpic.png"; // Replace with your image path
 
 const FAQPage = () => {
-
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
   }, []);
-  
-  // Defensive: never allow malformed dynamic routes in any navigation or link
-  // (FAQPage) - All links must be valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-  
+
   const faqs = [
     {
       question: "Is it free to use the site?",
@@ -37,7 +30,7 @@ const FAQPage = () => {
     {
       question: "How do I save recipes I like?",
       answer:
-        "You can bookmark recipes by clicking the 'Save' icon on any recipe card. Saved recipes will appear in your profile under 'Bookmarks'.",
+        "You can bookmark recipes by clicking the 'Add to Bookmarks' button on any recipe page. Saved recipes will appear in your profile under 'My Bookmarks'.",
     },
     {
       question: "Can I delete a recipe I posted?",
@@ -61,61 +54,54 @@ const FAQPage = () => {
   ];
 
   return (
-    <Box bg="white" minH="100vh">
+    <Box bg="gray.50" minH="100vh" py={10} px={{ base: 4, md: 20 }}>
       {/* Header Section */}
-      <Box px={{ base: 4, md: 20 }} py={10}>
-        <Flex direction={{ base: "column", md: "row" }} align="center" gap={10}>
-          {/* Left Section */}
-          <VStack align="start" spacing={4} flex="1">
-            <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="light">
-              FREQUENTLY ASKED QUESTIONS
-            </Text>
-            <Text
-              mt={5}
-              fontSize={{ base: "3xl", md: "4xl" }}
-              fontWeight="bold"
-              color="gray.600"
-            >
-              Got a{" "}
-              <Text as="span" color="#97C33A">
-                Question?
-              </Text>
-            </Text>
-            <Text fontSize="md" color="gray.600">
-              We're here to answer! Below are our frequently asked questions. If
-              you don't see your question here, please submit a ticket through
-              our{" "}
-              <Text
-                as="a"
-                href={isValidPath("/contact-us") ? "/contact-us" : undefined}
-                color="orange.500"
-                fontWeight="semibold"
-              >
-                Contact Page
-              </Text>
-              .
-            </Text>
-          </VStack>
-
-          {/* Right Section - Image */}
-          <Box
-            flex="1"
-            ml={{ base: 0, md: 10 }}
-            display={{ base: "block", md: "block" }}
+      <Box mb={16}>
+        <Heading
+          as="h1"
+          size="xl"
+          textAlign="center"
+          mb={6}
+          color="orange.500"
+          fontWeight="bold"
+          fontFamily="Poppins, sans-serif"
+        >
+          Frequently Asked Questions
+        </Heading>
+        <Text
+          fontSize="lg"
+          color="gray.700"
+          textAlign="center"
+          maxW="800px"
+          mx="auto"
+        >
+          Got questions? We’ve got answers! Below are some of the most commonly
+          asked questions about our platform. If you don’t find what you’re
+          looking for, feel free to reach out to us through our{" "}
+          <Text
+            as="a"
+            href="/contact-us"
+            color="orange.500"
+            fontWeight="semibold"
           >
-            <Image
-              src={faqImage}
-              alt="FAQ"
-              boxSize={{ base: "500px", md: "700px" }}
-              objectFit="cover"
-              objectPosition="80% center"
-              clipPath="polygon(2% 22%, 0 38%, 0 61%, 4% 75%, 9% 86%, 17% 90%, 26% 93%, 35% 94%, 46% 93%, 56% 92%, 69% 89%, 79% 85%, 85% 80%, 90% 73%, 95% 62%, 95% 47%, 94% 33%, 90% 24%, 85% 17%, 74% 12%, 67% 9%, 53% 5%, 38% 2%, 25% 0, 15% 1%, 8% 7%, 5% 15%)"
-            />
-          </Box>
-        </Flex>
+            Contact Page
+          </Text>
+          .
+        </Text>
+      </Box>
 
-        {/* FAQ Section */}
-        <Box mt={{ base: 8, md: 12 }}>
+      {/* Divider */}
+      <Divider borderColor="orange.300" my={10} />
+
+      {/* FAQ Section */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        justify="space-between"
+        align="center"
+        gap={10}
+      >
+        {/* Left Section */}
+        <Box flex="1">
           <Accordion allowToggle>
             {faqs.map((faq, index) => (
               <AccordionItem
@@ -141,7 +127,19 @@ const FAQPage = () => {
             ))}
           </Accordion>
         </Box>
-      </Box>
+
+        {/* Right Section - Image */}
+        <Box flex="1" textAlign="center">
+          <Image
+            src={faqImage}
+            alt="FAQ"
+            borderRadius="md"
+            boxSize={{ base: "300px", md: "400px" }}
+            objectFit="cover"
+            mx="auto"
+          />
+        </Box>
+      </Flex>
     </Box>
   );
 };
