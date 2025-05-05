@@ -10,6 +10,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { FaFacebook, FaGithub, FaInstagram } from "react-icons/fa";
+import { useEffect } from "react";
 
 const AboutUsPage = () => {
   useEffect(() => {
@@ -20,12 +21,12 @@ const AboutUsPage = () => {
       name: "Rach Bongo",
       role: "Backend Developer",
       description:
-        "In this project, I worked as the Backend Developer —building the database schema, developing API endpoints, and creating pages as well as UI components like navbars, recipe cards, and the sitemap. I also contributed to UI/UX design and ensured smooth integration between the frontend and backend.",
+        "I built the database schema and our API endpoints. I also created pages, UI components and ensured smooth integration between the frontend and backend.",
       image: "/images/rach.jpg",
       links: {
-        facebook: "https://facebook.com/ramzrach",
-        github: "https://github.com/racky918",
-        instagram: "https://instagram.com/rxcky0_",
+        facebook: "https://facebook.com",
+        github: "https://github.com",
+        instagram: "https://instagram.com",
       },
     },
     {
@@ -112,30 +113,36 @@ const AboutUsPage = () => {
             borderRadius="md"
             boxShadow="lg"
             p={8}
-            border={"1px solid#d19c79"}
+            border={"1px solid #d19c79"}
             textAlign="center"
-            maxW="400px"
+            width="350px"
+            height="500px"
             transition="transform 0.3s"
             _hover={{ transform: "scale(1.01)" }}
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-between" // Ensures icons stay at the bottom
           >
-            <Image
-              src={member.image}
-              alt={member.name}
-              borderRadius="full"
-              boxSize="200px"
-              mx="auto"
-              mb={6}
-            />
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-              {member.name}
-            </Text>
-            <Text fontSize="lg" color="orange.500" mb={4}>
-              {member.role}
-            </Text>
-            <Text fontSize="md" color="gray.600" mb={6}>
-              {member.description}
-            </Text>
-            <Flex justify="center" gap={4}>
+            <Box>
+              <Image
+                src={member.image}
+                alt={member.name}
+                borderRadius="full"
+                boxSize="180px"
+                mx="auto"
+                mb={6}
+              />
+              <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+                {member.name}
+              </Text>
+              <Text fontSize="lg" color="orange.500" mb={4}>
+                {member.role}
+              </Text>
+              <Text fontSize="sm" color="gray.600" mb={6}>
+                {member.description}
+              </Text>
+            </Box>
+            <Flex justify="center" alignItems="center" gap={4}>
               <Link href={member.links.facebook} isExternal>
                 <Icon as={FaFacebook} boxSize={6} color="blue.600" />
               </Link>
