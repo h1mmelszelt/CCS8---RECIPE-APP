@@ -2,20 +2,6 @@ import User from "../models/user.model.js";
 import Recipe from "../models/recipe.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import multer from "multer";
-import cloudinary from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-
-// Configure Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary.v2,
-  params: {
-    folder: "profile_pictures",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
-});
-
-const upload = multer({ storage });
 
 // Create a new user
 export const createUser = async (req, res) => {
@@ -263,19 +249,6 @@ export const updateProfilePicture = async (req, res) => {
       }
 
       return res.status(200).json({ message: "Profile picture updated", user: updatedUser });
-    } else if (req.file) {
-      // If a file is uploaded via multipart/form-data
-      const updatedUser = await User.findByIdAndUpdate(
-        id,
-        { profilePicture: req.file.path },
-        { new: true, runValidators: true }
-      ).select("-password");
-
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      return res.status(200).json({ message: "Profile picture updated", user: updatedUser });
     } else {
       return res.status(400).json({ message: "No file or profilePicture URL provided" });
     }
@@ -283,5 +256,3 @@ export const updateProfilePicture = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-export const uploadMiddleware = upload.single("profilePicture");

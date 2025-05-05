@@ -125,7 +125,7 @@ const ProfileSettingsPage = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "YOUR_UNSIGNED_UPLOAD_PRESET"); // <-- Replace with your actual unsigned preset
+    formData.append("upload_preset", "lleyshpd"); // Use your actual unsigned preset
 
     try {
       // Upload to Cloudinary
