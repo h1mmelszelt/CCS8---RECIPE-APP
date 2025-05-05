@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -20,7 +20,79 @@ function RegisterPage() {
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (RegisterPage) - Only allow navigation to /home and /login if the path is valid
   const isValidPath = (path) =>
-    path && !path.includes("/:") && !path.endsWith("/:");
+    path && !path.includes(":/") && !path.endsWith(":");
+
+  // State for form fields
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = window.location && window.location.assign ? null : undefined;
+
+  // Chakra toast
+  // Use dynamic import to avoid breaking SSR if needed
+  let useToast;
+  try { useToast = require("@chakra-ui/react").useToast; } catch {}
+  const toast = useToast ? useToast() : null;
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!displayName.trim() || !username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const axios = (await import("axios")).default;
+      const response = await axios.post(
+        "https://thebitebook.onrender.com/api/users",
+        {
+          name: displayName,
+          username,
+          email,
+          password,
+        }
+      );
+      setSuccess("Registration successful! You can now log in.");
+      if (toast) {
+        toast({
+          title: "Registration successful!",
+          description: "You can now log in.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
+      if (toast) {
+        toast({
+          title: "Registration failed",
+          description: err.response?.data?.message || "Please try again.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -75,7 +147,7 @@ function RegisterPage() {
                 Please fill in the details below
               </Text>
 
-              <Box w="100%">
+              <Box w="100%" as="form" onSubmit={handleRegister}>
                 <Text fontSize="sm" mb={1} color="black">
                   Display Name
                 </Text>
@@ -86,6 +158,8 @@ function RegisterPage() {
                   bg="white"
                   mb={4}
                   focusBorderColor="orange.400"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -98,6 +172,8 @@ function RegisterPage() {
                   bg="white"
                   mb={4}
                   focusBorderColor="orange.400"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -110,6 +186,8 @@ function RegisterPage() {
                   bg="white"
                   mb={4}
                   focusBorderColor="orange.400"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -122,6 +200,8 @@ function RegisterPage() {
                   bg="white"
                   mb={4}
                   focusBorderColor="orange.400"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
 
                 <Text fontSize="sm" mb={1} color="black">
@@ -134,24 +214,30 @@ function RegisterPage() {
                   bg="white"
                   mb={4}
                   focusBorderColor="orange.400"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
 
-                <Link
-                  href={isValidPath("/home") ? "/home" : undefined}
-                  style={{ textDecoration: "none" }}
+                {error && (
+                  <Text color="red.500" fontSize="sm" mb={2}>{error}</Text>
+                )}
+                {success && (
+                  <Text color="green.500" fontSize="sm" mb={2}>{success}</Text>
+                )}
+
+                <Button
+                  w="100%"
+                  bg="#AAD05E"
+                  color="white"
+                  _hover={{ bg: "#99BD50" }}
+                  borderRadius="md"
+                  mx="auto"
+                  display="block"
+                  type="submit"
+                  isLoading={loading}
                 >
-                  <Button
-                    w="100%"
-                    bg="#AAD05E"
-                    color="white"
-                    _hover={{ bg: "#99BD50" }}
-                    borderRadius="md"
-                    mx="auto"
-                    display="block"
-                  >
-                    Sign up
-                  </Button>
-                </Link>
+                  Sign up
+                </Button>
               </Box>
 
               <Text
