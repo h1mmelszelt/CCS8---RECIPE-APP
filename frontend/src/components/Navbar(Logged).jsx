@@ -36,6 +36,8 @@ import { useState, useRef, useEffect } from "react";
 import NotificationsPage from "../pages/NotificationsPage";
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
+import { getCompressedImageUrl } from "../utils/imageUtils";
 
 function Navbar() {
   const location = useLocation();
@@ -87,36 +89,7 @@ function Navbar() {
   }, []);
 
   // State for notifications
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      name: "Juan Dela Cruz",
-      message: "liked your recipe",
-      avatar: "/images/avatar1.jpg",
-      time: "4 hours ago",
-    },
-    {
-      id: 2,
-      name: "Daisy Sanchez",
-      message: "liked your recipe",
-      avatar: "/images/avatar2.jpg",
-      time: "Yesterday",
-    },
-    {
-      id: 3,
-      name: "Kurt Cobain",
-      message: "liked your recipe",
-      avatar: "/images/avatar3.jpg",
-      time: "Tuesday",
-    },
-    {
-      id: 5,
-      name: "Francisco Reyes",
-      message: "commented on your recipe",
-      avatar: "/images/avatar4.jpg",
-      time: "4 days ago",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -137,6 +110,43 @@ function Navbar() {
     const index = name.charCodeAt(0) % colors.length; // Use the first character's char code
     return colors[index];
   };
+
+  useEffect(() => {
+    async function fetchNotifications() {
+      if (!userId) return;
+      try {
+        // 1. Get all recipes created by the user
+        const recipesRes = await axios.get(`https://thebitebook.onrender.com/api/recipes/user/${userId}`);
+        const recipes = recipesRes.data.data || [];
+        // 2. For each recipe, fetch its reviews
+        let allReviews = [];
+        for (const recipe of recipes) {
+          const reviewsRes = await axios.get(`https://thebitebook.onrender.com/api/reviews/${recipe._id}`);
+          const reviews = Array.isArray(reviewsRes.data) ? reviewsRes.data : (reviewsRes.data.data || []);
+          // 3. Build notification objects for each review
+          for (const review of reviews) {
+            if (!review.user_id || review.user_id._id === userId) continue; // Skip self-reviews
+            allReviews.push({
+              id: review._id,
+              name: review.user_id.name || "Unknown",
+              message: `commented on your recipe '${recipe.name}'`,
+              avatar: getCompressedImageUrl(review.user_id.profilePicture || ""),
+              time: new Date(review.createdAt).toLocaleString(),
+              recipeId: recipe._id,
+            });
+          }
+        }
+        // Sort by most recent
+        allReviews.sort((a, b) => new Date(b.time) - new Date(a.time));
+        setNotifications(allReviews);
+      } catch (err) {
+        // fallback: no notifications
+        setNotifications([]);
+      }
+    }
+    fetchNotifications();
+    // eslint-disable-next-line
+  }, [userId]);
 
   return (
     <>
@@ -287,7 +297,12 @@ function Navbar() {
                           width="100%"
                           p={1}
                           borderRadius="sm" // Add rounded corners for better visuals
-                          _hover={{ bg: "gray.200" }} // Darken the background on hover
+                          _hover={{ bg: "gray.200", cursor: "pointer" }} // Darken the background on hover
+                          onClick={() => {
+                            setIsPopupVisible(false);
+                            setShowAllNotifications(false);
+                            navigate(`/recipes/${notification.recipeId}#comment-${notification.id}`);
+                          }}
                         >
                           <Avatar
                             size="md"
