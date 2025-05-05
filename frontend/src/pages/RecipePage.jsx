@@ -1,5 +1,5 @@
 import { FaStar } from "react-icons/fa";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import {
   Box,
   Image,
@@ -29,6 +29,22 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { FiBookmark, FiShare2, FiPrinter } from "react-icons/fi";
 
 import { Link, useNavigate, useLocation } from "react-router-dom";
+
+// Helper for robust avatar src
+const getAvatarSrc = (profilePicture) => {
+  if (profilePicture && profilePicture !== "") return profilePicture;
+  return "/images/default-avatar.png"; // Make sure this exists in public/images
+};
+
+// Helper to fetch user info by ID
+const fetchUserById = async (id) => {
+  try {
+    const { data } = await axios.get(`https://thebitebook.onrender.com/api/users/${id}`);
+    return data;
+  } catch {
+    return null;
+  }
+};
 
 const RecipePage = () => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -139,6 +155,42 @@ const RecipePage = () => {
     }
   };
 
+  const [authorInfo, setAuthorInfo] = useState(null);
+  const [reviewerInfo, setReviewerInfo] = useState({}); // { userId: { name, profilePicture } }
+  const reviewerInfoRef = useRef({});
+
+  // Robustly fetch author info if missing or user_id is a string
+  useEffect(() => {
+    if (recipe && recipe.user_id) {
+      if (typeof recipe.user_id === "string" || !recipe.user_id.profilePicture) {
+        const authorId = typeof recipe.user_id === "string" ? recipe.user_id : recipe.user_id._id;
+        axios.get(`https://thebitebook.onrender.com/api/users/basic/${authorId}`)
+          .then(res => setAuthorInfo(res.data))
+          .catch(() => {});
+      }
+    }
+  }, [recipe]);
+
+  // Robustly fetch reviewer info if missing or user_id is a string
+  useEffect(() => {
+    const missing = reviews.filter(r => {
+      if (!r.user_id) return false;
+      if (typeof r.user_id === "string") return !reviewerInfoRef.current[r.user_id];
+      return !r.user_id.profilePicture && !reviewerInfoRef.current[r.user_id._id];
+    });
+    if (missing.length > 0) {
+      missing.forEach(r => {
+        const reviewerId = typeof r.user_id === "string" ? r.user_id : r.user_id._id;
+        axios.get(`https://thebitebook.onrender.com/api/users/basic/${reviewerId}`)
+          .then(res => {
+            reviewerInfoRef.current = { ...reviewerInfoRef.current, [reviewerId]: res.data };
+            setReviewerInfo({ ...reviewerInfoRef.current });
+          })
+          .catch(() => {});
+      });
+    }
+  }, [reviews]);
+
   useEffect(() => {
     const fetchTrendingRecipes = async () => {
       try {
@@ -181,6 +233,30 @@ const RecipePage = () => {
     };
     fetchRecipe();
   }, [recipeId]);
+
+  // After fetching recipe and reviews, normalize all user_id fields
+  useEffect(() => {
+    const normalizeUsers = async () => {
+      if (!recipe) return;
+      let author = recipe.user_id;
+      if (typeof author === "string" || !author.profilePicture) {
+        author = await fetchUserById(typeof author === "string" ? author : author._id);
+      }
+      let newReviews = await Promise.all(
+        reviews.map(async (review) => {
+          let user = review.user_id;
+          if (typeof user === "string" || !user.profilePicture) {
+            user = await fetchUserById(typeof user === "string" ? user : user._id);
+          }
+          return { ...review, user_id: user };
+        })
+      );
+      setRecipe((r) => ({ ...r, user_id: author }));
+      setReviews(newReviews);
+    };
+    normalizeUsers();
+    // eslint-disable-next-line
+  }, [recipe, reviews.length]);
 
   // Check if recipe is bookmarked by the user
   useEffect(() => {
@@ -590,8 +666,14 @@ const RecipePage = () => {
             </Heading>
             <HStack spacing={4} align="center" mb={6}>
               <Avatar
-                src={recipe.user_id?.profilePicture}
-                name={recipe.user_id?.name}
+                size="md"
+                name={
+                  (typeof recipe.user_id === "object" && recipe.user_id.name) ||
+                  authorInfo?.name ||
+                  "?"
+                }
+                src={getAvatarSrc((typeof recipe.user_id === "object" && recipe.user_id.profilePicture) || authorInfo?.profilePicture)}
+                mr={2}
               />
               <HStack spacing={2} align="center">
                 <Link
@@ -880,9 +962,14 @@ const RecipePage = () => {
                       <Box>
                         <HStack align="start" spacing={4}>
                           <Avatar
-                            src={review.user_id?.profilePicture}
-                            name={review.user_id?.name}
                             size="md"
+                            name={
+                              (typeof review.user_id === "object" && review.user_id.name) ||
+                              reviewerInfo[(typeof review.user_id === "string" ? review.user_id : review.user_id._id)]?.name ||
+                              "?"
+                            }
+                            src={getAvatarSrc((typeof review.user_id === "object" && review.user_id.profilePicture) || reviewerInfo[(typeof review.user_id === "string" ? review.user_id : review.user_id._id)]?.profilePicture)}
+                            mr={2}
                           />
                           <Box flex="1">
                             <HStack justify="space-between">
@@ -1124,40 +1211,41 @@ const RecipePage = () => {
             <VStack spacing={4} align="stretch">
               {trendingRecipes && trendingRecipes.length > 0 ? (
                 trendingRecipes.map((recipe) => (
-                  <Link
-                    key={recipe._id}
-                    to={`/recipes/${recipe._id}`}
-                    state={{
-                      breadcrumbs: [...breadcrumbs],
-                    }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <HStack
-                      spacing={4}
-                      align="center"
-                      cursor="pointer"
-                      _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
-                      transition="all 0.2s ease-in-out"
-                      p={2}
-                      borderRadius="md"
+                  <React.Fragment key={recipe._id}>
+                    <Link
+                      to={`/recipes/${recipe._id}`}
+                      state={{
+                        breadcrumbs: [...breadcrumbs],
+                      }}
+                      style={{ textDecoration: "none" }}
                     >
-                      <Image
-                        src={getCompressedImageUrl(recipe.image)}
-                        alt={recipe.name || "Recipe"}
-                        boxSize="80px"
+                      <HStack
+                        spacing={4}
+                        align="center"
+                        cursor="pointer"
+                        _hover={{ bg: "gray.100", transform: "scale(1.02)" }}
+                        transition="all 0.2s ease-in-out"
+                        p={2}
                         borderRadius="md"
-                        objectFit="cover"
-                      />
-                      <VStack align="start" spacing={1}>
-                        <Text fontSize="sm" fontWeight="bold">
-                          {recipe.name}
-                        </Text>
-                        <Text fontSize="xs" color="gray.500">
-                          {recipe.description || "No description available"}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </Link>
+                      >
+                        <Image
+                          src={getCompressedImageUrl(recipe.image)}
+                          alt={recipe.name || "Recipe"}
+                          boxSize="80px"
+                          borderRadius="md"
+                          objectFit="cover"
+                        />
+                        <VStack align="start" spacing={1}>
+                          <Text fontSize="sm" fontWeight="bold">
+                            {recipe.name}
+                          </Text>
+                          <Text fontSize="xs" color="gray.500">
+                            {recipe.description || "No description available"}
+                          </Text>
+                        </VStack>
+                      </HStack>
+                    </Link>
+                  </React.Fragment>
                 ))
               ) : (
                 <Text fontSize="sm" color="gray.500">

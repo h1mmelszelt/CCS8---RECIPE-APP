@@ -49,18 +49,20 @@ const ProfileSettingsPage = () => {
       try {
         if (userId) {
           const { data } = await axios.get(
-            `https://thebitebook.onrender.com.onrender.com/api/users/${userId}`
+            `https://thebitebook.onrender.com/api/users/${userId}`
           );
           console.log("Fetched User Data:", data); // Debugging: Log the fetched data
           setUserData({
             username: data.username || "", // Assuming "name" is the first name
             name: data.name || "",
             email: data.email || "",
+            profilePicture: data.profilePicture || "",
           });
           setInitialData({
             username: data.username || "",
             name: data.name || "",
             email: data.email || "",
+            profilePicture: data.profilePicture || "",
           });
         }
       } catch (error) {
@@ -81,6 +83,47 @@ const ProfileSettingsPage = () => {
     }));
   };
 
+  const handleProfilePictureChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "lleyshpd"); // Use your actual unsigned preset
+
+    try {
+      // Upload to Cloudinary
+      const cloudinaryResponse = await axios.post(
+        "https://api.cloudinary.com/v1_1/dz4jym5dr/image/upload",
+        formData
+      );
+
+      const profilePictureUrl = cloudinaryResponse.data.secure_url;
+
+      // Only update local state, do not send to backend yet
+      setUserData((prevData) => ({
+        ...prevData,
+        profilePicture: profilePictureUrl,
+      }));
+      toast({
+        title: "Profile picture ready to save!",
+        description: "Don't forget to click 'Save Changes' to apply.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating profile picture:", error.response?.data || error.message);
+      toast({
+        title: "Failed to upload profile picture.",
+        description: error.response?.data?.message || "Please try again later.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   const handleSaveChanges = async () => {
     if (JSON.stringify(userData) === JSON.stringify(initialData)) {
       // If no changes are made
@@ -95,8 +138,16 @@ const ProfileSettingsPage = () => {
 
     try {
       if (userId) {
+        // If profilePicture changed and is a new URL, update it first
+        if (userData.profilePicture !== initialData.profilePicture) {
+          await axios.put(
+            `https://thebitebook.onrender.com/api/users/${userId}/profile-picture`,
+            { profilePicture: userData.profilePicture }
+          );
+        }
+        // Update other profile fields
         await axios.put(
-          `https://thebitebook.onrender.comm.onrender.com/api/users/${userId}`,
+          `https://thebitebook.onrender.com/api/users/${userId}`,
           userData
         );
         toast({
@@ -119,47 +170,13 @@ const ProfileSettingsPage = () => {
     }
   };
 
-  const handleProfilePictureChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "lleyshpd"); // Use your actual unsigned preset
-
-    try {
-      // Upload to Cloudinary
-      const cloudinaryResponse = await axios.post(
-        "https://api.cloudinary.com/v1_1/dz4jym5dr/image/upload",
-        formData
-      );
-
-      const profilePictureUrl = cloudinaryResponse.data.secure_url;
-
-      // Send the Cloudinary URL to the backend (matches backend logic)
-      await axios.put(
-        `https://thebitebook.onrender.com/api/users/${userId}/profile-picture`,
-        { profilePicture: profilePictureUrl }
-      );
-
+  const handleCancelChanges = () => {
+    if (initialData) {
+      setUserData({ ...initialData });
       toast({
-        title: "Profile picture updated successfully!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-
-      setUserData((prevData) => ({
-        ...prevData,
-        profilePicture: profilePictureUrl,
-      }));
-    } catch (error) {
-      console.error("Error updating profile picture:", error.response?.data || error.message);
-      toast({
-        title: "Failed to upload profile picture.",
-        description: error.response?.data?.message || "Please try again later.",
-        status: "error",
-        duration: 3000,
+        title: "Changes canceled.",
+        status: "info",
+        duration: 2000,
         isClosable: true,
       });
     }
@@ -450,6 +467,16 @@ const ProfileSettingsPage = () => {
               onClick={handleSaveChanges}
             >
               Save Changes
+            </Button>
+            <Button
+              variant="outline"
+              colorScheme="gray"
+              width={{ base: "80%", md: "200px" }}
+              mx="auto"
+              mt={2}
+              onClick={handleCancelChanges}
+            >
+              Cancel Changes
             </Button>
           </Flex>
         </Box>

@@ -9,7 +9,8 @@ import {
   addBookmark,
   removeBookmark,
   getBookmarks,
-  updateProfilePicture
+  updateProfilePicture,
+  getBasicUserInfo
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -24,5 +25,6 @@ router.post("/bookmarks", addBookmark);
 router.delete("/bookmarks/:userId/:recipeId", removeBookmark);
 router.get("/bookmarks/:id", getBookmarks);
 router.put("/:id/profile-picture", updateProfilePicture);
+router.get("/basic/:id", getBasicUserInfo);
 
 export default router;

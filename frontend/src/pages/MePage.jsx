@@ -44,7 +44,7 @@ function MePage() {
           setUserData({
             name: response.data.name,
             username: `@${response.data.username}`,
-            avatar: response.data.profilePicture, // Use the correct profile picture field
+            profilePicture: response.data.profilePicture, // Use the correct profile picture field
           });
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -73,7 +73,7 @@ function MePage() {
             <Avatar
               size="xl"
               name={userData.name}
-              src={userData.avatar} // Now this will be the profile picture
+              src={userData.profilePicture} // Use the correct profile picture field
               mr={4}
             />
             <Box>

@@ -39,7 +39,7 @@ export const createReview = async (req, res) => {
 export const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate("user_id", "username name")
+      .populate("user_id", "username name profilePicture")
       .populate("recipe_id", "name") // optional: include recipe title
       .sort({ createdAt: -1 });
 
@@ -56,7 +56,7 @@ export const getReviewsByRecipeId = async (req, res) => {
 
   try {
     const reviews = await Review.find({ recipe_id: recipeId })
-      .populate("user_id", "username name")
+      .populate("user_id", "username name profilePicture")
       .sort({ createdAt: -1 });
 
     res.status(200).json(reviews);

@@ -132,7 +132,7 @@ export const getRecipeById = async (req, res) => {
 
   try {
     const recipe = await Recipe.findById(id)
-      .populate("user_id", "name avatar") // Populate author details
+      .populate("user_id", "name profilePicture") // Populate author details
       .lean();
 
     if (!recipe) {
@@ -142,7 +142,7 @@ export const getRecipeById = async (req, res) => {
     }
 
     const reviews = await Review.find({ recipe_id: id })
-      .populate("user_id", "name avatar") // Populate reviewer details
+      .populate("user_id", "name profilePicture") // Populate reviewer details
       .sort({ createdAt: -1 });
 
     res.status(200).json({ success: true, data: { recipe, reviews } });

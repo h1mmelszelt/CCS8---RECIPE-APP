@@ -67,6 +67,20 @@ export const getUserById = async (req, res) => {
   }
 };
 
+// Get basic user info (name and profilePicture only)
+export const getBasicUserInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("name profilePicture");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Update a user
 export const updateUser = async (req, res) => {
   try {
