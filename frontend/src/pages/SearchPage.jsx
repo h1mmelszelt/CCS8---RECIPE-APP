@@ -10,6 +10,7 @@ import {
   Image,
   VStack,
   Icon,
+  useToast,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import Filters from "../components/Filters";
@@ -28,9 +29,12 @@ const isValidPath = (path) =>
 
 function SearchPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const filter = queryParams.get("filter");
   const { isAuthenticated } = useContext(AuthContext); // Get authentication status
+  const toast = useToast(); // Initialize the toast hook
+  const [email, setEmail] = React.useState("");
 
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -63,6 +67,46 @@ function SearchPage() {
     { label: "Home", path: "/home" },
     { label: "Search", path: "/search" },
   ].filter((crumb) => isValidPath(crumb.path));
+
+  const handleSubscribe = (e) => {
+    e.preventDefault(); // Prevent form submission
+
+    if (!isAuthenticated) {
+      // Redirect to sign-up page if the user is not authenticated
+      navigate("/register");
+      return;
+    }
+
+    if (!email.trim()) {
+      // Show error toast if email is blank
+      toast({
+        title: "Error",
+        description: "Email is required.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      // Show error toast if email is invalid
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      // Show success toast if email is valid
+      toast({
+        title: "Subscribed",
+        description: "Thank you for subscribing to our newsletter!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setEmail(""); // Clear the input field
+    }
+  };
 
   // Fetch recipes based on search query
   useEffect(() => {
@@ -269,21 +313,26 @@ function SearchPage() {
                   <Box fontSize="sm" mb={4}>
                     Stay updated with the latest recipes and cooking tips.
                   </Box>
-                  <Input
-                    placeholder="Enter your email"
-                    size="sm"
-                    mb={2}
-                    borderRadius="md"
-                    bg="white"
-                  />
-                  <Button
-                    bg="#97C33A"
-                    size="sm"
-                    width="100%"
-                    _hover={{ bg: "#7da52f" }}
-                  >
-                    Subscribe
-                  </Button>
+                  <form onSubmit={handleSubscribe}>
+                    <Input
+                      placeholder="Enter your email"
+                      size="sm"
+                      mb={2}
+                      borderRadius="md"
+                      bg="white"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)} // Update email state
+                    />
+                    <Button
+                      bg="#97C33A"
+                      size="sm"
+                      width="100%"
+                      _hover={{ bg: "#7da52f" }}
+                      type="submit"
+                    >
+                      Subscribe
+                    </Button>
+                  </form>
                 </>
               ) : (
                 <>
@@ -294,21 +343,26 @@ function SearchPage() {
                     Found something delicious? Sign up for free to save it
                     before you scroll away!
                   </Box>
-                  <Input
-                    placeholder="Email"
-                    size="sm"
-                    mb={2}
-                    borderRadius="md"
-                    bg="white"
-                  />
-                  <Button
-                    bg="#97C33A"
-                    size="sm"
-                    width="100%"
-                    _hover={{ bg: "#7da52f" }}
-                  >
-                    Sign Up
-                  </Button>
+                  <form onSubmit={handleSubscribe}>
+                    <Input
+                      placeholder="Email"
+                      size="sm"
+                      mb={2}
+                      borderRadius="md"
+                      bg="white"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)} // Update email state
+                    />
+                    <Button
+                      bg="#97C33A"
+                      size="sm"
+                      width="100%"
+                      _hover={{ bg: "#7da52f" }}
+                      type="submit"
+                    >
+                      Sign Up
+                    </Button>
+                  </form>
                 </>
               )}
             </Box>

@@ -48,6 +48,42 @@ const RecipePage = () => {
   const location = useLocation();
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+  const [email, setEmail] = React.useState("");
+
+  const handleSubscribe = (e) => {
+    e.preventDefault(); // Prevent form submission
+
+    if (!email.trim()) {
+      // Show error toast if email is blank
+      toast({
+        title: "Error",
+        description: "Email is required.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      // Show error toast if email is invalid
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      // Show success toast if email is valid
+      toast({
+        title: "Subscribed",
+        description: "Thank you for subscribing to our newsletter!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setEmail(""); // Clear the input field
+    }
+  };
+
   // State for editing a review in the comments section
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editReviewText, setEditReviewText] = useState("");
@@ -1049,18 +1085,22 @@ const RecipePage = () => {
                 Hungry for inspiration? Get fresh recipe ideas, and cooking tips
                 delivered straight to your inbox.
               </Text>
-              <HStack>
+              <HStack as="form" onSubmit={handleSubscribe}>
                 <Input
                   placeholder="Enter your email"
                   size="sm"
                   bg="white"
                   borderRadius="md"
+                  focusBorderColor="orange"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} // Update email state
                 />
                 <Button
                   bg="#97C33A"
                   size="sm"
                   width="150px"
                   _hover={{ bg: "#7da52f" }}
+                  type="submit"
                 >
                   Subscribe
                 </Button>

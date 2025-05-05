@@ -11,6 +11,7 @@ import {
   Input,
   Button,
   Image,
+  useToast,
 } from "@chakra-ui/react";
 import {
   FaTiktok,
@@ -22,6 +23,8 @@ import {
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function SitemapPage() {
+  const toast = useToast();
+  const [email, setEmail] = React.useState("");
   const navigate = useNavigate();
   const userId =
     localStorage.getItem("userId") || sessionStorage.getItem("userId");
@@ -34,6 +37,40 @@ export default function SitemapPage() {
       navigate("/login");
     } else {
       navigate(`/${path}/${userId}`);
+    }
+  };
+
+  const handleSubscribe = (e) => {
+    e.preventDefault(); // Prevent form submission
+
+    if (!email.trim()) {
+      // Show error toast if email is blank
+      toast({
+        title: "Error",
+        description: "Email is required.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      // Show error toast if email is invalid
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      // Show success toast if email is valid
+      toast({
+        title: "Subscribed",
+        description: "Thank you for subscribing to our newsletter!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setEmail(""); // Clear the input field
     }
   };
 
@@ -218,17 +255,24 @@ export default function SitemapPage() {
           <Text fontSize="sm" color="black.400">
             Subscribe to our newsletter to get more free tips
           </Text>
-          <Flex as="form" gap={2} w="100%">
+          <Flex as="form" gap={2} w="100%" onSubmit={handleSubscribe}>
             <Input
               type="email"
-              placeholder="Enter Your Email"
+              placeholder="Enter your email"
               bg="black.700"
               borderRadius="md"
               _placeholder={{ color: "black.400" }}
-              color="white"
+              color="black"
               focusBorderColor="orange.500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Update email state
             />
-            <Button bg="orange.500" color="white" _hover={{ bg: "orange.600" }}>
+            <Button
+              bg="orange.500"
+              color="white"
+              _hover={{ bg: "orange.600" }}
+              type="submit"
+            >
               Subscribe
             </Button>
           </Flex>

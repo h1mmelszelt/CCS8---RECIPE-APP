@@ -7,12 +7,11 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 function MePage() {
-
-
   // Defensive: never allow malformed dynamic routes in any navigation or link
   // (MePage) - All profile/settings links must be valid
-  const isValidPath = (path) => path && !path.includes('/:') && !path.endsWith('/:');
-  
+  const isValidPath = (path) =>
+    path && !path.includes("/:") && !path.endsWith("/:");
+
   const { setIsAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null); // Declare userId using useState

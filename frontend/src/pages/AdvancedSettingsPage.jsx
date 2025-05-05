@@ -254,33 +254,6 @@ const AdvancedSettingsPage = () => {
               <Switch colorScheme="green" size="lg" onChange={toggleTheme} />
             </Flex>
           </Box>
-
-          {/* Color Blind Mode Section */}
-          <Box mb={6}>
-            <Text fontSize="18px" fontWeight="bold" color="#FD660B" mb={4}>
-              Color Blind Mode
-            </Text>
-            <Select
-              placeholder="Off (default)"
-              bg="orange.100"
-              borderColor="orange.300"
-            >
-              <option value="deuteranopia">Deuteranopia (Red-Green)</option>
-              <option value="protanopia">Protanopia (Red-Green)</option>
-              <option value="tritanopia">Tritanopia (Yellow-Blue)</option>
-            </Select>
-          </Box>
-
-          {/* Save Changes Button */}
-          <Button
-            bg="#58653C"
-            color="white"
-            _hover={{ bg: "green.500" }}
-            width={{ base: "80%", md: "200px" }}
-            ml={{ base: "10%", md: "40%" }}
-          >
-            Save Changes
-          </Button>
         </Box>
       </Flex>
     </Box>

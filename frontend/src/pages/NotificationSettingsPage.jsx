@@ -16,7 +16,8 @@ import { Link, useLocation, useParams } from "react-router-dom"; // Import Link 
 import BG_Image from "/images/11.png";
 
 const NotificationSettingsPage = () => {
-  const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
+  const userId =
+    localStorage.getItem("userId") || sessionStorage.getItem("userId") || null;
   const location = useLocation();
   // Breadcrumbs for Notification Settings Page (stop at Settings)
   const breadcrumbs = [
@@ -25,7 +26,6 @@ const NotificationSettingsPage = () => {
     { label: "Settings", path: `/settings/${userId}` },
   ];
   const [activeSetting, setActiveSetting] = useState("Notifications"); // State to track active setting
-  
 
   return (
     <Box position="relative" minH="100vh" overflow="hidden">
@@ -35,9 +35,16 @@ const NotificationSettingsPage = () => {
           {breadcrumbs.map((crumb, idx) => (
             <span key={crumb.path}>
               {idx === breadcrumbs.length - 1 ? (
-                <span style={{ color: "#FD660B", fontWeight: "bold" }}>{crumb.label}</span>
+                <span style={{ color: "#FD660B", fontWeight: "bold" }}>
+                  {crumb.label}
+                </span>
               ) : (
-                <Link to={crumb.path} style={{ color: "#FD660B", textDecoration: "underline" }}>{crumb.label}</Link>
+                <Link
+                  to={crumb.path}
+                  style={{ color: "#FD660B", textDecoration: "underline" }}
+                >
+                  {crumb.label}
+                </Link>
               )}
               {idx < breadcrumbs.length - 1 && " > "}
             </span>
@@ -98,7 +105,11 @@ const NotificationSettingsPage = () => {
           </Text>
           <VStack align="start" spacing={4}>
             {[
-              { label: "Profile Settings", icon: FaUser, link: userId ? `/settings/${userId}` : "/login" },
+              {
+                label: "Profile Settings",
+                icon: FaUser,
+                link: userId ? `/settings/${userId}` : "/login",
+              },
               {
                 label: "Notifications",
                 icon: FaBell,
@@ -209,16 +220,6 @@ const NotificationSettingsPage = () => {
                 {/* Slider button with default ON */}
               </Flex>
             </Box>
-            <Button
-              bg="#58653C"
-              color="white"
-              _hover={{ bg: "green.500" }}
-              width={{ base: "80%", md: "200px" }} // Full width on mobile
-              mx="auto"
-              mt="5%"
-            >
-              Save Changes
-            </Button>
           </Flex>
         </Box>
       </Flex>

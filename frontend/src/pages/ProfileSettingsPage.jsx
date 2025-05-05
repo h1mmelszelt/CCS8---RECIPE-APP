@@ -10,6 +10,7 @@ import {
   Button,
   Divider,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { FaUser, FaBell, FaSlidersH } from "react-icons/fa"; // Import icons
 import { Link, useLocation, useParams } from "react-router-dom"; // Import Link for navigation
@@ -22,9 +23,12 @@ const isValidPath = (path) =>
   path && !path.includes("/:") && !path.endsWith("/:");
 
 const ProfileSettingsPage = () => {
+  const toast = useToast();
+  const [initialData, setInitialData] = useState(null);
   const { id: userId } = useParams(); // Get userId from URL
   const [userData, setUserData] = useState({
     username: "",
+    name: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [activeSetting, setActiveSetting] = useState("Profile Settings"); // Initialize activeSetting
@@ -50,6 +54,12 @@ const ProfileSettingsPage = () => {
           console.log("Fetched User Data:", data); // Debugging: Log the fetched data
           setUserData({
             username: data.username || "", // Assuming "name" is the first name
+            name: data.name || "",
+            email: data.email || "",
+          });
+          setInitialData({
+            username: data.username || "",
+            name: data.name || "",
             email: data.email || "",
           });
         }
@@ -72,17 +82,40 @@ const ProfileSettingsPage = () => {
   };
 
   const handleSaveChanges = async () => {
+    if (JSON.stringify(userData) === JSON.stringify(initialData)) {
+      // If no changes are made
+      toast({
+        title: "No new changes.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     try {
       if (userId) {
         await axios.put(
           `https://cs-test-z2vm.onrender.com/api/users/${userId}`,
           userData
         );
-        alert("Profile updated successfully!");
+        toast({
+          title: "Profile updated successfully!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setInitialData(userData); // Update initial data after successful save
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile.");
+      toast({
+        title: "Failed to update profile.",
+        description: "Please try again later.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -304,6 +337,25 @@ const ProfileSettingsPage = () => {
                 {/* Adjust input width */}
               </Flex>
             </Box>
+            {/* Name Field */}
+            <Box width={{ base: "100%", md: "60%" }}>
+              <Flex direction="row" align="center" gap={2}>
+                <Text
+                  fontSize={{ base: "14px", md: "16px" }}
+                  fontWeight="medium"
+                  width="35%"
+                >
+                  Name
+                </Text>
+                <Input
+                  placeholder="Enter your name"
+                  name="name"
+                  focusBorderColor="orange.500"
+                  value={userData.name}
+                  onChange={handleInputChange}
+                />
+              </Flex>
+            </Box>
             <Box width={{ base: "100%", md: "60%" }}>
               <Flex direction="row" align="center" gap={2}>
                 <Text
@@ -324,12 +376,12 @@ const ProfileSettingsPage = () => {
             </Box>
             <Box width={{ base: "100%", md: "60%" }}></Box>
             <Button
-              bg="#58653C"
+              bg="orange.400"
               color="white"
-              _hover={{ bg: "green.500" }}
+              _hover={{ bg: "orange.700" }}
               width={{ base: "80%", md: "200px" }}
               mx="auto"
-              mt="5%"
+              mt="2%"
               onClick={handleSaveChanges}
             >
               Save Changes
