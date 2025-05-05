@@ -346,7 +346,7 @@ const ProfileSettingsPage = () => {
               overflow="hidden" // Ensures the image stays within the circle"
             >
               <Image
-                src={userData.profilePicture || "/images/Gordon.jpg"} // Display user's profile picture or fallback to default
+                src={userData.profilePicture} // Display user's profile picture or fallback to default
                 alt="Profile Picture"
                 objectFit="cover"
                 width="100%"
