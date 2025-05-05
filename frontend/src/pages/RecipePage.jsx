@@ -590,7 +590,7 @@ const RecipePage = () => {
             </Heading>
             <HStack spacing={4} align="center" mb={6}>
               <Avatar
-                src={recipe.user_id?.avatar}
+                src={recipe.user_id?.profilePicture}
                 name={recipe.user_id?.name}
               />
               <HStack spacing={2} align="center">
@@ -880,7 +880,7 @@ const RecipePage = () => {
                       <Box>
                         <HStack align="start" spacing={4}>
                           <Avatar
-                            src={review.user_id?.avatar}
+                            src={review.user_id?.profilePicture}
                             name={review.user_id?.name}
                             size="md"
                           />
