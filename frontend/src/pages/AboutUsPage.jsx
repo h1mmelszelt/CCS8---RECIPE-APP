@@ -7,20 +7,21 @@ import {
   Heading,
   Link,
   Icon,
+  Divider,
 } from "@chakra-ui/react";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaGithub, FaInstagram } from "react-icons/fa";
 
 const AboutUsPage = () => {
   const teamMembers = [
     {
       name: "Rach Bongo",
-      role: "Recipe Curator",
+      role: "Backend Developer",
       description:
-        "Rach is passionate about discovering and sharing unique recipes from around the world.",
-      image: "/images/alice.jpg", // Replace with actual image path
+        "In this project, I worked as the Backend Developer —building the database schema, developing API endpoints, and creating pages as well as UI components like navbars, recipe cards, and the sitemap. I also contributed to UI/UX design and ensured smooth integration between the frontend and backend.",
+      image: "/images/rach.jpg", // Replace with actual image path
       links: {
         facebook: "https://facebook.com/rachbongo",
-        twitter: "https://twitter.com/rachbongo",
+        github: "https://github.com/rachbongo",
         instagram: "https://instagram.com/rachbongo",
       },
     },
@@ -32,7 +33,7 @@ const AboutUsPage = () => {
       image: "/images/bob.jpg", // Replace with actual image path
       links: {
         facebook: "https://facebook.com/fabiohascoet",
-        twitter: "https://twitter.com/fabiohascoet",
+        github: "https://github.com/fabiohascoet",
         instagram: "https://instagram.com/fabiohascoet",
       },
     },
@@ -44,14 +45,46 @@ const AboutUsPage = () => {
       image: "/images/charlie.jpg", // Replace with actual image path
       links: {
         facebook: "https://facebook.com/marcussuyko",
-        twitter: "https://twitter.com/marcussuyko",
+        github: "https://github.com/marcussuyko",
         instagram: "https://instagram.com/marcussuyko",
       },
     },
   ];
 
   return (
-    <Box bg="gray.100" minH="100vh" py={10} px={{ base: 4, md: 20 }}>
+    <Box bg="gray.50" minH="100vh" py={10} px={{ base: 4, md: 20 }}>
+      {/* About the Site Section */}
+      <Box mb={16}>
+        <Heading
+          as="h1"
+          size="xl"
+          textAlign="center"
+          mb={6}
+          color="orange.500"
+          fontWeight="bold"
+          fontFamily="Poppins, sans-serif"
+        >
+          Welcome to BiteBook
+        </Heading>
+        <Text
+          fontSize="lg"
+          color="gray.700"
+          textAlign="center"
+          maxW="800px"
+          mx="auto"
+        >
+          BiteBook is your go-to platform for discovering, sharing, and enjoying
+          recipes from around the world. Whether you're a home cook or a
+          professional chef, BiteBook is here to inspire your culinary journey.
+          Explore recipes, connect with food enthusiasts, and share your
+          creations with our vibrant community.
+        </Text>
+      </Box>
+
+      {/* Divider */}
+      <Divider borderColor="orange.300" my={10} />
+
+      {/* Meet the Team Section */}
       <Heading
         as="h1"
         size="xl"
@@ -59,6 +92,7 @@ const AboutUsPage = () => {
         mb={10}
         color="orange.500"
         fontWeight="bold"
+        fontFamily="Poppins, sans-serif"
       >
         Meet the Team
       </Heading>
@@ -75,17 +109,20 @@ const AboutUsPage = () => {
             bg="white"
             borderRadius="md"
             boxShadow="lg"
-            p={8} // Increased padding for larger cards
+            p={8}
+            border={"1px solid#d19c79"}
             textAlign="center"
-            maxW="400px" // Increased card width
+            maxW="400px"
+            transition="transform 0.3s"
+            _hover={{ transform: "scale(1.01)" }}
           >
             <Image
               src={member.image}
               alt={member.name}
               borderRadius="full"
-              boxSize="200px" // Increased image size
+              boxSize="200px"
               mx="auto"
-              mb={6} // Increased margin below the image
+              mb={6}
             />
             <Text fontSize="2xl" fontWeight="bold" color="gray.800">
               {member.name}
@@ -100,8 +137,8 @@ const AboutUsPage = () => {
               <Link href={member.links.facebook} isExternal>
                 <Icon as={FaFacebook} boxSize={6} color="blue.600" />
               </Link>
-              <Link href={member.links.twitter} isExternal>
-                <Icon as={FaTwitter} boxSize={6} color="blue.400" />
+              <Link href={member.links.github} isExternal>
+                <Icon as={FaGithub} boxSize={6} color="gray.800" />
               </Link>
               <Link href={member.links.instagram} isExternal>
                 <Icon as={FaInstagram} boxSize={6} color="pink.500" />
