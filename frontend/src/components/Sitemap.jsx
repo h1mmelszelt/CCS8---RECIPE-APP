@@ -133,6 +133,7 @@ function Sitemap() {
                   <Text
                     fontSize="sm"
                     color="black.400"
+                    textDecoration="underline"
                     _hover={{ color: "orange.500" }}
                   >
                     {link.label}
@@ -150,6 +151,7 @@ function Sitemap() {
                 fontSize="sm"
                 color="black.400"
                 _hover={{ color: "orange.500" }}
+                textDecoration="underline"
               >
                 FAQ
               </Text>
@@ -159,6 +161,7 @@ function Sitemap() {
                 fontSize="sm"
                 color="black.400"
                 _hover={{ color: "orange.500" }}
+                textDecoration="underline"
               >
                 About Us
               </Text>
@@ -168,6 +171,7 @@ function Sitemap() {
                 fontSize="sm"
                 color="black.400"
                 _hover={{ color: "orange.500" }}
+                textDecoration="underline"
               >
                 Contact
               </Text>
@@ -243,6 +247,7 @@ function Sitemap() {
               fontSize="sm"
               color="black.400"
               _hover={{ color: "orange.500" }}
+              textDecoration="underline"
             >
               Sitemap
             </Text>

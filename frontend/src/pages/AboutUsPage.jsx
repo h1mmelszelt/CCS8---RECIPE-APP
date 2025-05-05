@@ -12,17 +12,20 @@ import {
 import { FaFacebook, FaGithub, FaInstagram } from "react-icons/fa";
 
 const AboutUsPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const teamMembers = [
     {
       name: "Rach Bongo",
       role: "Backend Developer",
       description:
         "In this project, I worked as the Backend Developer —building the database schema, developing API endpoints, and creating pages as well as UI components like navbars, recipe cards, and the sitemap. I also contributed to UI/UX design and ensured smooth integration between the frontend and backend.",
-      image: "/images/rach.jpg", // Replace with actual image path
+      image: "/images/rach.jpg",
       links: {
-        facebook: "https://facebook.com/rachbongo",
-        github: "https://github.com/rachbongo",
-        instagram: "https://instagram.com/rachbongo",
+        facebook: "https://facebook.com/ramzrach",
+        github: "https://github.com/racky918",
+        instagram: "https://instagram.com/rxcky0_",
       },
     },
     {
@@ -30,7 +33,7 @@ const AboutUsPage = () => {
       role: "Community Manager",
       description:
         "Fabio ensures our community stays engaged and connected through exciting events and updates.",
-      image: "/images/bob.jpg", // Replace with actual image path
+      image: "/images/bob.jpg",
       links: {
         facebook: "https://facebook.com/fabiohascoet",
         github: "https://github.com/fabiohascoet",
@@ -42,7 +45,7 @@ const AboutUsPage = () => {
       role: "Lead Developer",
       description:
         "Marcus is the tech wizard behind the scenes, making sure everything runs smoothly.",
-      image: "/images/charlie.jpg", // Replace with actual image path
+      image: "/images/charlie.jpg",
       links: {
         facebook: "https://facebook.com/marcussuyko",
         github: "https://github.com/marcussuyko",

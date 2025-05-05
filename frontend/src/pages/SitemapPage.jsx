@@ -165,7 +165,14 @@ export default function SitemapPage() {
 
   return (
     <Box bg="gray.100" minH="100vh" py={12} px={{ base: 4, md: 20 }}>
-      <Heading as="h1" size="xl" mb={8} textAlign="center">
+      <Heading
+        as="h1"
+        size="xl"
+        mb={8}
+        textAlign="center"
+        fontFamily={"Poppins, sans-serif"}
+        color="orange.500"
+      >
         Site Map
       </Heading>
       <Divider mb={8} />
@@ -188,7 +195,7 @@ export default function SitemapPage() {
                   style={{
                     fontSize: "1rem",
                     color: "#222",
-                    textDecoration: "none",
+                    textDecoration: "underline", // Added underline
                     transition: "color 0.2s",
                     cursor: "pointer",
                   }}
@@ -205,8 +212,7 @@ export default function SitemapPage() {
                   style={{
                     fontSize: "1rem",
                     color: "#222",
-                    textDecoration: "none",
-                    transition: "color 0.2s",
+                    textDecoration: "underline", // Added underline
                   }}
                   onMouseOver={(e) => (e.currentTarget.style.color = "orange")}
                   onMouseOut={(e) => (e.currentTarget.style.color = "#222")}
