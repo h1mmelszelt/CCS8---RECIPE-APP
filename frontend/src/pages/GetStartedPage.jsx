@@ -119,7 +119,7 @@ function GetStartedPage() {
             objectFit: "cover",
           }}
         >
-          <source src="/videos/VideoBg.webm" type="video/webm" />
+          <source src="/videos/VideoWebsite.webm" type="video/webm" />
           Your browser does not support the video tag.
         </video>
       </Box>
