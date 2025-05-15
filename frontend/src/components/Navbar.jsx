@@ -85,7 +85,7 @@ function Navbar({ transparent }) {
   return (
     <Box
       px={{ base: 2, md: 4 }} // Reduce horizontal padding
-      py={0} // Reduce vertical padding
+      py={2} // Reduce vertical padding
       boxShadow={transparent ? "none" : "md"} // Conditional boxShadow
       position="sticky"
       top="0"
@@ -103,6 +103,7 @@ function Navbar({ transparent }) {
           {" "}
           {/* Hide on smaller screens */}
           <Tooltip label="Go to BiteBook Home page">
+            
             <Link to="/home">
               <Flex alignItems="center">
                 <Image
