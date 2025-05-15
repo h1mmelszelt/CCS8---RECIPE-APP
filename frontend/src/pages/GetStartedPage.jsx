@@ -5,10 +5,11 @@ import Phone from "/images/bitebookQR.png";
 
 import RecipeCard from "../components/RecipeCard";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import background from "/images/background.png";
 import { useMediaQuery } from "@chakra-ui/react"; // Import useMediaQuery
+import { FaVolumeMute, FaVolumeUp, FaPause, FaPlay } from "react-icons/fa";
 const MotionText = motion(Text);
 
 function GetStartedPage() {
@@ -18,6 +19,11 @@ function GetStartedPage() {
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
 
   const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+
+  const videoRef = useRef(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
+  const [videoVolume, setVideoVolume] = useState(1); // 1 is max volume
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,6 +83,21 @@ function GetStartedPage() {
     };
   }, [isAutoScrolling]);
 
+  useEffect(() => {
+    // Ensure video plays automatically on load, even if browser requires programmatic play
+    if (videoRef.current) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay might be blocked, try to unmute and play again
+          videoRef.current.muted = true;
+          videoRef.current.play();
+        });
+      }
+      videoRef.current.volume = videoVolume;
+    }
+  }, []);
+
   return (
     <Box position="relative" minH="100vh" overflow="hidden" bg="white">
       <Box position="relative" zIndex={999}></Box>
@@ -109,14 +130,34 @@ function GetStartedPage() {
         height={{ base: "50vh", md: "100vh" }}
       >
         <video
+          ref={videoRef}
           autoPlay
           loop
-          muted
           playsInline
+          muted={isVideoMuted}
+          controls // enable browser's default controls
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
+          }}
+          volume={videoVolume}
+          onVolumeChange={e => setVideoVolume(e.target.volume)}
+          onLoadedMetadata={() => {
+            if (videoRef.current) {
+              videoRef.current.volume = videoVolume;
+            }
+          }}
+          onClick={() => {
+            if (videoRef.current) {
+              if (isVideoPlaying) {
+                videoRef.current.pause();
+                setIsVideoPlaying(false);
+              } else {
+                videoRef.current.play();
+                setIsVideoPlaying(true);
+              }
+            }
           }}
         >
           <source src="/videos/VideoWebsite.webm" type="video/webm" />
