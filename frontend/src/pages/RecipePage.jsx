@@ -66,6 +66,8 @@ const RecipePage = () => {
 
   const [email, setEmail] = React.useState("");
 
+  const recipeContentRef = useRef(null); // Ref for printable content
+
   const handleSubscribe = (e) => {
     e.preventDefault(); // Prevent form submission
 
@@ -388,10 +390,22 @@ const RecipePage = () => {
 
   // Handler for printing the recipe
   const handlePrint = () => {
-    const printContent = document.getElementById("recipe-content");
+    const printContent = recipeContentRef.current;
+    if (!printContent) return;
     const printWindow = window.open("", "_blank");
-    printWindow.document.write(`<!DOCTYPE html><html><head><title>Print Recipe</title></head><body>${printContent.innerHTML}</body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>Print Recipe</title>
+      <style>
+        body { font-family: 'Poppins', Arial, sans-serif; margin: 40px; color: #222; }
+        h1, h2 { color: #FD660B; }
+        img { max-width: 100%; border-radius: 8px; margin-bottom: 20px; }
+        ul, ol { margin-left: 20px; }
+        .section { margin-bottom: 32px; }
+        .tag { display: inline-block; background: #FD660B; color: #fff; border-radius: 4px; padding: 2px 10px; margin-right: 6px; font-size: 14px; }
+        @media print { button, .no-print { display: none !important; } }
+      </style>
+    </head><body>` + printContent.innerHTML + `</body></html>`);
     printWindow.document.close();
+    printWindow.focus();
     printWindow.print();
   };
 
@@ -654,238 +668,239 @@ const RecipePage = () => {
         <Grid templateColumns={{ base: "1fr", md: "3fr 1fr" }} gap={6}>
           {/* Left Section */}
           <GridItem>
-            {/* Recipe Header */}
-            <Heading as="h1" size="xl" mb={4} fontFamily="Poppins, sans-serif">
-              {recipe.name}
-            </Heading>
-            <HStack spacing={4} align="center" mb={6}>
-              <Avatar
-                size="md"
-                name={
-                  (typeof recipe.user_id === "object" && recipe.user_id.name) ||
-                  authorInfo?.name ||
-                  "?"
-                }
-                src={getAvatarSrc(getCompressedImageUrl((typeof recipe.user_id === "object" && recipe.user_id.profilePicture) || authorInfo?.profilePicture))}
-                mr={2}
-                as={Link}
-                to={recipe.user_id?._id ? `/profile/${recipe.user_id._id}` : undefined}
-                cursor="pointer"
-              />
-              <HStack spacing={2} align="center">
-                <Link
-                  to={`/profile/${recipe.user_id?._id}`}
-                  style={{ color: "#FD660B", textDecoration: "underline" }}
-                >
-                  <Text
-                    fontWeight="bold"
-                    fontSize={{ base: "sm", md: "md" }}
-                    color="#FD660B"
+            <div ref={recipeContentRef} id="recipe-content">
+              {/* Recipe Header */}
+              <Heading as="h1" size="xl" mb={4} fontFamily="Poppins, sans-serif">
+                {recipe.name}
+              </Heading>
+              <HStack spacing={4} align="center" mb={6}>
+                <Avatar
+                  size="md"
+                  name={
+                    (typeof recipe.user_id === "object" && recipe.user_id.name) ||
+                    authorInfo?.name ||
+                    "?"
+                  }
+                  src={getAvatarSrc(getCompressedImageUrl((typeof recipe.user_id === "object" && recipe.user_id.profilePicture) || authorInfo?.profilePicture))}
+                  mr={2}
+                  as={Link}
+                  to={recipe.user_id?._id ? `/profile/${recipe.user_id._id}` : undefined}
+                  cursor="pointer"
+                />
+                <HStack spacing={2} align="center">
+                  <Link
+                    to={`/profile/${recipe.user_id?._id}`}
+                    style={{ color: "#FD660B", textDecoration: "underline" }}
                   >
-                    {recipe.user_id?.name || "Unknown Author"}
+                    <Text
+                      fontWeight="bold"
+                      fontSize={{ base: "sm", md: "md" }}
+                      color="#FD660B"
+                    >
+                      {recipe.user_id?.name || "Unknown Author"}
+                    </Text>
+                  </Link>
+                  <HStack spacing={1}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <FaStar
+                        key={index}
+                        size={15} // Adjust the size of the star
+                        color={
+                          index <
+                          (reviews.length > 0
+                            ? Math.round(
+                                reviews.reduce((sum, r) => sum + r.rating, 0) /
+                                  reviews.length
+                              )
+                            : 0)
+                            ? "#FD660B" // Orange for filled stars
+                            : "#D3D3D3" // Gray for empty stars
+                        }
+                      />
+                    ))}
+                  </HStack>
+                  <Text fontSize={{ base: "sm", md: "md" }} color="gray.600">
+                    {reviews.length > 0
+                      ? (
+                          reviews.reduce((sum, r) => sum + r.rating, 0) /
+                          reviews.length
+                        ).toFixed(1)
+                      : "0.0"}{" "}
+                    ({reviews.length})
                   </Text>
-                </Link>
-                <HStack spacing={1}>
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <FaStar
-                      key={index}
-                      size={15} // Adjust the size of the star
-                      color={
-                        index <
-                        (reviews.length > 0
-                          ? Math.round(
-                              reviews.reduce((sum, r) => sum + r.rating, 0) /
-                                reviews.length
-                            )
-                          : 0)
-                          ? "#FD660B" // Orange for filled stars
-                          : "#D3D3D3" // Gray for empty stars
-                      }
-                    />
-                  ))}
                 </HStack>
-                <Text fontSize={{ base: "sm", md: "md" }} color="gray.600">
-                  {reviews.length > 0
-                    ? (
-                        reviews.reduce((sum, r) => sum + r.rating, 0) /
-                        reviews.length
-                      ).toFixed(1)
-                    : "0.0"}{" "}
-                  ({reviews.length})
-                </Text>
+                <VStack align="start" spacing={0}>
+                  <Text fontSize="sm" color="gray.500">
+                    Posted on: {new Date(recipe.createdAt).toLocaleDateString()}
+                  </Text>
+                </VStack>
               </HStack>
-              <VStack align="start" spacing={0}>
-                <Text fontSize="sm" color="gray.500">
-                  Posted on: {new Date(recipe.createdAt).toLocaleDateString()}
-                </Text>
-              </VStack>
-            </HStack>
 
-            {/* Recipe Image */}
-            <Image
-              src={recipe.image}
-              alt={recipe.name}
-              borderRadius="md"
-              mb={6}
-              width={{ base: "100%", md: "100%" }}
-              height={{ base: "200px", md: "400px" }}
-              objectFit="cover"
-            />
-
-            {/* Recipe Details */}
-            <VStack align="start" spacing={4} mb={6}>
-              <Text
-                fontSize={{ base: "md", md: "lg" }}
-                fontWeight="bold"
+              {/* Recipe Image */}
+              <Image
+                src={recipe.image}
+                alt={recipe.name}
+                borderRadius="md"
+                mb={6}
                 width={{ base: "100%", md: "100%" }}
-              >
-                {recipe.description}
-              </Text>
-              <HStack spacing={4} wrap="wrap">
-                <Button
-                  leftIcon={<FiPrinter />}
-                  colorScheme="orange"
-                  variant="outline"
-                  onClick={handlePrint}
-                  size={{ base: "sm", md: "md" }}
+                height={{ base: "200px", md: "400px" }}
+                objectFit="cover"
+              />
+
+              {/* Recipe Details */}
+              <VStack align="start" spacing={4} mb={6}>
+                <Text
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight="bold"
+                  width={{ base: "100%", md: "100%" }}
                 >
-                  Print Recipe
-                </Button>
-                <Button
-                  leftIcon={<FiShare2 />}
-                  colorScheme="orange"
-                  variant="outline"
-                  onClick={handleShare}
-                  size={{ base: "sm", md: "md" }}
-                >
-                  Share Recipe
-                </Button>
-                {isBookmarked ? (
+                  {recipe.description}
+                </Text>
+                <HStack spacing={4} wrap="wrap">
                   <Button
-                    leftIcon={<FiBookmark />}
-                    colorScheme="orange"
-                    variant="solid"
-                    onClick={handleRemoveBookmark}
-                    size={{ base: "sm", md: "md" }}
-                  >
-                    Remove from Bookmarks
-                  </Button>
-                ) : (
-                  <Button
-                    leftIcon={<FiBookmark />}
+                    leftIcon={<FiPrinter />}
                     colorScheme="orange"
                     variant="outline"
-                    onClick={handleBookmark}
+                    onClick={handlePrint}
                     size={{ base: "sm", md: "md" }}
                   >
-                    Add to Bookmarks
+                    Print Recipe
                   </Button>
-                )}
-                {/* Edit button for recipe owner */}
-                {recipe.user_id?._id === loggedInUserId && (
-                  <>
+                  <Button
+                    leftIcon={<FiShare2 />}
+                    colorScheme="orange"
+                    variant="outline"
+                    onClick={handleShare}
+                    size={{ base: "sm", md: "md" }}
+                  >
+                    Share Recipe
+                  </Button>
+                  {isBookmarked ? (
                     <Button
-                      leftIcon={<EditIcon />}
-                      colorScheme="blue"
-                      variant="outline"
-                      onClick={() => navigate(`/edit/${recipe._id}`)}
+                      leftIcon={<FiBookmark />}
+                      colorScheme="orange"
+                      variant="solid"
+                      onClick={handleRemoveBookmark}
                       size={{ base: "sm", md: "md" }}
                     >
-                      Edit
+                      Remove from Bookmarks
                     </Button>
+                  ) : (
                     <Button
-                      leftIcon={<DeleteIcon />}
-                      colorScheme="red"
+                      leftIcon={<FiBookmark />}
+                      colorScheme="orange"
                       variant="outline"
-                      onClick={async () => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to delete this recipe? This action cannot be undone."
-                          )
-                        ) {
-                          try {
-                            await axios.delete(
-                              `https://thebitebook.onrender.com/api/recipes/${recipe._id}`
-                            );
-                            toast({
-                              title: "Recipe deleted",
-                              description: "Your recipe has been deleted.",
-                              status: "success",
-                              duration: 3000,
-                              isClosable: true,
-                            });
-                            navigate(`/profile/${loggedInUserId}`);
-                          } catch (error) {
-                            toast({
-                              title: "Error",
-                              description:
-                                "Failed to delete the recipe. Please try again.",
-                              status: "error",
-                              duration: 3000,
-                              isClosable: true,
-                            });
-                          }
-                        }
-                      }}
+                      onClick={handleBookmark}
+                      size={{ base: "sm", md: "md" }}
                     >
-                      Delete
+                      Add to Bookmarks
                     </Button>
-                  </>
-                )}
-              </HStack>
-              <HStack spacing={8}>
-                <Text fontSize="md" color="gray.600">
-                  Serving Size: {recipe.servingSize || "N/A"}
-                </Text>
-              </HStack>
-            </VStack>
-
-            <Divider mb={6} />
-
-            {/* Ingredients */}
-            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
-              Ingredients
-            </Heading>
-            <VStack align="start" spacing={2} mb={6}>
-              {recipe.ingredients.map((ingredient, index) => (
-                <Text key={index} fontSize="md" color="gray.700">
-                  {ingredient}
-                </Text>
-              ))}
-            </VStack>
-
-            {/* Instructions */}
-            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
-              Instructions
-            </Heading>
-            <VStack align="start" spacing={4} mb={6}>
-              {recipe.instructions.map((instruction, index) => (
-                <HStack key={index} align="start" spacing={4}>
-                  <Text fontSize="lg" fontWeight="bold" color="orange.500">
-                    {index + 1}.
-                  </Text>
-                  <Text fontSize="md" color="gray.700">
-                    {instruction}
+                  )}
+                  {/* Edit button for recipe owner */}
+                  {recipe.user_id?._id === loggedInUserId && (
+                    <>
+                      <Button
+                        leftIcon={<EditIcon />}
+                        colorScheme="blue"
+                        variant="outline"
+                        onClick={() => navigate(`/edit/${recipe._id}`)}
+                        size={{ base: "sm", md: "md" }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        leftIcon={<DeleteIcon />}
+                        colorScheme="red"
+                        variant="outline"
+                        onClick={async () => {
+                          if (
+                            window.confirm(
+                              "Are you sure you want to delete this recipe? This action cannot be undone."
+                            )
+                          ) {
+                            try {
+                              await axios.delete(
+                                `https://thebitebook.onrender.com/api/recipes/${recipe._id}`
+                              );
+                              toast({
+                                title: "Recipe deleted",
+                                description: "Your recipe has been deleted.",
+                                status: "success",
+                                duration: 3000,
+                                isClosable: true,
+                              });
+                              navigate(`/profile/${loggedInUserId}`);
+                            } catch (error) {
+                              toast({
+                                title: "Error",
+                                description:
+                                  "Failed to delete the recipe. Please try again.",
+                                status: "error",
+                                duration: 3000,
+                                isClosable: true,
+                              });
+                            }
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  )}
+                </HStack>
+                <HStack spacing={8}>
+                  <Text fontSize="md" color="gray.600">
+                    Serving Size: {recipe.servingSize || "N/A"}
                   </Text>
                 </HStack>
-              ))}
-            </VStack>
+              </VStack>
 
-            <Divider mb={6} />
+              <Divider mb={6} />
 
-            {/* Tags */}
-            <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
-              Tags
-            </Heading>
-            <HStack spacing={4}>
-              {recipe.tags.map((tag, index) => (
-                <Tag key={index} size="lg" colorScheme="orange">
-                  {tag}
-                </Tag>
-              ))}
-            </HStack>
-            <Divider mb={6} />
+              {/* Ingredients */}
+              <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
+                Ingredients
+              </Heading>
+              <VStack align="start" spacing={2} mb={6}>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <Text key={index} fontSize="md" color="gray.700">
+                    {ingredient}
+                  </Text>
+                ))}
+              </VStack>
 
+              {/* Instructions */}
+              <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
+                Instructions
+              </Heading>
+              <VStack align="start" spacing={4} mb={6}>
+                {recipe.instructions.map((instruction, index) => (
+                  <HStack key={index} align="start" spacing={4}>
+                    <Text fontSize="lg" fontWeight="bold" color="orange.500">
+                      {index + 1}.
+                    </Text>
+                    <Text fontSize="md" color="gray.700">
+                      {instruction}
+                    </Text>
+                  </HStack>
+                ))}
+              </VStack>
+
+              <Divider mb={6} />
+
+              {/* Tags */}
+              <Heading as="h2" size="lg" mb={4} fontFamily="Poppins, sans-serif">
+                Tags
+              </Heading>
+              <HStack spacing={4}>
+                {recipe.tags.map((tag, index) => (
+                  <Tag key={index} size="lg" colorScheme="orange">
+                    {tag}
+                  </Tag>
+                ))}
+              </HStack>
+              <Divider mb={6} />
+            </div>
             {/* Rating Section */}
             <Box textAlign="center" mb={6}>
               <Divider borderColor="orange.500" mb={4} />
